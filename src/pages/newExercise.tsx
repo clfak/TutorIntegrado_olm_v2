@@ -1,4 +1,4 @@
-import { Select, Box, Button, Input, Flex, Text, Stack, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Table,Thead,Tbody,Tr,Th,Td,TableContainer,useToast  } from '@chakra-ui/react';
+import { Select, Box, Button, Input, Flex, Text, Stack, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Table,Thead,Tbody,Tr,Th,Td,TableContainer,useToast,Popover, PopoverTrigger, PopoverContent,PopoverArrow,PopoverCloseButton,PopoverHeader,PopoverBody} from '@chakra-ui/react';
 import { useState,useCallback } from 'react';
 import React from 'react';
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
@@ -68,6 +68,15 @@ const insertLatex = (command) => {
     }
     onClose();
   };
+
+  // Opciones de KC
+  const kcOptions = [
+    { label: 'Kc1', value: 'Kc1' },
+    { label: 'Kc2', value: 'Kc2' },
+    { label: 'Kc3', value: 'Kc3' },
+    // Añade más opciones según sea necesario DB
+  ];
+
   const handleCardContentChange = (index, field, newContent) => {
     const updatedCards = [...cards];
     updatedCards[index][field] = newContent;
@@ -173,9 +182,13 @@ const insertLatex = (command) => {
     }
   };
   const deleteCard = (index) => {
-    const updatedCards = cards.filter((_, i) => i !== index);
-    setCards(updatedCards);
+    const isConfirmed = window.confirm('¿Estás seguro de que deseas eliminar este paso?');
+    if (isConfirmed) {
+      const updatedCards = cards.filter((_, i) => i !== index);
+      setCards(updatedCards);
+    }
   };
+
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedSubtopic, setSelectedSubtopic] = useState('');
   const [exerciseName, setExerciseName] = useState('');
@@ -496,15 +509,37 @@ const insertLatex = (command) => {
                         bg="white"
                         mb={4}
                       />
-                      <Input
-                        placeholder="Kc's del ejercicio"
-                        value={card.kcs}
-                        onChange={(e) => handleCardContentChange(index, 'kcs', e.target.value)}
-                        bg="white"
-                        mb={4}
-                      />
-                      </Box>
-)}
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button>KC</Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>Selecciona los KCs</PopoverHeader>
+                          <PopoverBody>
+                            <Input
+                              placeholder="Ingresa KC"
+                              value={kcInput}
+                              onChange={(e) => setKcInput(e.target.value)}
+                              bg="white"
+                              mb={4}
+                            />
+                            <Select
+                              placeholder="Selecciona KC"
+                              value={kcOptions.find(option => option.value === cards.kcs)}
+                              onChange={(selectedOption)=> {
+                                handleCardContentChange(index, 'kcs', selectedOption.value);
+                                setKcInput(selectedOption.label);
+                              }}
+                              options={kcOptions}
+                              isClearable
+                              isSearchable
+                              styles={{ container: (base) => ({ ...base, width: 4 }) }}
+                            />
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
               {/* Botón de Eliminar */}
               {card.type !== 'enunciado' && (
                 <Flex justifyContent="center" >
