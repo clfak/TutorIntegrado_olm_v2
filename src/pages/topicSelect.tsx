@@ -6,7 +6,7 @@ import { CardSelectionTopic } from "../components/contentSelectComponents/CardSe
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAction } from "../utils/action";
-import UmProxy from "../components/ModelQueryProxy";
+import UmProxy, { usuario } from "../components/ModelQueryProxy";
 
 export default withAuth(function topicSelect() {
   const router = useRouter();
@@ -36,7 +36,15 @@ export default withAuth(function topicSelect() {
       parentIds: [topic], // Convertir a número para la consulta
     },
   );
-
+  let a = user.groups;
+  var grupo;
+  for (var e of a) {
+    if (e.tags[0] == "main") {
+      grupo = e.id;
+      break;
+    }
+  }
+  console.log("grupo: " + grupo + " project: " + user.projects[0].code);
   // Acción para el registro
   const action = useAction();
   useEffect(() => {
@@ -101,6 +109,12 @@ export default withAuth(function topicSelect() {
     gql(/* GraphQL */ `
       query usermodel($userId: IntID!) {
         users(ids: [$userId]) {
+          email
+          groups {
+            code
+            id
+            tags
+          }
           modelStates(
             input: { filters: { type: ["BKT"] }, orderBy: { id: DESC }, pagination: { first: 1 } }
           ) {
@@ -114,7 +128,7 @@ export default withAuth(function topicSelect() {
     { userId: user.id },
   );
 
-  UmProxy.usuario = userModelData;
+  UmProxy.usuario = userModelData as usuario;
 
   return (
     <>

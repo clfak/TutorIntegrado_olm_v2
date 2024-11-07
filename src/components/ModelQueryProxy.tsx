@@ -2,7 +2,7 @@ import { proxy } from "valtio";
 
 export interface g {
   code: string;
-  ids: string;
+  id: string;
   tags: Array<string>;
 }
 
@@ -46,7 +46,7 @@ const initialObj: query = {
         groups: [
           {
             code: "",
-            ids: "",
+            id: "",
             tags: [],
           },
         ],

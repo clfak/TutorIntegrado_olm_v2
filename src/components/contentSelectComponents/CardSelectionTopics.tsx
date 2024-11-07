@@ -2,7 +2,7 @@ import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, VStack, Box } from
 import NextLink from "next/link";
 import UserModelQuery from "../UserModelQuery";
 import PBLoad from "../progressbar/pbload";
-import UmProxy, { model } from "../ModelQueryProxy";
+import UmProxy from "../ModelQueryProxy";
 
 const listakcs = (kcs: { code: string }[]): string[] => {
   let kcnames: Array<string> = [];
@@ -72,10 +72,14 @@ export const CardSelectionTopic = ({
         <UserModelQuery KCs={KCs} />
       </LinkBox>
       <Center h={"60px"}>
-        <PBLoad
-          kcnames={listakcs(KCs)}
-          values={UmProxy.usuario.users[0].modelStates.nodes[0].json}
-        />
+        {UmProxy.usuario ? (
+          <PBLoad
+            kcnames={listakcs(KCs)}
+            values={UmProxy.usuario.users[0].modelStates.nodes[0].json}
+          />
+        ) : (
+          <>fail</>
+        )}
       </Center>
     </Box>
   );
