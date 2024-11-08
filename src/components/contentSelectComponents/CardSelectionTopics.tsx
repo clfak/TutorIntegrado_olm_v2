@@ -38,6 +38,11 @@ export const CardSelectionTopic = ({
     pvalg = progresscalc(listakcs(KCs), GdProxy.gd.groupModelStates);
   }
 
+  let msg = {
+    lt: "¡Vamos, con un par de ejercicio mas los alcanzas!",
+    gt: "¡Excelente, vas por sobre tu grupo!",
+  };
+
   return (
     <Box bg="blue.700" rounded="md">
       <LinkBox
@@ -82,7 +87,7 @@ export const CardSelectionTopic = ({
         <UserModelQuery KCs={KCs} />
       </LinkBox>
       <Center>
-        <PBLoad uservalues={pvalu} groupvalues={pvalg} />
+        <PBLoad uservalues={pvalu} groupvalues={pvalg} msg={msg} />
       </Center>
     </Box>
   );

@@ -10,14 +10,20 @@ const Progressbar = dynamic(
 export const PBLoad = ({
   uservalues,
   groupvalues,
+  msg,
 }: {
   uservalues: number;
   groupvalues?: number;
+  msg?: { lt: string; gt: string };
 }) => {
   return uservalues ? (
-    <Progressbar uservalues={uservalues} groupvalues={groupvalues} />
+    msg ? (
+      <Progressbar uservalues={uservalues} groupvalues={groupvalues} msg={msg} />
+    ) : (
+      <Progressbar uservalues={uservalues} groupvalues={groupvalues} />
+    )
   ) : (
-    <>potato fail:kcnames or values not provided</>
+    <>potato fail:values not provided</>
   );
 };
 
