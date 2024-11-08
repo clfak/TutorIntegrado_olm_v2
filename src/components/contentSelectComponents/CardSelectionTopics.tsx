@@ -3,6 +3,7 @@ import NextLink from "next/link";
 import UserModelQuery from "../UserModelQuery";
 import PBLoad from "../progressbar/pbload";
 import UmProxy, { GdProxy } from "../ModelQueryProxy";
+import { progresscalc } from "../progressbar/progresscalc";
 
 const listakcs = (kcs: { code: string }[]): string[] => {
   let kcnames: Array<string> = [];
@@ -28,6 +29,15 @@ export const CardSelectionTopic = ({
   KCs: { code: string }[];
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
+  let pvalu,
+    pvalg = 0;
+  if (UmProxy.usuario && GdProxy.gd) {
+    pvalu = progresscalc(listakcs(KCs), [
+      { id: "-1", json: UmProxy.usuario.users[0].modelStates.nodes[0].json },
+    ]);
+    pvalg = progresscalc(listakcs(KCs), GdProxy.gd.groupModelStates);
+  }
+
   return (
     <Box bg="blue.700" rounded="md">
       <LinkBox
@@ -72,14 +82,7 @@ export const CardSelectionTopic = ({
         <UserModelQuery KCs={KCs} />
       </LinkBox>
       <Center>
-        {UmProxy.usuario ? (
-          <PBLoad
-            kcnames={listakcs(KCs)}
-            uservalues={UmProxy.usuario.users[0].modelStates.nodes[0].json}
-          />
-        ) : (
-          <>fail</>
-        )}
+        <PBLoad uservalues={pvalu} groupvalues={pvalg} />
       </Center>
     </Box>
   );

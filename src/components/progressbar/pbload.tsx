@@ -1,10 +1,5 @@
 import dynamic from "next/dynamic";
 
-interface model {
-  mth: number;
-  level: number;
-}
-
 const Progressbar = dynamic(
   () => {
     return import("./progressbar");
@@ -13,16 +8,14 @@ const Progressbar = dynamic(
 );
 
 export const PBLoad = ({
-  kcnames,
   uservalues,
   groupvalues,
 }: {
-  kcnames: Array<string>;
-  uservalues: Record<string, model>;
-  groupvalues?: Record<string, model>;
+  uservalues: number;
+  groupvalues?: number;
 }) => {
-  return kcnames && uservalues ? (
-    <Progressbar kcnames={kcnames} uservalues={uservalues} groupvalues={groupvalues} />
+  return uservalues ? (
+    <Progressbar uservalues={uservalues} groupvalues={groupvalues} />
   ) : (
     <>potato fail:kcnames or values not provided</>
   );
