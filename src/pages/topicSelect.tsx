@@ -6,7 +6,7 @@ import { CardSelectionTopic } from "../components/contentSelectComponents/CardSe
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAction } from "../utils/action";
-import UmProxy, { usuario } from "../components/ModelQueryProxy";
+import UmProxy, { usuario, GdProxy, gq } from "../components/ModelQueryProxy";
 
 export default withAuth(function topicSelect() {
   const router = useRouter();
@@ -36,15 +36,7 @@ export default withAuth(function topicSelect() {
       parentIds: [topic], // Convertir a número para la consulta
     },
   );
-  let a = user.groups;
-  var grupo;
-  for (var e of a) {
-    if (e.tags[0] == "main") {
-      grupo = e.id;
-      break;
-    }
-  }
-  console.log("grupo: " + grupo + " project: " + user.projects[0].code);
+
   // Acción para el registro
   const action = useAction();
   useEffect(() => {
@@ -129,6 +121,35 @@ export default withAuth(function topicSelect() {
   );
 
   UmProxy.usuario = userModelData as usuario;
+
+  let a = user.groups;
+  var grupo;
+  for (var e of a) {
+    if (e.tags[0] == "main") {
+      grupo = e.id;
+      break;
+    }
+  }
+
+  if (!grupo) grupo = 2;
+
+  console.log("grupo: " + grupo + " project: " + user.projects[0].code);
+
+  const { data: GroupData } = useGQLQuery(
+    gql(`
+      query potato($groupId: IntID!,$projectCode: String!) {
+        groupModelStates(groupId: $groupId,projectCode: $projectCode){
+          id
+          json
+        }
+      }
+    `),
+    { groupId: grupo, projectCode: user.projects[0].code },
+  );
+
+  GdProxy.gd = GroupData as gq;
+
+  if (GdProxy.gd) console.log("gd: " + GdProxy.gd.groupModelStates[0].id);
 
   return (
     <>

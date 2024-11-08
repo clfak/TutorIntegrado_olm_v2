@@ -66,6 +66,32 @@ const initialObj: query = {
 
 const UmProxy = proxy(initialObj);
 
+export interface queryGroupModelStates {
+  id: string;
+  json: Record<string, model>;
+}
+
+export interface gq {
+  groupModelStates: Array<queryGroupModelStates>;
+}
+
+export interface groupQuery {
+  gd: gq;
+}
+
+const iOGD: groupQuery = {
+  gd: {
+    groupModelStates: [
+      {
+        id: "0",
+        json: {},
+      },
+    ],
+  },
+};
+
+export const GdProxy = proxy(iOGD);
+
 export const reset = () => {
   Object.assign(UmProxy, initialObj);
 };

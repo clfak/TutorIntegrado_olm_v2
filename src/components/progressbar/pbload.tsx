@@ -14,15 +14,15 @@ const Progressbar = dynamic(
 
 export const PBLoad = ({
   kcnames,
-  values,
-  oldvalues,
+  uservalues,
+  groupvalues,
 }: {
   kcnames: Array<string>;
-  values: Record<string, model>;
-  oldvalues?: Record<string, model>;
+  uservalues: Record<string, model>;
+  groupvalues?: Record<string, model>;
 }) => {
-  return kcnames && values ? (
-    <Progressbar kcnames={kcnames} values={values} oldvalues={oldvalues} />
+  return kcnames && uservalues ? (
+    <Progressbar kcnames={kcnames} uservalues={uservalues} groupvalues={groupvalues} />
   ) : (
     <>potato fail:kcnames or values not provided</>
   );
