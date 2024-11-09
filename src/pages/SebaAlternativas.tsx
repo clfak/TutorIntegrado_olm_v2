@@ -1,11 +1,11 @@
-import { Select, Box, Button, Input, Flex, Text, Stack, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure } from '@chakra-ui/react';
+import { Select, Box, Button, Input, Flex, Text, Stack, Checkbox, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure, PopoverTrigger, Popover, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, } from '@chakra-ui/react';
 import { useState } from 'react';
 import { MathJaxContext, MathJax } from 'better-react-mathjax';
 
 export default function newExercise() {
   const [cards, setCards] = useState([
     { type: 'enunciado', title: '', question: '', expression: '', summary: '',
-      successMessage: '', alternatives: [{ text: '', correct: false }, { text: '', correct: false }], isEditingExpression: false }
+      successMessage: '', kcs: '', alternatives: [{ text: '', correct: false }, { text: '', correct: false }], isEditingExpression: false }
   ]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentCardIndex, setCurrentCardIndex] = useState(null);
@@ -20,7 +20,7 @@ export default function newExercise() {
   ];
 
   const addCard = () => {
-    setCards([...cards, { type: 'paso', title: '', question: '', expression: '', summary: '', successMessage: '', alternatives: [{ text: '', correct: false }, { text: '', correct: false }], isEditingExpression: false }]);
+    setCards([...cards, { type: 'paso', title: '', question: '', expression: '', summary: '', successMessage: '', kcs:'',alternatives: [{ text: '', correct: false }, { text: '', correct: false }], isEditingExpression: false }]);
   };
 
   const handleCardContentChange = (index, field, newContent) => {
@@ -34,6 +34,18 @@ export default function newExercise() {
     onOpen();
   };
 
+  const [kcOptions, setKcOptions] = useState([
+    { value: 'KC1', label: 'KC1' },
+    { value: 'KC2', label: 'KC2' },
+    { value: 'KC3', label: 'KC3' },
+    { value: 'IdeTerSem', label: 'IdeTerSem' },
+    { value: 'FaccTerSem', label: 'FaccTerSem' },
+    //Se añade más opciones según sea necesario
+    //Llamada db de kc's
+  ]);
+
+  const [kcInput, setKcInput] = useState(''); 
+
   const insertLatex = (command) => {
     if (currentCardIndex !== null) {
       const updatedCards = [...cards];
@@ -42,6 +54,20 @@ export default function newExercise() {
       setCards(updatedCards);
     }
   };
+
+  const handleKcChange = (index, value) => {
+    if (value === 'otro'){
+      if (kcInput && !kcOptions.some(option => option.value === kcInput)){
+        const newOption = { value: kcInput, label: kcInput };
+        setKcOptions([...kcOptions, newOption]);
+        handleCardContentChange(index, 'kcs', kcInput);
+      }
+    } else {
+      handleCardContentChange(index, 'kcs', value);
+    }
+    setKcInput('');
+  };
+
 
   const handleAlternativeChange = (cardIndex, altIndex, newContent) => {
     const updatedCards = [...cards];
@@ -260,6 +286,45 @@ export default function newExercise() {
                       bg="white"
                       mb={4}
                     />
+                  <Flex align="center" mb={4}>
+                    <Popover>
+                      <PopoverTrigger>
+                        <Button>KC</Button>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>Selecciona los KCs o ingresa un KC</PopoverHeader>
+                        <PopoverBody>
+                          <Select
+                            placeholder="Selecciona KC"
+                            value={card.kcs}
+                            onChange={(e) => handleKcChange(index, e.target.value)}
+                            bg="white"
+                            mb={4}
+                          >
+                            {kcOptions
+                              .filter(option => option.label.toLowerCase().includes(kcInput.toLowerCase()))
+                              .map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                            ))}
+                            <option value="otro">Añadir KC</option>
+                          </Select>
+                          <Box mb={4} />
+                          <Input
+                            placeholder="Buscar KC en la lista"
+                            value={kcInput}
+                            onChange={(e) => setKcInput(e.target.value)}
+                            bg="white"
+                            mb={4}
+                          />
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                    <Text ml={4}>{card.kcs || kcInput}</Text>
+                  </Flex>
                   </>
                 )}
               </Box>
