@@ -52,38 +52,27 @@ const Progress = ({ uservalues }: { uservalues: number }) => {
           Yo: {pw}
         </Text>
       </HStack>
-      <HStack>
-        <Image src="/img/mateo.png" alt="Logo" w="28px" h="28px" align={"left"} />
-        <Box
-          w={"200px"}
-          h={"50px"}
-          bgImage={"url('/img/dialogbubble2.png')"}
-          bgPosition="center"
-          bgRepeat="no-repeat"
-          bgSize={"cover"}
-        >
-          <Text fontSize="sm" paddingLeft={5} paddingRight={1} paddingTop={0.5}>
-            ¡Vamos, con un par de ejercicio mas los alcanzas!
-          </Text>
-        </Box>
-      </HStack>
     </>
   );
 };
 
+const before2 = {
+  content: "",
+  width: "0px",
+  height: "0px",
+  "border-right": "7px solid white",
+  "border-left": "7px solid transparent",
+  "border-bottom": "7px solid white",
+  "border-top": "7px solid transparent",
+};
+
 const Encouragement = (msg: string) => {
   return (
-    <HStack>
+    <HStack p={0} spacing={0}>
       <Image src="/img/mateo.png" alt="Logo" w="28px" h="28px" align={"left"} />
-      <Box
-        w={"200px"}
-        h={"50px"}
-        bgImage={"url('/img/dialogbubble2.png')"}
-        bgPosition="center"
-        bgRepeat="no-repeat"
-        bgSize={"cover"}
-      >
-        <Text fontSize="sm" paddingLeft={5} paddingRight={1} paddingTop={0.5}>
+      <Box style={before2}></Box>
+      <Box bg={"white"} borderRadius="md" p={1}>
+        <Text noOfLines={[1, 2]} maxW={"240px"}>
           {msg}
         </Text>
       </Box>
