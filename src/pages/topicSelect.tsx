@@ -14,7 +14,7 @@ export default withAuth(function topicSelect() {
   const registerTopic = router.query.registerTopic as string; // topics in array
   console.log(registerTopic);
   const topic = parseInt(registerTopic, 10).toString(); // Convertir a string
-  const nextContentPath = router.asPath + "";
+  //const nextContentPath = router.asPath + "";
 
   const [topicCodes, setTopicCodes] = useState<string[]>([]);
   const [kcsData, setKcsData] = useState<any>({}); // Cambiar a objeto para mapear id a KCs
@@ -166,7 +166,7 @@ export default withAuth(function topicSelect() {
                   id={ejercicio.id}
                   label={ejercicio.label}
                   registerTopic={registerTopic}
-                  nextContentPath={nextContentPath}
+                  //nextContentPath={nextContentPath}
                   KCs={kcsData[ejercicio.id] || []} // pasar KCs correspondientes
                 />
               ))}

@@ -19,13 +19,13 @@ export const CardSelectionTopic = ({
   id,
   label,
   registerTopic,
-  nextContentPath,
+  //nextContentPath,
   KCs,
 }: {
   id: string;
   label: string | undefined;
   registerTopic: string;
-  nextContentPath: string | undefined;
+  //nextContentPath: string | undefined;
   KCs: { code: string }[];
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
