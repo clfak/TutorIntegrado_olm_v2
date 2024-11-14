@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useAction } from "../utils/action";
 import UmProxy, { usuario, GdProxy, gq } from "../components/ModelQueryProxy";
 
-export default withAuth(function topicSelect() {
+export default withAuth(function TopicSelect() {
   const router = useRouter();
   const { user } = useAuth();
   const registerTopic = router.query.registerTopic as string; // topics in array
