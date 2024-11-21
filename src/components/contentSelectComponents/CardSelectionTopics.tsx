@@ -2,8 +2,8 @@ import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, VStack, Box } from
 import NextLink from "next/link";
 import UserModelQuery from "../UserModelQuery";
 import PBLoad from "../progressbar/pbload";
-import UmProxy, { GdProxy } from "../ModelQueryProxy";
 import { progresscalc } from "../progressbar/progresscalc";
+import { gModel, uModel } from "../../utils/startModel";
 
 const listakcs = (kcs: { code: string }[]): string[] => {
   let kcnames: Array<string> = [];
@@ -29,19 +29,16 @@ export const CardSelectionTopic = ({
   KCs: { code: string }[];
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
-  let pvalu,
-    pvalg = 0;
-  if (UmProxy.usuario && GdProxy.gd) {
-    pvalu = progresscalc(listakcs(KCs), [
-      { id: "-1", json: UmProxy.usuario.users[0].modelStates.nodes[0].json },
-    ]);
-    pvalg = progresscalc(listakcs(KCs), GdProxy.gd.groupModelStates);
+  let pvalu: number,
+    pvalg: number = 0;
+
+  if (!uModel.isLoading && !gModel.isLoading) {
+    pvalu = progresscalc(listakcs(KCs), uModel.data);
+    pvalg = progresscalc(listakcs(KCs), gModel.data);
   }
 
-  let msg = {
-    lt: "¡Vamos, con un par de ejercicio mas los alcanzas!",
-    gt: "¡Excelente, vas por sobre tu grupo!",
-  };
+  console.log("prueba:", uModel.data.length, gModel.data.length);
+  let msg = "¡Excelente, vas por sobre tu grupo.... oh no!";
 
   return (
     <Box bg="blue.700" rounded="md">

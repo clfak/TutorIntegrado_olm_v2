@@ -1,17 +1,17 @@
 import { Text } from "@chakra-ui/react";
-import UmProxy, { usuario } from "../components/ModelQueryProxy";
+import { uModel } from "../utils/startModel";
 
 const UserModelQuery = ({ KCs }) => {
-  let a = UmProxy.usuario as usuario;
+  let a = uModel.data;
 
   const averageLevel = () => {
     // verifica si hay datos disponibles para hacer los calculos
-    if (!a || !a.users.length || !a.users[0].modelStates.nodes.length) {
+    if (!a || !a.length) {
       return 0; // Retorna 0 si no hay data
     }
 
     // accede al ultimo modelo del usuario
-    const jsonData = a.users[0].modelStates.nodes[0].json;
+    const jsonData = a[0].json;
 
     const levels = KCs.map(kc => {
       const kcData = jsonData[kc.code]; // accede a cada kc usando su codigo

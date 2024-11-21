@@ -34,8 +34,8 @@ export const progresscalc = (
   kcnames: Array<string>,
   values: Array<{ id: string; json: Record<string, model> }>,
 ): number => {
-  if (!kcnames && !values) return 0;
-  let length = 1;
+  if (!kcnames || values.length == 0) return 0;
+  let length = values.length;
   let level = 0;
   if (length > 1) {
     for (var e of values) {

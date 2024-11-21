@@ -6,7 +6,9 @@ import { CardSelectionTopic } from "../components/contentSelectComponents/CardSe
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAction } from "../utils/action";
-import UmProxy, { usuario, GdProxy, gq } from "../components/ModelQueryProxy";
+import StartModel, { GroupModel, UserModel } from "../utils/startModel";
+import { gSelect } from "../components/GroupSelect";
+import { useSnapshot } from "valtio";
 
 export default withAuth(function TopicSelect() {
   const router = useRouter();
@@ -18,6 +20,8 @@ export default withAuth(function TopicSelect() {
 
   const [topicCodes, setTopicCodes] = useState<string[]>([]);
   const [kcsData, setKcsData] = useState<any>({}); // Cambiar a objeto para mapear id a KCs
+
+  StartModel(user.id);
 
   const { data: subtopicsData, isLoading: isSubtopicsLoading } = useGQLQuery(
     gql(/* GraphQL */ `
@@ -97,64 +101,16 @@ export default withAuth(function TopicSelect() {
   const sortedChildrens =
     subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => a.sortIndex - b.sortIndex) || [];
 
-  const { data: userModelData } = useGQLQuery(
-    gql(/* GraphQL */ `
-      query usermodel($userId: IntID!) {
-        users(ids: [$userId]) {
-          email
-          groups {
-            code
-            id
-            tags
-          }
-          modelStates(
-            input: { filters: { type: ["BKT"] }, orderBy: { id: DESC }, pagination: { first: 1 } }
-          ) {
-            nodes {
-              json
-            }
-          }
-        }
-      }
-    `),
-    { userId: user.id },
-  );
+  UserModel(user.id);
 
-  UmProxy.usuario = userModelData as usuario;
+  const gs = useSnapshot(gSelect);
 
-  let a = user.groups;
-  var grupo;
-  for (var e of a) {
-    if (e.tags[0] == "main") {
-      grupo = e.id;
-      break;
-    }
-  }
-
-  if (!grupo) grupo = 2;
-
-  console.log("grupo: " + grupo + " project: " + user.projects[0].code);
-
-  const { data: GroupData } = useGQLQuery(
-    gql(`
-      query potato($groupId: IntID!,$projectCode: String!) {
-        groupModelStates(groupId: $groupId,projectCode: $projectCode){
-          id
-          json
-        }
-      }
-    `),
-    { groupId: grupo, projectCode: user.projects[0].code },
-  );
-
-  GdProxy.gd = GroupData as gq;
-
-  if (GdProxy.gd) console.log("gd: " + GdProxy.gd.groupModelStates[0].id);
+  GroupModel(gs.group, user.projects[0].code);
 
   return (
     <>
       <Center h="100vh" flexDirection="column" p={4}>
-        <Heading mb="4">Factorización</Heading>
+        <Heading mb="4">Factorización </Heading>
         <Text mb="5">Lista de subtópicos</Text>
         <Box maxW="md" w="full" mx="auto" overflowY="auto" maxH="80vh" p={4}>
           <SimpleGrid columns={1} spacing={10} mt="4">

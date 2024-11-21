@@ -11,17 +11,26 @@ export const PBLoad = ({
   uservalues,
   groupvalues,
   msg,
+  dMaxW,
+  uLabel,
+  gLabel,
 }: {
   uservalues: number;
   groupvalues?: number;
-  msg?: { lt: string; gt: string };
+  msg?: string;
+  dMaxW?: string;
+  uLabel?: string;
+  gLabel?: string;
 }) => {
   return uservalues ? (
-    msg ? (
-      <Progressbar uservalues={uservalues} groupvalues={groupvalues} msg={msg} />
-    ) : (
-      <Progressbar uservalues={uservalues} groupvalues={groupvalues} />
-    )
+    <Progressbar
+      uservalues={uservalues}
+      groupvalues={groupvalues}
+      msg={msg}
+      dMaxW={dMaxW}
+      uLabel={uLabel}
+      gLabel={gLabel}
+    />
   ) : (
     <>potato fail:values not provided</>
   );
