@@ -16,7 +16,7 @@ const UserModelQuery = ({ KCs }) => {
     const levels = KCs.map(kc => {
       const kcData = jsonData[kc.code]; // accede a cada kc usando su codigo
       const level = kcData ? kcData.level : 0; // Si existe kcData obtengo el level, si no sera 0
-      console.log(`level del KC (${kc.code}):`, level);
+      //console.log(`level del KC (${kc.code}):`, level);
       return level;
     });
 

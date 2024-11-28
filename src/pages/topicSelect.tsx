@@ -9,12 +9,13 @@ import { useAction } from "../utils/action";
 import StartModel, { GroupModel, UserModel } from "../utils/startModel";
 import { gSelect } from "../components/GroupSelect";
 import { useSnapshot } from "valtio";
+import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
 
 export default withAuth(function TopicSelect() {
   const router = useRouter();
   const { user } = useAuth();
   const registerTopic = router.query.registerTopic as string; // topics in array
-  console.log(registerTopic);
+  //console.log(registerTopic);
   const topic = parseInt(registerTopic, 10).toString(); // Convertir a string
   //const nextContentPath = router.asPath + "";
 
@@ -72,6 +73,7 @@ export default withAuth(function TopicSelect() {
                 id
                 code
               }
+              json
             }
           }
           kcs {
@@ -87,6 +89,24 @@ export default withAuth(function TopicSelect() {
       enabled: topicCodes.length > 0,
     },
   );
+  let jsonlist: Array<{ code: string; json: Array<ExType | Record<string, string> | undefined> }> =
+    [];
+  if (kcsQueryData) {
+    for (var e of kcsQueryData.kcsByContentByTopics) {
+      let max = 0;
+      let json;
+      //let code = e.topic.code;
+      for (var f of e.topic.content) {
+        if (max < f.kcs.length) {
+          max = f.kcs.length;
+          json = f.json;
+        }
+      }
+      if (json) jsonlist.push(json);
+    }
+  }
+
+  if (jsonlist.length > 0) console.log("prueba212: ", jsonlist.length, jsonlist);
 
   useEffect(() => {
     if (kcsQueryData) {
@@ -109,23 +129,28 @@ export default withAuth(function TopicSelect() {
 
   return (
     <>
-      <Center h="100vh" flexDirection="column" p={4}>
+      <Center flexDirection="column" p={4}>
         <Heading mb="4">Factorización </Heading>
         <Text mb="5">Lista de subtópicos</Text>
-        <Box maxW="md" w="full" mx="auto" overflowY="auto" maxH="80vh" p={4}>
-          <SimpleGrid columns={1} spacing={10} mt="4">
+        <Box w="full" mx="auto" overflowY="auto" p={4}>
+          <SimpleGrid columns={3} spacing={10} mt="4">
             {!isSubtopicsLoading &&
               !isKcsLoading &&
-              sortedChildrens.map(ejercicio => (
-                <CardSelectionTopic
-                  key={ejercicio.id}
-                  id={ejercicio.id}
-                  label={ejercicio.label}
-                  registerTopic={registerTopic}
-                  //nextContentPath={nextContentPath}
-                  KCs={kcsData[ejercicio.id] || []} // pasar KCs correspondientes
-                />
-              ))}
+              sortedChildrens.map((ejercicio, i) =>
+                kcsData[ejercicio.id] && kcsData[ejercicio.id].length > 0 ? (
+                  <CardSelectionTopic
+                    key={ejercicio.id}
+                    id={ejercicio.id}
+                    jsonlist={jsonlist[i].json as unknown as ExType}
+                    label={ejercicio.label}
+                    registerTopic={registerTopic}
+                    //nextContentPath={nextContentPath}
+                    KCs={kcsData[ejercicio.id] || []} // pasar KCs correspondientes
+                  />
+                ) : (
+                  console.log("Tópico sin ejercicios")
+                ),
+              )}
           </SimpleGrid>
         </Box>
       </Center>

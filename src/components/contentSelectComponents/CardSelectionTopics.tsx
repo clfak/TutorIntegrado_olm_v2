@@ -1,9 +1,18 @@
-import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, VStack, Box } from "@chakra-ui/react";
+import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, Box } from "@chakra-ui/react";
 import NextLink from "next/link";
-import UserModelQuery from "../UserModelQuery";
 import PBLoad from "../progressbar/pbload";
 import { progresscalc } from "../progressbar/progresscalc";
-import { gModel, uModel } from "../../utils/startModel";
+import { gModel, kcsyejercicio, uModel } from "../../utils/startModel";
+import type { ExType } from "../../components/lvltutor/Tools/ExcerciseType";
+import dynamic from "next/dynamic";
+import type { ComponentProps } from "react";
+
+const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
+  () => import("mathjax-react").then(v => v.MathComponent),
+  {
+    ssr: false,
+  },
+);
 
 const listakcs = (kcs: { code: string }[]): string[] => {
   let kcnames: Array<string> = [];
@@ -21,12 +30,14 @@ export const CardSelectionTopic = ({
   registerTopic,
   //nextContentPath,
   KCs,
+  jsonlist,
 }: {
   id: string;
   label: string | undefined;
   registerTopic: string;
   //nextContentPath: string | undefined;
   KCs: { code: string }[];
+  jsonlist: ExType | undefined;
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
   let pvalu: number,
@@ -37,7 +48,7 @@ export const CardSelectionTopic = ({
     pvalg = progresscalc(listakcs(KCs), gModel.data);
   }
 
-  console.log("prueba:", uModel.data.length, gModel.data.length);
+  //console.log("prueba:", uModel.data.length, gModel.data.length);
   let msg = "¡Excelente, vas por sobre tu grupo.... oh no!";
 
   return (
@@ -47,7 +58,7 @@ export const CardSelectionTopic = ({
         w="100%"
         maxW="md"
         p="4"
-        borderTopRadius="md"
+        borderRadius="md"
         textAlign="center"
         color="white"
         bg="blue.700"
@@ -56,23 +67,43 @@ export const CardSelectionTopic = ({
           bg: "blue.900",
         }}
         minH="100px"
+        onClick={() => {
+          if (KCs && KCs.length > 0) {
+            kcsyejercicio.lista = listakcs(KCs);
+            kcsyejercicio.ejercicio = jsonlist;
+          }
+        }}
       >
         <Center>
           <HStack>
-            <Heading size="md" my="2" textAlign="center">
+            <Heading size="md" my="2" textAlign="center" minH="70px">
               {label}
             </Heading>
           </HStack>
         </Center>
-
-        {/* Muestra los KCs asociados */}
+        {jsonlist ? (
+          <Center fontSize={"1xl"} paddingBottom={"3"} paddingTop={"1"}>
+            {jsonlist.type == "ecc5s" || jsonlist.type == "secl5s" || jsonlist.type == "ecl2s" ? (
+              <MathComponent tex={String.raw`${jsonlist.eqc}`} display={false} />
+            ) : jsonlist.type === "wordProblem" ? (
+              <MathComponent tex={String.raw`${""}`} display={false} />
+            ) : jsonlist.initialExpression ? (
+              <MathComponent tex={String.raw`${jsonlist.initialExpression}`} display={false} />
+            ) : (
+              <MathComponent tex={String.raw`${jsonlist.steps[0].expression}`} display={false} />
+            )}
+          </Center>
+        ) : (
+          <></>
+        )}
+        {/* Muestra los KCs asociados 
         <VStack spacing={1} align="start" mt={2}>
           {KCs.map(kc => (
             <Text key={kc.code} fontSize={"sm"}>
               {kc.code}
             </Text>
           ))}
-        </VStack>
+        </VStack>*/}
 
         <NextLink href={topicPath} passHref>
           <LinkOverlay>
@@ -81,11 +112,8 @@ export const CardSelectionTopic = ({
             </Text>
           </LinkOverlay>
         </NextLink>
-        <UserModelQuery KCs={KCs} />
-      </LinkBox>
-      <Center>
         <PBLoad uservalues={pvalu} groupvalues={pvalg} msg={msg} />
-      </Center>
+      </LinkBox>
     </Box>
   );
 };

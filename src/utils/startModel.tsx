@@ -2,7 +2,6 @@ import { useGQLQuery } from "rq-gql";
 import { gql } from "../graphql";
 import { proxy } from "valtio";
 import { useEffect } from "react";
-
 export interface model {
   mth: number;
   level: number;
@@ -148,3 +147,11 @@ export function GroupModel(gid: string, pid: string) {
     gModel.isLoading = userModelData;
   }, [userModelData]);
 }
+
+export const kcsyejercicio = proxy<{
+  lista: Array<string>;
+  ejercicio: Object;
+}>({
+  lista: [],
+  ejercicio: {},
+});

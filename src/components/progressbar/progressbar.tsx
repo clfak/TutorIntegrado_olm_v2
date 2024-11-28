@@ -83,7 +83,9 @@ const Encouragement = (msg: string, maxW?: string) => {
       <Image src="/img/mateo.png" alt="Logo" w="28px" h="28px" align={"left"} />
       <Box style={before2}></Box>
       <Box bg={"white"} borderRadius="md" p={1} w={"80%"}>
-        <Text noOfLines={[1, 2]}>{msg}</Text>
+        <Text noOfLines={[1, 2]} color="black">
+          {msg}
+        </Text>
       </Box>
     </HStack>
   );

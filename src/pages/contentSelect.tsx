@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { SimpleGrid, Center, Text, Heading, Spinner } from "@chakra-ui/react";
+import { SimpleGrid, Center, Text, Heading, Spinner, Box } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useAuth, withAuth } from "../components/Auth";
 import { useGQLQuery } from "rq-gql";
@@ -10,6 +10,18 @@ import { useAction } from "../utils/action";
 import { CompleteTopic } from "../components/contentSelectComponents/CompleteTopic";
 import { CardLastExercise } from "../components/contentSelectComponents/CardLastExercise";
 import parameters from "../components/contentSelectComponents/parameters.json";
+import PBLoad from "../components/progressbar/pbload";
+import {
+  kcsyejercicio,
+  uModel,
+  gModel,
+  UserModel,
+  GroupModel,
+  InitialModel,
+} from "../utils/startModel";
+import { gSelect } from "../components/GroupSelect";
+import { useSnapshot } from "valtio";
+import { progresscalc } from "../components/progressbar/progresscalc";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();
@@ -145,6 +157,26 @@ export default withAuth(function ContentSelect() {
         extra: { selectionData },
       });
   }, [data]);
+  UserModel(user.id);
+
+  const gs = useSnapshot(gSelect);
+
+  GroupModel(gs.group, user.projects[0].code);
+
+  let pvalu: number,
+    pvalg: number = 0;
+  //svalu: number
+  /*let ulabel: string,
+    glabel: string = "";*/
+
+  if (!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading) {
+    pvalu = progresscalc(kcsyejercicio.lista, uModel.data);
+    pvalg = progresscalc(kcsyejercicio.lista, gModel.data);
+    //svalu = progresscalc(kcsyejercicio.lista, InitialModel.data);
+
+    //if (pvalu > svalu) ulabel = "asdasdasd";
+  }
+
   return (
     <>
       {isError ? (
@@ -177,7 +209,26 @@ export default withAuth(function ContentSelect() {
             </Heading>
             &nbsp;&nbsp;&nbsp;
           </Center>
+
           <br></br>
+          <Center>
+            <Box
+              maxW="md"
+              p="4"
+              borderRadius="md"
+              textAlign="center"
+              color="white"
+              bg="blue.700"
+              _hover={{
+                color: "white",
+                bg: "blue.900",
+              }}
+              minH="100px"
+            >
+              <Heading size="sm">Progreso</Heading>
+              <PBLoad uservalues={pvalu} groupvalues={pvalg} msg={"asdasdd"} />
+            </Box>
+          </Center>
           <CardLastExercise
             lastExercise={lastExercise}
             //setQueryLastExercise={setQueryLastExercise}
