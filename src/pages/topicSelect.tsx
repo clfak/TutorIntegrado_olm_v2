@@ -12,8 +12,8 @@ import StartModel, {
   SelectExcercise,
   UserModel,
 } from "../utils/startModel";
-import { gSelect } from "../components/GroupSelect";
 import { useSnapshot } from "valtio";
+import { gSelect } from "../components/GroupSelect";
 
 export default withAuth(function TopicSelect() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default withAuth(function TopicSelect() {
     }
   }, [subtopicsData]);
 
-  if (!selectedExcercise.isLoading) SelectExcercise(topicCodes);
+  SelectExcercise(topicCodes);
 
   const sortedChildrens =
     subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => a.sortIndex - b.sortIndex) || [];
