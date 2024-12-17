@@ -2,6 +2,7 @@ import { useGQLQuery } from "rq-gql";
 import { gql } from "../graphql";
 import { proxy } from "valtio";
 import { useEffect } from "react";
+import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
 export interface model {
   mth: number;
   level: number;
@@ -155,3 +156,72 @@ export const kcsyejercicio = proxy<{
   lista: [],
   ejercicio: {},
 });
+
+export const selectedExcercise = proxy<{
+  isLoading: boolean;
+  ejercicio: Array<ExType>;
+  kcXtopic: Array<Record<string, Array<{ code: string }>>>;
+}>({
+  isLoading: true,
+  ejercicio: [],
+  kcXtopic: [],
+});
+
+export function SelectExcercise(topicCodes: Array<string>) {
+  const { isLoading: userModelData } = useGQLQuery(
+    gql(`
+     query GetKcsByTopics($topicsCodes: [String!]!) {
+        kcsByContentByTopics(projectCode: "NivPreAlg", topicsCodes: $topicsCodes) {
+          topic {
+            id
+            content {
+              code
+              kcs {
+                id
+                code
+              }
+              json
+            }
+          }
+          kcs {
+            code
+          }
+        }
+      }
+    `),
+    { topicsCodes: topicCodes },
+    {
+      //enabled: false,
+      onSuccess(data) {
+        let jl: Array<ExType> = [];
+        for (var e of data.kcsByContentByTopics) {
+          let max = 0;
+          let json;
+          //let code = e.topic.code;
+          for (var f of e.topic.content) {
+            if (max < f.kcs.length) {
+              max = f.kcs.length;
+              json = f.json;
+            }
+          }
+          if (json) jl.push(json);
+        }
+        selectedExcercise.ejercicio = jl;
+
+        let kcsByTopic = [];
+        data.kcsByContentByTopics.forEach(({ topic, kcs }) => {
+          kcsByTopic[topic.id] = kcs.map(kc => kc); // Guarda el objeto completo de KCs
+        });
+
+        selectedExcercise.kcXtopic = kcsByTopic;
+      },
+      onSettled() {
+        selectedExcercise.isLoading = false;
+      },
+    },
+  );
+
+  useEffect(() => {
+    selectedExcercise.isLoading = false;
+  }, [userModelData]);
+}

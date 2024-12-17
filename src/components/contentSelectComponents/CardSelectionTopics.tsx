@@ -2,8 +2,7 @@ import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, Box } from "@chakr
 import NextLink from "next/link";
 import PBLoad from "../progressbar/pbload";
 import { progresscalc } from "../progressbar/progresscalc";
-import { gModel, kcsyejercicio, uModel } from "../../utils/startModel";
-import type { ExType } from "../../components/lvltutor/Tools/ExcerciseType";
+import { gModel, kcsyejercicio, selectedExcercise, uModel } from "../../utils/startModel";
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
 
@@ -29,15 +28,15 @@ export const CardSelectionTopic = ({
   label,
   registerTopic,
   //nextContentPath,
+  index,
   KCs,
-  jsonlist,
 }: {
   id: string;
   label: string | undefined;
   registerTopic: string;
   //nextContentPath: string | undefined;
   KCs: { code: string }[];
-  jsonlist: ExType | undefined;
+  index: number;
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
   let pvalu: number,
@@ -70,7 +69,7 @@ export const CardSelectionTopic = ({
         onClick={() => {
           if (KCs && KCs.length > 0) {
             kcsyejercicio.lista = listakcs(KCs);
-            kcsyejercicio.ejercicio = jsonlist;
+            kcsyejercicio.ejercicio = selectedExcercise.ejercicio[index];
           }
         }}
       >
@@ -81,16 +80,27 @@ export const CardSelectionTopic = ({
             </Heading>
           </HStack>
         </Center>
-        {jsonlist ? (
+        {selectedExcercise.ejercicio[index] ? (
           <Center fontSize={"1xl"} paddingBottom={"3"} paddingTop={"1"}>
-            {jsonlist.type == "ecc5s" || jsonlist.type == "secl5s" || jsonlist.type == "ecl2s" ? (
-              <MathComponent tex={String.raw`${jsonlist.eqc}`} display={false} />
-            ) : jsonlist.type === "wordProblem" ? (
+            {selectedExcercise.ejercicio[index].type == "ecc5s" ||
+            selectedExcercise.ejercicio[index].type == "secl5s" ||
+            selectedExcercise.ejercicio[index].type == "ecl2s" ? (
+              <MathComponent
+                tex={String.raw`${selectedExcercise.ejercicio[index].eqc}`}
+                display={false}
+              />
+            ) : selectedExcercise.ejercicio[index].type === "wordProblem" ? (
               <MathComponent tex={String.raw`${""}`} display={false} />
-            ) : jsonlist.initialExpression ? (
-              <MathComponent tex={String.raw`${jsonlist.initialExpression}`} display={false} />
+            ) : selectedExcercise.ejercicio[index].initialExpression ? (
+              <MathComponent
+                tex={String.raw`${selectedExcercise.ejercicio[index].initialExpression}`}
+                display={false}
+              />
             ) : (
-              <MathComponent tex={String.raw`${jsonlist.steps[0].expression}`} display={false} />
+              <MathComponent
+                tex={String.raw`${selectedExcercise.ejercicio[index].steps[0].expression}`}
+                display={false}
+              />
             )}
           </Center>
         ) : (

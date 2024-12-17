@@ -32,7 +32,7 @@ export interface Step {
   summary: string;
 }
 
-export interface ExType {
+export interface ExType extends Record<string, string | object | Array<Step>> {
   code: string;
   meta: {};
   title: string;
