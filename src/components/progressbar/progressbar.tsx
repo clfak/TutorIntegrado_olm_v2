@@ -2,8 +2,8 @@ import { HStack, Box, Image, Text } from "@chakra-ui/react";
 
 const wstring = (value: number) => {
   //Creating a % string for width size
-  let val = Number(value.toPrecision(2)) * 100;
-  let w = val.toPrecision(2) + "%";
+  let val = value * 100;
+  let w = val.toFixed(0) + "%";
   return w;
 };
 
@@ -83,7 +83,7 @@ const Encouragement = (msg: string, maxW?: string) => {
       <Image src="/img/mateo.png" alt="Logo" w="28px" h="28px" align={"left"} />
       <Box style={before2}></Box>
       <Box bg={"white"} borderRadius="md" p={1} w={"80%"}>
-        <Text noOfLines={[1, 2]} color="black">
+        <Text noOfLines={[3]} color="black">
           {msg}
         </Text>
       </Box>
