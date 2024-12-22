@@ -16,6 +16,14 @@ export interface answer {
   nextStep: string;
 }
 
+export interface option {
+  id: number;
+  text?: string;
+  expression?: string;
+  correct: boolean;
+  type?: string;
+}
+
 export interface Step {
   stepId: string;
   KCs: Array<string>;
@@ -25,6 +33,7 @@ export interface Step {
   values?: Array<value>;
   hints: Array<hint>;
   matchingError?: Array<matchingError>;
+  multipleChoice?: Array<option>;
   validation?: "stringComparison" | "evaluate" | "countElements" | "evaluateAndCount";
   answers: Array<answer>;
   incorrectMsg: string;
