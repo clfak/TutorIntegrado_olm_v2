@@ -1,9 +1,18 @@
-import { Box, useRadio, useRadioGroup, HStack, Button, Alert, AlertIcon } from "@chakra-ui/react";
+import {
+  Box,
+  useRadio,
+  useRadioGroup,
+  HStack,
+  Button,
+  Alert,
+  AlertIcon,
+  VStack,
+} from "@chakra-ui/react";
 import Hint from "../../Hint";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
 import { useSnapshot } from "valtio";
 import type { Step } from "./ExcerciseType";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import MQProxy from "./MQProxy";
 import { useAction } from "../../../utils/action";
 
@@ -134,7 +143,7 @@ function CChoice({
   topicId: string;
   disablehint: boolean;
 }) {
-  let answer = "react";
+  const answer = useRef("react");
   const [attempts, setAttempts] = useState(0);
   const [alertType, setAlertType] = useState<
     "info" | "warning" | "success" | "error" | undefined
@@ -147,7 +156,7 @@ function CChoice({
     name: "mathchoice",
     //defaultValue: 'react',
     onChange: nextValue => {
-      answer = nextValue;
+      answer.current = nextValue;
     },
   });
 
@@ -160,16 +169,16 @@ function CChoice({
 
   return (
     <>
-      <HStack {...group}>
+      <VStack {...group}>
         {step.multipleChoice.map(value => {
           const radio = getRadioProps({ value: value.expression });
           return (
-            <RadioCard key={value} {...radio}>
+            <RadioCard key={"cchoice" + value.id} {...radio}>
               {<MQStaticMathField exp={value.expression} currentExpIndex={true} />}
             </RadioCard>
           );
         })}
-      </HStack>
+      </VStack>
       <HStack spacing="4px" alignItems="center" justifyContent="center" margin={"auto"}>
         <Box>
           <Button
@@ -177,7 +186,8 @@ function CChoice({
             height={"32px"}
             width={"88px"}
             onClick={() => {
-              let ans = handleAnswer(cans, answer, attempts, step.stepId);
+              let ans = handleAnswer(cans, answer.current, attempts, step.stepId);
+              console.log(cans, answer.current, ans);
               setAttempts(ans.attempts);
               setAlertType(ans.alerttype);
               setAlertMsg(ans.alertmsg);
@@ -190,17 +200,17 @@ function CChoice({
                 result: ans.result,
                 kcsIDs: step.KCs,
                 extra: {
-                  response: [answer],
+                  response: [answer.current],
                   attempts: attempts,
                   hints: MQProxy.hints,
                 },
               });
               MQProxy.submitValues = {
-                ans: answer,
+                ans: answer.current,
                 att: attempts,
                 hints: MQProxy.hints,
                 lasthint: lastHint,
-                fail: ans.result ? true : false,
+                fail: ans.result ? false : true,
                 duration: 0,
               };
             }}
@@ -211,7 +221,7 @@ function CChoice({
         <Enabledhint
           disablehint={disablehint}
           step={step}
-          latex={answer}
+          latex={answer.current}
           setLastHint={setLastHint}
         />
       </HStack>
