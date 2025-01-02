@@ -79,10 +79,10 @@ export default withAuth(function TopicSelect() {
   return (
     <>
       <Center flexDirection="column" p={4}>
-        <Heading mb="4">Factorización </Heading>
+        <Heading mb="4"> Nombre del Tópico </Heading>
         <Text mb="5">Lista de subtópicos</Text>
         <Box w="full" mx="auto" overflowY="auto" p={4}>
-          <SimpleGrid columns={[1, 3]} spacing={10} mt="4">
+          <SimpleGrid columns={[1, 1, 1, 3]} spacing={10} mt="4">
             {!isSubtopicsLoading &&
               !selectedExcercise.isLoading &&
               !selectedExcercise.isLoading &&

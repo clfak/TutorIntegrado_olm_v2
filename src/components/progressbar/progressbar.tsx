@@ -79,7 +79,7 @@ const before2 = {
 
 const Encouragement = (msg: string, maxW?: string) => {
   return (
-    <HStack p={0} spacing={0} maxW={maxW}>
+    <HStack p={0} spacing={0} maxW={maxW} paddingTop="2">
       <Image src="/img/mateo.png" alt="Logo" w="28px" h="28px" align={"left"} />
       <Box style={before2}></Box>
       <Box bg={"white"} borderRadius="md" p={1} w={"80%"}>

@@ -39,6 +39,7 @@ export const CardSelectionTopic = ({
   index: number;
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
+  console.log("id topico ", topicPath);
   let pvalu: number,
     pvalg: number = 0;
 
@@ -54,7 +55,7 @@ export const CardSelectionTopic = ({
     <Box bg="blue.700" rounded="md">
       <LinkBox
         as="article"
-        w="100%"
+        w={"100%"}
         maxW="md"
         p="4"
         borderRadius="md"
@@ -117,9 +118,7 @@ export const CardSelectionTopic = ({
 
         <NextLink href={topicPath} passHref>
           <LinkOverlay>
-            <Text paddingTop={"2"} fontSize={"sm"}>
-              Ir al Tópico!
-            </Text>
+            <Text paddingTop={"2"} fontSize={"sm"}></Text>
           </LinkOverlay>
         </NextLink>
         <PBLoad uservalues={pvalu} groupvalues={pvalg} msg={msg} />

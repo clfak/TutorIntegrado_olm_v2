@@ -111,6 +111,7 @@ export default withAuth(function ContentSelect() {
   //console.log(data?.contentSelection?.contentSelected);
 
   const lastExercise = data?.contentSelection?.contentSelected?.PU[0];
+  console.log("ejercicio ", lastExercise);
   //const [queryLastExercise, setQueryLastExercise] = useState(false);
 
   const bestExercise =
