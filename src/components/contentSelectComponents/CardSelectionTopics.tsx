@@ -40,16 +40,16 @@ export const CardSelectionTopic = ({
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
   console.log("id topico ", topicPath);
-  let pvalu: number,
-    pvalg: number = 0;
 
-  if (!uModel.isLoading && !gModel.isLoading) {
-    pvalu = progresscalc(listakcs(KCs), uModel.data);
-    pvalg = progresscalc(listakcs(KCs), gModel.data);
+  let pbValues = {
+    uservalues: 0,
+  };
+
+  if (!uModel.isLoading) {
+    pbValues.uservalues = progresscalc(listakcs(KCs), uModel.data);
+    if (uModel.osml) pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
+    if (uModel.motivmsg) pbValues["msg"] = "potato";
   }
-
-  //console.log("prueba:", uModel.data.length, gModel.data.length);
-  let msg = "¡Excelente, vas por sobre tu grupo.... oh no!";
 
   return (
     <Box bg="blue.700" rounded="md">
@@ -121,7 +121,7 @@ export const CardSelectionTopic = ({
             <Text paddingTop={"2"} fontSize={"sm"}></Text>
           </LinkOverlay>
         </NextLink>
-        <PBLoad uservalues={pvalu} groupvalues={pvalg} msg={msg} />
+        {PBLoad(pbValues)}
       </LinkBox>
     </Box>
   );

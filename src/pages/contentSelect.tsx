@@ -26,6 +26,7 @@ import { SurveyViewer } from "../components/csurvey/SurveyViewer";
 import sample from "../components/csurvey/SurveySample.json";
 import sample2 from "../components/csurvey/SurveySample2.json";
 import { memo } from "react";
+
 export default withAuth(
   memo(function ContentSelect() {
     const { user, project } = useAuth();
@@ -169,18 +170,26 @@ export default withAuth(
 
     GroupModel(gs.current.group, user.projects[0].code);
 
-    let pvalu: number,
-      pvalg: number = 0;
-    //svalu: number
-    /*let ulabel: string,
-    glabel: string = "";*/
+    let pbValues = {
+      uservalues: 0,
+    };
 
-    if (!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading) {
-      pvalu = progresscalc(kcsyejercicio.lista, uModel.data);
-      pvalg = progresscalc(kcsyejercicio.lista, gModel.data);
-      //svalu = progresscalc(kcsyejercicio.lista, InitialModel.data);
-
-      //if (pvalu > svalu) ulabel = "asdasdasd";
+    //!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading
+    if (!uModel.isLoading) {
+      pbValues.uservalues = progresscalc(kcsyejercicio.lista, uModel.data);
+      if (uModel.osml) pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
+      if (uModel.motivmsg) pbValues["msg"] = "potato";
+      if (uModel.sprog) {
+        let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
+        let diff = pbValues.uservalues - ouval;
+        if (diff > 0) {
+          pbValues["uLabel"] =
+            (pbValues.uservalues * 100).toFixed(0) + "% +" + (diff * 100).toFixed(2) + "% ";
+        } else {
+          pbValues["uLabel"] =
+            (pbValues.uservalues * 100).toFixed(0) + "% -" + (diff * 100).toFixed(2) + "% ";
+        }
+      }
     }
 
     const [pageload, setPL] = useState(false);
@@ -248,7 +257,7 @@ export default withAuth(
                 minH="100px"
               >
                 <Heading size="sm">Progreso</Heading>
-                <PBLoad uservalues={pvalu} groupvalues={pvalg} msg={"asdasdd"} />
+                {PBLoad(pbValues)}
               </Box>
             </Center>
             <CardLastExercise

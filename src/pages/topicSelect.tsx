@@ -10,6 +10,7 @@ import StartModel, {
   GroupModel,
   selectedExcercise,
   SelectExcercise,
+  uModel,
   UserModel,
 } from "../utils/startModel";
 import { useSnapshot } from "valtio";
@@ -75,6 +76,11 @@ export default withAuth(function TopicSelect() {
     subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => a.sortIndex - b.sortIndex) || [];
 
   UserModel(user.id);
+  for (let e of user.tags) {
+    if (e.localeCompare("oslm") == 0) uModel.osml = true;
+    if (e.localeCompare("motiv-msg") == 0) uModel.motivmsg = true;
+    if (e.localeCompare("session-progress") == 0) uModel.sprog = true;
+  }
 
   const gs = useSnapshot(gSelect);
 

@@ -62,12 +62,18 @@ export default function StartModel(uid: string) {
 
 export const uModel = proxy<{
   isLoading: boolean;
+  osml: boolean;
+  motivmsg: boolean;
+  sprog: boolean;
   data: Array<{
     id: string;
     json: Record<string, model>;
   }>;
 }>({
   isLoading: true,
+  osml: false,
+  motivmsg: false,
+  sprog: false,
   data: [
     {
       id: "-2",
@@ -140,7 +146,7 @@ export function GroupModel(gid: string, pid: string) {
     `),
     { groupId: gid, projectCode: pid },
     {
-      //enabled: false,
+      enabled: uModel.osml,
       onSuccess(data) {
         gModel.data = data.groupModelStates;
       },
