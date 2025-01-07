@@ -31,7 +31,7 @@ import type { ExType, Step } from "./ExcerciseType";
 import { useSnapshot } from "valtio";
 import MQProxy, { reset } from "./MQProxy";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
-import CChoice from "./CChoice";
+import ShuffledLoad from "./CChoice";
 
 const Mq2 = dynamic(
   () => {
@@ -84,7 +84,7 @@ const Steporans = ({
     } else {
       if (step.multipleChoice != undefined)
         setCC(
-          <CChoice
+          <ShuffledLoad
             key={"Mq2" + i}
             step={step}
             content={content}

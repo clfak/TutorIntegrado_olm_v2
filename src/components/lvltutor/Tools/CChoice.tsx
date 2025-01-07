@@ -7,11 +7,12 @@ import {
   Alert,
   AlertIcon,
   VStack,
+  Text,
 } from "@chakra-ui/react";
 import Hint from "../../Hint";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
 import { useSnapshot } from "valtio";
-import type { Step } from "./ExcerciseType";
+import type { option, Step } from "./ExcerciseType";
 import { useState, useEffect, useRef } from "react";
 import MQProxy from "./MQProxy";
 import { useAction } from "../../../utils/action";
@@ -131,17 +132,30 @@ function RadioCard(props) {
   );
 }
 
+function ChoiceContent(option: option) {
+  let text = option.text;
+  let exp = option.expression;
+  return (
+    <>
+      {text ? <Text>{text}</Text> : null}
+      {exp ? <MQStaticMathField exp={exp} currentExpIndex={true} /> : null}
+    </>
+  );
+}
+
 // Step 2: Use the `useRadioGroup` hook to control a group of custom radios.
 function CChoice({
   step,
   content,
   topicId,
   disablehint,
+  options,
 }: {
   step: Step;
   content: string;
   topicId: string;
   disablehint: boolean;
+  options: Array<option>;
 }) {
   const answer = useRef("react");
   const [attempts, setAttempts] = useState(0);
@@ -162,19 +176,19 @@ function CChoice({
 
   const group = getRootProps();
 
-  let cans = "";
-  for (let e of step.multipleChoice) if (e.correct) cans = e.expression;
+  let cans: option;
+  for (let e of step.multipleChoice) if (e.correct) cans = e;
 
   const action = useAction();
 
   return (
     <>
       <VStack {...group}>
-        {step.multipleChoice.map(value => {
-          const radio = getRadioProps({ value: value.expression });
+        {options.map(value => {
+          const radio = getRadioProps({ value: value.id });
           return (
             <RadioCard key={"cchoice" + value.id} {...radio}>
-              {<MQStaticMathField exp={value.expression} currentExpIndex={true} />}
+              {ChoiceContent(value)}
             </RadioCard>
           );
         })}
@@ -186,7 +200,13 @@ function CChoice({
             height={"32px"}
             width={"88px"}
             onClick={() => {
-              let ans = handleAnswer(cans, answer.current, attempts, step.stepId);
+              let ans = handleAnswer("" + cans.id, answer.current, attempts, step.stepId);
+              let ansv = "";
+              for (let e of step.multipleChoice)
+                if (("" + e.id).localeCompare(answer.current) == 0) {
+                  if (e.expression) ansv = e.expression;
+                  else ansv = e.text;
+                }
               console.log(cans, answer.current, ans);
               setAttempts(ans.attempts);
               setAlertType(ans.alerttype);
@@ -200,13 +220,13 @@ function CChoice({
                 result: ans.result,
                 kcsIDs: step.KCs,
                 extra: {
-                  response: [answer.current],
+                  response: [ansv],
                   attempts: attempts,
                   hints: MQProxy.hints,
                 },
               });
               MQProxy.submitValues = {
-                ans: answer.current,
+                ans: ansv,
                 att: attempts,
                 hints: MQProxy.hints,
                 lasthint: lastHint,
@@ -233,4 +253,42 @@ function CChoice({
   );
 }
 
-export default CChoice;
+//Fisher-yates shuffle algorithm
+//https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+
+function fishyShuffle(options: Array<option>) {
+  let arr = options;
+  let l = arr.length;
+  for (let i = l - 1; i > 0; i--) {
+    let s = Math.floor(Math.random() * l);
+    let t = arr[s];
+    arr[s] = arr[i];
+    arr[i] = t;
+  }
+  console.log("a", arr);
+  return arr;
+}
+
+function ShuffledLoad({
+  step,
+  content,
+  topicId,
+  disablehint,
+}: {
+  step: Step;
+  content: string;
+  topicId: string;
+  disablehint: boolean;
+}) {
+  return (
+    <CChoice
+      step={step}
+      content={content}
+      topicId={topicId}
+      disablehint={disablehint}
+      options={fishyShuffle(step.multipleChoice)}
+    />
+  );
+}
+
+export default ShuffledLoad;

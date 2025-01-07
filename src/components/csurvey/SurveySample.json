@@ -1,0 +1,25 @@
+{
+  "name": "Encuesta ejemplo 1",
+  "code": "potatosurvey1",
+  "questions": [
+    {
+      "type": "expression",
+      "expression": "a+b"
+    },
+    {
+      "type": "ranked",
+      "label": "Indica tu nivel de seguridad para resolver correctamente ejercicios similares al presentado con tus conocimientos actuales",
+      "rankedLabel": ["Nada seguro/a", "Moderadamente seguro/a", "Completamente seguro/a"]
+    },
+    {
+      "type": "ranked",
+      "label": "En base a tus conocimientos actuales ¿Cómo calificarías el grado de dificultad de este ejercicio?",
+      "rankedLabel": ["Muy fácil", "Moderadamente difícil", "Muy dificil"]
+    },
+    {
+      "type": "ranked",
+      "label": "Indica que tan seguro te sientes de poder aprender a resolver el ejercicio presentado",
+      "rankedLabel": ["Nada seguro/a", "Moderadamente seguro/a", "Completamente seguro/a"]
+    }
+  ]
+}

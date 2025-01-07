@@ -49,6 +49,9 @@ export default function StartModel(uid: string) {
       onSettled() {
         InitialModel.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
@@ -98,6 +101,9 @@ export function UserModel(uid: string) {
       onSettled() {
         uModel.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
@@ -141,6 +147,9 @@ export function GroupModel(gid: string, pid: string) {
       onSettled() {
         gModel.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
@@ -218,6 +227,9 @@ export function SelectExcercise(topicCodes: Array<string>) {
       onSettled() {
         selectedExcercise.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 

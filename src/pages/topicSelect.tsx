@@ -14,6 +14,7 @@ import StartModel, {
 } from "../utils/startModel";
 import { useSnapshot } from "valtio";
 import { gSelect } from "../components/GroupSelect";
+import { reset2 } from "../components/csurvey/Answers";
 
 export default withAuth(function TopicSelect() {
   const router = useRouter();
@@ -42,6 +43,11 @@ export default withAuth(function TopicSelect() {
     `),
     {
       parentIds: [topic], // Convertir a número para la consulta
+    },
+    {
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
@@ -75,6 +81,8 @@ export default withAuth(function TopicSelect() {
   GroupModel(gs.group, user.projects[0].code);
 
   console.log("aa", selectedExcercise.kcXtopic, selectedExcercise.ejercicio);
+
+  useEffect(() => reset2(), []);
 
   return (
     <>
