@@ -102,7 +102,7 @@ const Blank = ({
       {firstTime ? null : !isCorrectValue ? (
         <Alert status="error">
           <AlertIcon />
-          Tu respuesta no es la esperada intentalo denuevo.
+          {exc.steps[nStep].incorrectMsg}
         </Alert>
       ) : (
         <Alert status="success">
