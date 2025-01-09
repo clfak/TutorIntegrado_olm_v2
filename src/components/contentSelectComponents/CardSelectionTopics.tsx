@@ -38,7 +38,7 @@ export const CardSelectionTopic = ({
   KCs: { code: string }[];
   index: number;
 }) => {
-  const topicPath = `contentSelect?topic=${id}&registerTopic=${id}`;
+  const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
   console.log("id topico ", topicPath);
 
   let pbValues = {
