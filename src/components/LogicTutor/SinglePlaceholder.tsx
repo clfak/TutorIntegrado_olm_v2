@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useMemo } from "react";
-import { Button, Stack, Alert, AlertIcon, Center, Text, Image, Box } from "@chakra-ui/react";
+import { Button, Stack, Alert, AlertIcon, Center } from "@chakra-ui/react";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import Hint from "../../components/Hint";
 import { MathfieldElement } from "mathlive";
@@ -100,29 +100,17 @@ const SinglePlaceholder = ({
   return (
     <>
       <Center>
-        <Box maxW={{ base: "100%" }} p={2} borderWidth={1} borderRadius="lg" overflow="hidden">
-          <Text>
-            Símbolos especiales en el teclado virtual{" "}
-            <Image
-              src={`img/teclado.png`}
-              alt="Icono del teclado"
-              display="inline"
-              verticalAlign="middle"
-              boxSize="25px"
-              mx="2px"
-            />{" "}
-          </Text>
-          <Mathfield
-            readOnly={true}
-            mfe={mfe}
-            value={`\\large ${exc.steps[nStep].expression} \\quad`}
-            onChange={modify}
-          ></Mathfield>
-        </Box>
+        <Mathfield
+          readOnly={true}
+          mfe={mfe}
+          value={`\\large ${exc.steps[nStep].displayResult[0]} \\quad`}
+          onChange={modify}
+        ></Mathfield>
       </Center>
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
         <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
-          Enviar
+          {" "}
+          enviar
         </Button>
         <Hint
           hints={exc.steps[nStep].hints}
@@ -139,17 +127,15 @@ const SinglePlaceholder = ({
         ></Hint>
       </Stack>
 
-      {error && (
+      {firstTime ? null : !isCorrectValue ? (
         <Alert status="error">
           <AlertIcon />
-          {exc.steps[nStep].incorrectMsg}
+          Tu respuesta no es la esperada intentalo denuevo.
         </Alert>
-      )}
-      {isCorrectValue && (
+      ) : (
         <Alert status="success">
           <AlertIcon />
           {exc.steps[nStep].correctMsg}
-          {setCompleted(true)}
         </Alert>
       )}
     </>

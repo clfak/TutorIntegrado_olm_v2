@@ -22,8 +22,7 @@ export interface Step {
   expression: string;
   stepTitle: string;
   displayResult: Array<string>;
-  values?: Array<value>;
-  multipleChoice?: Array<option>;
+  values?: Array<value> | Array<tvalue>;
   hints: Array<hint>;
   matchingError?: Array<matchingError>;
   validation?: "stringComparison" | "evaluate" | "countElements" | "evaluateAndCount";
@@ -31,17 +30,6 @@ export interface Step {
   incorrectMsg: string;
   correctMsg: string;
   summary: string;
-  stepType?:
-    | "Alternatives"
-    | "TrueFalse"
-    | "MultiplePlaceholders"
-    | "Blank"
-    | "InputButtons"
-    | "TableStep"
-    | "SinglePlaceholder";
-  table?: Table | undefined;
-  keyboardForm?: any;
-  button?: string[][];
 }
 export interface Table {
   header: Header[];
@@ -55,12 +43,9 @@ export interface Header {
   align: string;
   value: string;
 }
-export interface option {
-  id: number;
-  text?: string;
-  expression?: string;
-  correct: boolean;
-  type?: string;
+export interface tvalue {
+  name: string;
+  value: string;
 }
 
 export interface Row {
@@ -77,13 +62,29 @@ export interface ExType {
   };
   text: string;
   type: string;
-  initialExpression?: string | undefined;
+  eqc?: string | undefined;
   steps: Array<Step>;
   img?: string;
-  eqc?: string | undefined;
+  initialExpression?: string;
+}
+
+export interface StepLog extends Step {
+  StepType:
+    | "Alternatives"
+    | "TrueFalse"
+    | "MultiplePlaceholders"
+    | "Blank"
+    | "DualInputs"
+    | "InputButtons"
+    | "Notation"
+    | "Rect"
+    | "TableStep"
+    | "SinglePlaceholder";
+  table?: Table | undefined;
+  button?: any;
 }
 
 export interface ExLog extends ExType {
   img?: string | undefined;
-  steps: Array<Step>;
+  steps: Array<StepLog>;
 }

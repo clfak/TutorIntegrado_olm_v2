@@ -3,7 +3,7 @@ import { Accordion, Center } from "@chakra-ui/react";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import "katex/dist/katex.min.css";
 import { useAction } from "../../utils/action";
-import ShowSteps from "./ShowSteps";
+import ShowSteps from "./showSteps";
 import { sessionState } from "../SessionState";
 
 const StepComponent = ({ exc, nStep, topicId }: { exc: ExLog; nStep: number; topicId: string }) => {
@@ -19,7 +19,7 @@ const StepComponent = ({ exc, nStep, topicId }: { exc: ExLog; nStep: number; top
       contentID: sessionState.currentContent.code,
       topicID: topicId,
     });
-  }, [action, topicId]);
+  }, []);
 
   return (
     <>

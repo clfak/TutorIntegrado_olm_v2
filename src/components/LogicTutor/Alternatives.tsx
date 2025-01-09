@@ -17,7 +17,8 @@ const Alternatives = ({
   topic: string;
 }) => {
   const [firstTime, setFirstTime] = useState(true);
-  const valores_a_elegir = exc.steps[nStep]?.multipleChoice;
+  const valores_a_elegir = exc.steps[nStep]?.values;
+  const respuestaCorrecta = String(exc.steps[nStep]?.answers?.[0]?.answer?.[0]);
   const [isCorrectValue, setIsCorrectValue] = useState(false);
   const [showError, setShowError] = useState(false);
   const [response, setResponse] = useState(0);
@@ -26,7 +27,7 @@ const Alternatives = ({
   const [valoresBarajados, setValoresBarajados] = useState<Array<any>>([]);
   const action = useAction();
   const [attempts, setAttempts] = useState(0);
-
+  let respuesta = false;
   useEffect(() => {
     if (valores_a_elegir && firstTime) {
       const shuffledValues = [...valores_a_elegir].sort(() => Math.random() - 0.5);
@@ -34,30 +35,32 @@ const Alternatives = ({
     }
   }, [valores_a_elegir, firstTime]);
 
-  const evaluar = (valor: { id: number; text: string; correct: boolean }) => {
-    setResponse(valor.id);
+  const evaluar = (valor: number) => {
+    //console.log(lastHint)
+    setResponse(valor);
+    //console.log("Valor clickeado:", valor);
+    //console.log("Respuesta correcta:", respuestaCorrecta);
     setFirstTime(false);
-
-    if (valor.correct) {
+    if (String(valor) === respuestaCorrecta) {
       setIsCorrectValue(true);
       setCompleted(true);
       setShowError(false);
+      respuesta = true;
     } else {
       setShowError(true);
       setHints(hints + 1);
     }
     setAttempts(attempts + 1);
-
     action({
       verbName: "tryStep",
       stepID: "" + exc.steps[nStep].stepId,
       contentID: exc.code,
       topicID: topic,
-      result: valor.correct ? 1 : 0,
+      result: respuesta ? 1 : 0,
       kcsIDs: exc.steps[nStep].KCs,
       extra: {
-        response: [valor.id],
-        attempts: attempts + 1,
+        response: [valor],
+        attempts: attempts,
         hints: hints,
       },
     });
@@ -65,35 +68,26 @@ const Alternatives = ({
 
   return (
     <>
-      <Stack spacing={4} m={2} fontSize={{ base: "1rem" }} w={{ base: "100%" }}>
+      <Stack spacing={4} m={2} justifyContent={"center"}>
         <Center>
-          <Latex>{"$$" + exc.steps[nStep].expression + "$$"}</Latex>
+          <Latex>{"$$" + exc.steps[nStep].displayResult[0] + "$$"}</Latex>
         </Center>
         {valoresBarajados.map((valor, index) => (
           <Button
             key={index}
             colorScheme="blue"
-            size="md"
-            onClick={() => evaluar(valor)}
+            size="sm"
+            onClick={() => evaluar(valor.value)}
             isDisabled={isCorrectValue}
           >
-            {valor.text && valor.expression ? (
-              <Stack>
-                <div>{valor.text}</div>
-                <Latex>{"$$" + valor.expression + "$$"}</Latex>
-              </Stack>
-            ) : valor.text ? (
-              <>{valor.text}</>
-            ) : valor.expression ? (
-              <Latex>{"$$" + valor.expression + "$$"}</Latex>
-            ) : null}
+            {valor.value}
           </Button>
         ))}
       </Stack>
       {firstTime ? null : !isCorrectValue ? (
         <Alert status="error">
           <AlertIcon />
-          {exc.steps[nStep].incorrectMsg}
+          Tu respuesta no es la esperada intentalo denuevo.
         </Alert>
       ) : (
         <Alert status="success">

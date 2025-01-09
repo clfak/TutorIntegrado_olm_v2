@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Container, Center, Stack, Box } from "@chakra-ui/react";
+import { Image, Container, Center, Stack } from "@chakra-ui/react";
 import Inter1 from "../../components/LogicTutor/LogicaJson/Inter1.json";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import Latex from "react-latex-next";
@@ -16,22 +16,14 @@ const DynamicTutorLogic = ({ exc, topicId }: { exc: ExLog; topicId: string }) =>
     <>
       <Stack textAlign="center" fontSize={{ base: "12px", sm: "15px", lg: "20px" }}>
         <Center>Titulo: {exc.title}</Center>
-        <Box
-          as="span"
-          flex="1"
-          textAlign="center"
-          fontSize={{ base: "1rem" }}
-          maxW={{ base: "100%" }}
-        >
-          <Latex>{exc.text}</Latex>
-        </Box>
+        <Latex>{exc.text}</Latex>
       </Stack>
-      {exc.initialExpression ? (
-        exc.initialExpression !== "" ? (
+      {exc.eqc ? (
+        exc.eqc !== "" ? (
           <>
-            <Stack textAlign="center" fontSize={{ base: "1rem" }} maxW={{ base: "100%" }}>
+            <Stack textAlign="center" fontSize={{ base: "15px", sm: "20px", lg: "25px" }}>
               <Center>
-                <Latex>{"$$" + exc.initialExpression + "$$"}</Latex>
+                <Latex>{"$$" + exc.eqc + "$$"}</Latex>
               </Center>
             </Stack>
           </>
@@ -39,7 +31,7 @@ const DynamicTutorLogic = ({ exc, topicId }: { exc: ExLog; topicId: string }) =>
       ) : exc.steps[0]?.expression ? (
         exc.steps[0].expression !== "" ? (
           <>
-            <Stack textAlign="center" fontSize={{ base: "1rem" }}>
+            <Stack textAlign="center" fontSize={{ base: "15px", sm: "20px", lg: "25px" }}>
               <Center>
                 <Latex>{`$$` + exc.steps[0].expression + `$$`}</Latex>
               </Center>
@@ -52,12 +44,7 @@ const DynamicTutorLogic = ({ exc, topicId }: { exc: ExLog; topicId: string }) =>
         {exc.img ? (
           <>
             <Center>
-              <Image
-                objectFit="cover"
-                src={`img/${exc.img}`}
-                alt="Broken image"
-                maxW={{ base: "80%" }}
-              />
+              <Image objectFit="cover" src={`img/${exc.img}`} alt="Broken image" />
             </Center>
           </>
         ) : null}

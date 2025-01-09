@@ -65,6 +65,7 @@ const TrueFalse = ({
         <Center>
           <Latex>{"$$" + exc.steps[nStep].expression + "$$"}</Latex>
         </Center>
+
         <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
           <Button colorScheme="blue" size="sm" onClick={() => evaluar("V")}>
             Verdadero
