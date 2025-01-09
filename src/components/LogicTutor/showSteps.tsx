@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/react";
+import { Box, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Alert, AlertIcon} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import Latex from "react-latex-next";
 import type { ExLog } from "./Tools/ExcerciseType2";

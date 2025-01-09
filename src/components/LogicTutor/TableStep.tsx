@@ -1,20 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Box,
-  Alert,
-  AlertIcon,
-  useColorModeValue,
-  Table,
-  TableCaption,
-  Thead,
-  Th,
-  Tbody,
-  Tr,
-  Td,
-  Center,
-  Stack,
-} from "@chakra-ui/react";
+import { Button, Box, Alert, AlertIcon, useColorModeValue, Table, TableCaption, Thead, Th, Tbody, Tr, Td, Center, Stack,} from "@chakra-ui/react";
 
 import type { ExLog, textAlign } from "./Tools/ExcerciseType2";
 import Hint from "../Hint";
