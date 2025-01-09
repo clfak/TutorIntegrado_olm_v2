@@ -12,33 +12,51 @@ const ProgressComparison = ({
   groupvalues,
   uLabel,
   gLabel,
+  deltau,
 }: {
   uservalues: number;
   groupvalues: number;
   uLabel?: string;
   gLabel?: string;
+  deltau?: string;
 }) => {
   let pw = wstring(uservalues);
   let pwg = wstring(groupvalues);
 
-  let label1 = "Yo: " + pw;
+  let label1 = pw;
   if (uLabel) label1 = uLabel;
 
-  let label2 = "Grupo: " + pwg;
+  let label2 = pwg;
   if (gLabel) label2 = gLabel;
-
+  console.log("deltau", deltau);
   return (
     <>
       <HStack w={"100%"} align="center" justify="center">
-        <Box w="65%" bg={"white"} border={"2px"} borderColor={"white"}>
+        <Text w="20%">Yo</Text>
+        <Box w="45%" bg={"white"} border={"2px"} borderColor={"white"}>
           <Box bg={"green.300"} w={pw} textAlign="center" h={"8px"} />
         </Box>
-        <Text w={"35%"} color={"white"} fontSize="sm">
+        <Text w={"25%"} color={"white"} fontSize="sm">
           {label1}
         </Text>
+        {deltau ? (
+          <Text
+            w={"10%"}
+            color={"white"}
+            fontSize="sm"
+            bg={Number(deltau) > 0 ? "green.500" : "red.500"}
+          >
+            {deltau}
+          </Text>
+        ) : (
+          <Text w={"10%"} color={"white"} fontSize="sm" bg={"teal.300"}>
+            {deltau}
+          </Text>
+        )}
       </HStack>
       <HStack w={"100%"} align="center" justify="center">
-        <Box w="65%" bg={"white"} border={"2px"} borderColor={"white"}>
+        <Text w="20%">Grupo</Text>
+        <Box w="45%" bg={"white"} border={"2px"} borderColor={"white"}>
           <Box bg={"gray.500"} w={pwg} textAlign="center" h={"8px"} />
         </Box>
         <Text w={"35%"} color={"white"} fontSize="sm">
@@ -98,6 +116,7 @@ export const Progressbar = ({
   dMaxW,
   uLabel,
   gLabel,
+  deltau,
 }: {
   uservalues: number;
   groupvalues?: number;
@@ -105,8 +124,9 @@ export const Progressbar = ({
   dMaxW?: string;
   uLabel?: string;
   gLabel?: string;
+  deltau?: string;
 }) => {
-  let minw = "240px";
+  let minw = "300px";
   let minh = "50px";
 
   return (
@@ -117,6 +137,7 @@ export const Progressbar = ({
           groupvalues={groupvalues}
           uLabel={uLabel}
           gLabel={gLabel}
+          deltau={deltau}
         />
       ) : (
         <Progress uservalues={uservalues} uLabel={uLabel} />

@@ -182,15 +182,13 @@ export default withAuth(
       if (uModel.sprog) {
         let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
         let diff = pbValues.uservalues - ouval;
-        if (diff > 0) {
-          pbValues["uLabel"] =
-            (pbValues.uservalues * 100).toFixed(0) + "% +" + (diff * 100).toFixed(2) + "% ";
-        } else {
-          pbValues["uLabel"] =
-            (pbValues.uservalues * 100).toFixed(0) + "% -" + (diff * 100).toFixed(2) + "% ";
-        }
+        pbValues["uLabel"] = (pbValues.uservalues * 100).toFixed(0);
+        pbValues["deltau"] = (diff * 100).toFixed(0) + 1;
+        console.log("deltau2", pbValues["deltau"]);
       }
     }
+
+    console.log(pbValues);
 
     const [pageload, setPL] = useState(false);
 

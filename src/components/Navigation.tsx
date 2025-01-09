@@ -48,10 +48,10 @@ export function Navigation() {
             <SidebarLink key="6" href={"topicSelect?&registerTopic=31"}>
               Fracciones
             </SidebarLink>
-            <SidebarLink key="7" href={"topicSelect?&registerTopic=33"}>
+            <SidebarLink key="7" href={"topicSelect?&registerTopic=24"}>
               Ecuaciones Lineales
             </SidebarLink>
-            <SidebarLink key="8" href={"topicSelect?&registerTopic=24"}>
+            <SidebarLink key="8" href={"topicSelect?&registerTopic=70"}>
               Ecuaciones Cuadráticas
             </SidebarLink>
             <SidebarLink key="9" href={"topicSelect?&registerTopic=52"}>

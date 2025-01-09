@@ -190,7 +190,7 @@ function BasicUsage({ data }: { data: SD }) {
             <SurveyContent data={data} />
           </ModalBody>
 
-          <ModalFooter>
+          <ModalFooter alignSelf="center">
             <Center>
               <Button
                 colorScheme="blue"

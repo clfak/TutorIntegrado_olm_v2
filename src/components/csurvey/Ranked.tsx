@@ -5,10 +5,12 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { Answers } from "./Answers";
 import { useEffect, useState } from "react";
 import { useSnapshot } from "valtio";
+import React from "react";
 
 const labelStyles = {
   mt: "2",
@@ -19,6 +21,8 @@ const labelStyles = {
 
 const Ranked = ({ index }: { index: number }) => {
   const [change, setChange] = useState(false);
+  const [sliderValue, setSliderValue] = React.useState(50);
+  const [showTooltip, setShowTooltip] = React.useState(false);
   const sub = useSnapshot(Answers);
   useEffect(() => {
     Answers.ans["q" + index] = [{ didreply: false, value: "" }];
@@ -38,7 +42,10 @@ const Ranked = ({ index }: { index: number }) => {
         onChange={v => {
           Answers.ans["q" + index] = [{ didreply: true, value: v.toFixed(0) }];
           setChange(true);
+          setSliderValue(v);
         }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
       >
         <SliderMark value={0} {...labelStyles}>
           0
@@ -61,7 +68,16 @@ const Ranked = ({ index }: { index: number }) => {
         <SliderTrack bg="white">
           <SliderFilledTrack bg="white" />
         </SliderTrack>
-        <SliderThumb boxSize={6} />
+        <Tooltip
+          hasArrow
+          bg="teal.500"
+          color="white"
+          placement="top"
+          isOpen={showTooltip}
+          label={`${sliderValue}%`}
+        >
+          <SliderThumb boxSize={6} />
+        </Tooltip>
       </Slider>
     </>
   );
