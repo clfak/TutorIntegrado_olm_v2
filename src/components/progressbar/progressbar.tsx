@@ -1,4 +1,35 @@
-import { HStack, Box, Image, Text } from "@chakra-ui/react";
+import {
+  HStack,
+  Box,
+  Image,
+  Text,
+  Grid,
+  GridItem,
+  Popover,
+  PopoverTrigger,
+  PopoverArrow,
+  PopoverContent,
+  PopoverCloseButton,
+  PopoverBody,
+  Button,
+} from "@chakra-ui/react";
+
+function Pbinfo() {
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <Button size="xs" borderRadius={"full"} bg="teal.500" fontSize={"xs"}>
+          i
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <PopoverArrow />
+        <PopoverCloseButton />
+        <PopoverBody textColor={"black"}>potato</PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 const wstring = (value: number) => {
   //Creating a % string for width size
@@ -28,59 +59,101 @@ const ProgressComparison = ({
 
   let label2 = pwg;
   if (gLabel) label2 = gLabel;
-  console.log("deltau", deltau);
   return (
     <>
-      <HStack w={"100%"} align="center" justify="center">
-        <Text w="20%">Yo</Text>
-        <Box w="45%" bg={"white"} border={"2px"} borderColor={"white"}>
-          <Box bg={"green.300"} w={pw} textAlign="center" h={"8px"} />
-        </Box>
-        <Text w={"25%"} color={"white"} fontSize="sm">
-          {label1}
-        </Text>
-        {deltau ? (
-          <Text
-            w={"10%"}
-            color={"white"}
-            fontSize="sm"
-            bg={Number(deltau) > 0 ? "green.500" : "red.500"}
-          >
-            {deltau}
+      <Grid
+        color="white"
+        templateColumns="repeat(12, 1fr)"
+        pt={["0", "0", "0", "2"]}
+        fontSize={["xs", "xs", "xs", "md"]}
+        templateRows="repeat(3, 1fr)"
+        w={["90%", "90%", "90%", "100%"]}
+      >
+        <GridItem textAlign="right" colSpan={[3, 3, 3, 2]}>
+          <Text pr="2" alignSelf="center">
+            Yo
           </Text>
-        ) : (
-          <Text w={"10%"} color={"white"} fontSize="sm" bg={"teal.300"}>
-            {deltau}
+        </GridItem>
+        <GridItem textAlign="center" colSpan={[5, 5, 5, 6]} pt={["1", "1", "1", "2"]}>
+          <Box w="100%" bg={"white"} border={"2px"} borderColor={"white"}>
+            <Box bg={"green.300"} w={pw} textAlign="center" h={"8px"} />
+          </Box>
+        </GridItem>
+        <GridItem textAlign="left" colSpan={1}>
+          <Text pl="1" color={"white"}>
+            {label1}
           </Text>
-        )}
-      </HStack>
-      <HStack w={"100%"} align="center" justify="center">
-        <Text w="20%">Grupo</Text>
-        <Box w="45%" bg={"white"} border={"2px"} borderColor={"white"}>
-          <Box bg={"gray.500"} w={pwg} textAlign="center" h={"8px"} />
-        </Box>
-        <Text w={"35%"} color={"white"} fontSize="sm">
-          {label2}
-        </Text>
-      </HStack>
+        </GridItem>
+        <GridItem textAlign="center" colSpan={2} pb={["1.5", "1.5", "1.5", "2"]} pl={"2"}>
+          {deltau != undefined ? (
+            <Text
+              color={"white"}
+              bg={Number(deltau) >= 0 ? "green.500" : "red.500"}
+              borderRadius="md"
+              h={"100%"}
+            >
+              {Number(deltau) > 0 ? "+" + deltau : deltau}
+            </Text>
+          ) : (
+            ""
+          )}
+        </GridItem>
+        <GridItem pl="4" colSpan={1} rowSpan={2} pt={["1.5", "1.5", "1.5", "2"]}>
+          {Pbinfo()}
+        </GridItem>
+        <GridItem textAlign="right" colSpan={[3, 3, 3, 2]}>
+          <Text pr="2" alignSelf="center">
+            Grupo
+          </Text>
+        </GridItem>
+        <GridItem textAlign="center" colSpan={[5, 5, 5, 6]} pt={["1", "1", "1", "2"]}>
+          <Box w="100%" bg={"white"} border={"2px"} borderColor={"white"}>
+            <Box bg={"gray.500"} w={pwg} textAlign="center" h={"8px"} />
+          </Box>
+        </GridItem>
+        <GridItem textAlign="left" colSpan={1}>
+          <Text pl="1" color={"white"}>
+            {label2}
+          </Text>
+        </GridItem>
+        <GridItem textAlign="left" colSpan={1} pt="1" />
+      </Grid>
     </>
   );
 };
 
 const Progress = ({ uservalues, uLabel }: { uservalues: number; uLabel?: string }) => {
   let pw = wstring(uservalues);
-  let label1 = "Yo: " + pw;
+  let label1 = pw;
   if (uLabel) label1 = uLabel;
   return (
     <>
-      <HStack w={"100%"} align="center" justify="center">
-        <Box w="70%" bg={"white"} border={"2px"} borderColor={"white"}>
-          <Box bg={"green.300"} w={pw} textAlign="center" h={"8px"} />
-        </Box>
-        <Text w={"30%"} color={"white"} fontSize="sm">
-          {label1}
-        </Text>
-      </HStack>
+      <Grid
+        color="white"
+        templateColumns="repeat(12, 1fr)"
+        pt={["0", "0", "0", "2"]}
+        fontSize={["xs", "xs", "xs", "md"]}
+        w={["90%", "90%", "90%", "100%"]}
+      >
+        <GridItem textAlign="right" colSpan={[3, 3, 3, 2]}>
+          <Text pr="2" alignSelf="center">
+            Yo
+          </Text>
+        </GridItem>
+        <GridItem textAlign="center" colSpan={[5, 5, 5, 6]} pt={["1", "1", "1", "2"]}>
+          <Box w="100%" bg={"white"} border={"2px"} borderColor={"white"}>
+            <Box bg={"green.300"} w={pw} textAlign="center" h={"8px"} />
+          </Box>
+        </GridItem>
+        <GridItem textAlign="left" colSpan={1}>
+          <Text pl="1" color={"white"}>
+            {label1}
+          </Text>
+        </GridItem>
+        <GridItem pl="4" colSpan={1}>
+          {Pbinfo()}
+        </GridItem>
+      </Grid>
     </>
   );
 };
@@ -100,7 +173,7 @@ const Encouragement = (msg: string, maxW?: string) => {
     <HStack p={0} spacing={0} maxW={maxW} paddingTop="2">
       <Image src="/img/mateo.png" alt="Logo" w="28px" h="28px" align={"left"} />
       <Box style={before2}></Box>
-      <Box bg={"white"} borderRadius="md" p={1} w={"80%"}>
+      <Box bg={"white"} borderRadius="md" p={1} w={["70%", "70%", "70%", "80%"]}>
         <Text noOfLines={[3]} color="black">
           {msg}
         </Text>
@@ -126,7 +199,7 @@ export const Progressbar = ({
   gLabel?: string;
   deltau?: string;
 }) => {
-  let minw = "300px";
+  let minw = "275px";
   let minh = "50px";
 
   return (

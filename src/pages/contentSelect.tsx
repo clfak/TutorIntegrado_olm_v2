@@ -182,20 +182,15 @@ export default withAuth(
       if (uModel.sprog) {
         let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
         let diff = pbValues.uservalues - ouval;
-        pbValues["uLabel"] = (pbValues.uservalues * 100).toFixed(0);
-        pbValues["deltau"] = (diff * 100).toFixed(0) + 1;
-        console.log("deltau2", pbValues["deltau"]);
+        pbValues["deltau"] = (diff * 100).toFixed(0);
       }
     }
-
-    console.log(pbValues);
 
     const [pageload, setPL] = useState(false);
 
     useEffect(() => {
       reset();
       if (!SVP.topicselect) SVP.count++;
-      console.log(SVP.count);
       setPL(true);
     }, []);
 
@@ -242,7 +237,7 @@ export default withAuth(
             <br></br>
             <Center>
               <Box
-                maxW="md"
+                w={["100%", "100%", "100%", "md"]}
                 p="4"
                 borderRadius="md"
                 textAlign="center"
@@ -252,7 +247,6 @@ export default withAuth(
                   color: "white",
                   bg: "blue.900",
                 }}
-                minH="100px"
               >
                 <Heading size="sm">Progreso</Heading>
                 {PBLoad(pbValues)}

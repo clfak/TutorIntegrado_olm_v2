@@ -24,7 +24,6 @@ export const PBLoad = ({
   gLabel?: string;
   deltau?: string;
 }) => {
-  console.log("pbload du", deltau);
   return uservalues ? (
     <Progressbar
       uservalues={uservalues}
