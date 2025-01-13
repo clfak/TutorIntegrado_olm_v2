@@ -1,21 +1,19 @@
 {
-  "name": "Encuesta ejemplo 2",
+  "name": "Autoeficacia en Ejercicios del tipo",
   "code": "potatosurvey2",
   "questions": [
     {
       "type": "ranked",
-      "label": "Indica tu nivel de seguridad para resolver correctamente ejercicios similares con tus conocimientos actuales",
+      "label": "¿Cuál es tu nivel de seguridad en resolver ejercicios similares al presentado con tus conocimientos?",
       "rankedLabel": ["Nada seguro/a", "Moderadamente seguro/a", "Completamente seguro/a"]
     },
     {
       "type": "choice",
-      "label": "¿A qué atribuye su rendimiento?",
+      "label": "¿A qué atribuyes tu rendimiento en los ejercicios que has resuelto recientemente?",
       "option": [
-        "La estrategia: la falta o uso de técnicas de métodos específicos influyo en mis resultados",
-        "Practica: la práctica influyo en mis resultados",
-        "Esfuerzo: el grado de empeño y dedicación influyo en mis resultados",
-        "Habilidad natural: la ausencia o presencia de una capacidad innata influyo en mis resultados",
-        "No estoy seguro/a: no sé exactamente porque obtuve estos resultados",
+        "La práctica o esfuerzo determinó los resultados",
+        "Mi habilidad natural determinó los resultados",
+        "La dificultad del contenido determinó los resultados",
         "Otro motivo"
       ]
     }

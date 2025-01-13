@@ -7,7 +7,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   ModalHeader,
   Grid,
@@ -15,13 +14,14 @@ import {
 } from "@chakra-ui/react";
 import Choice from "./Choice";
 import Ranked from "./Ranked";
-import { Answers, SVP } from "./Answers";
-import { kcsyejercicio } from "../../utils/startModel";
-import type { ExType } from "../lvltutor/Tools/ExcerciseType";
+import { Answers, SVP, reset } from "./Answers";
 import dynamic from "next/dynamic";
-import type { ComponentProps } from "react";
+import { ComponentProps, useEffect, useState } from "react";
+import type { ExType } from "../lvltutor/Tools/ExcerciseType";
+import { kcsyejercicio } from "../../utils/startModel";
+//import { useAction } from "../../utils/action";
 
-interface SD {
+export interface SD {
   name: string;
   code: string;
   questions: Array<{
@@ -34,6 +34,27 @@ interface SD {
   }>;
 }
 
+export function handleInitialexpresion(e: ExType, svd: SD) {
+  let ejercicio = e;
+  let exp = "";
+  if (
+    ejercicio.type.localeCompare("ecc5s") == 0 ||
+    ejercicio.type.localeCompare("secl5s") == 0 ||
+    ejercicio.type.localeCompare("ecl2s") == 0
+  )
+    exp = ejercicio.eqc;
+  else if (ejercicio.type.localeCompare("wordProblem") == 0) exp = "";
+  else if (ejercicio.initialExpression != undefined) exp = ejercicio.initialExpression;
+  else exp = ejercicio.steps[0].expression;
+
+  //deep copy needed
+  var d = JSON.stringify(svd);
+  var dd = JSON.parse(d);
+  dd.questions.unshift({ type: "expression", expression: exp });
+
+  return dd;
+}
+
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
   {
@@ -42,7 +63,6 @@ const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").Math
 );
 
 const SurveyContent = ({ data }: { data: SD }) => {
-  let ejercicio = kcsyejercicio.ejercicio as ExType;
   return (
     <VStack align={"center"}>
       {data.questions && data.questions.length > 0
@@ -71,7 +91,7 @@ const SurveyContent = ({ data }: { data: SD }) => {
                     </Text>
                   </>
                   <>
-                    <Ranked index={i} key={"sbq" + i} />
+                    <Ranked index={i} key={"sbq" + i} question={e.label} />
                   </>
                   <Grid
                     key={"GSV" + i}
@@ -120,6 +140,7 @@ const SurveyContent = ({ data }: { data: SD }) => {
                     index={i}
                     key={"sbq" + i}
                     options={e.option ? e.option : ["no options"]}
+                    question={e.label}
                   />
                 </VStack>
               );
@@ -128,30 +149,12 @@ const SurveyContent = ({ data }: { data: SD }) => {
                 <Center
                   key={"BSV1" + i}
                   borderRadius={"md"}
-                  bg={"blue.700"}
                   px={2}
                   py={2}
                   w={["340px", "340px", "480px", "480px"]}
                   textAlign={"center"}
-                  textColor={"white"}
                 >
-                  {ejercicio.type == "ecc5s" ||
-                  ejercicio.type == "secl5s" ||
-                  ejercicio.type == "ecl2s" ? (
-                    <MathComponent tex={String.raw`${ejercicio.eqc}`} display={false} />
-                  ) : ejercicio.type === "wordProblem" ? (
-                    <MathComponent tex={String.raw`${""}`} display={false} />
-                  ) : ejercicio.initialExpression ? (
-                    <MathComponent
-                      tex={String.raw`${ejercicio.initialExpression}`}
-                      display={false}
-                    />
-                  ) : (
-                    <MathComponent
-                      tex={String.raw`${ejercicio.steps[0].expression}`}
-                      display={false}
-                    />
-                  )}
+                  <MathComponent tex={String.raw`${e.expression}`} display={false} />
                 </Center>
               );
             //if (e.type.localeCompare("text")==0) return <TextAnswerView index={i} key={"sbq"+i}/>;
@@ -174,6 +177,8 @@ function handleAnswer() {
 
 function BasicUsage({ data }: { data: SD }) {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+  //const action = useAction();
+
   return (
     <>
       <Modal
@@ -185,18 +190,25 @@ function BasicUsage({ data }: { data: SD }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{data.name}</ModalHeader>
+          <ModalHeader alignSelf={"center"}>{data.name}</ModalHeader>
           <ModalBody>
             <SurveyContent data={data} />
-          </ModalBody>
-
-          <ModalFooter alignSelf="center">
-            <Center>
+            <Center pt="4">
               <Button
                 colorScheme="blue"
                 mr={3}
                 onClick={() => {
                   if (handleAnswer()) {
+                    /*action(
+                      {                        
+                        verbName: "pollResponse",
+                        topicID: "cambiar",
+                        extra: {
+                          pollCode: "cambiar",
+                          responses: Answers.ans
+                        },
+                      }
+                    );*/
                     onClose();
                     SVP.topicselect = false;
                   }
@@ -206,7 +218,7 @@ function BasicUsage({ data }: { data: SD }) {
                 Enviar
               </Button>
             </Center>
-          </ModalFooter>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>
@@ -214,9 +226,10 @@ function BasicUsage({ data }: { data: SD }) {
 }
 
 export const SurveyViewer = ({ data }: { data: SD }) => {
-  return (
-    <>
-      <BasicUsage data={data} />
-    </>
-  );
+  const [d, setD] = useState<SD>();
+  useEffect(() => {
+    reset();
+    setD(handleInitialexpresion(kcsyejercicio.ejercicio as ExType, data));
+  }, []);
+  return <>{d != undefined ? <BasicUsage data={d} /> : null}</>;
 };

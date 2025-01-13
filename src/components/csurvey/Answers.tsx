@@ -1,7 +1,7 @@
 import { proxy } from "valtio";
 
 interface ans {
-  ans: Record<string, Array<{ didreply: boolean; value: string }>>;
+  ans: Record<string, Array<{ didreply: boolean; value: string; question: string }>>;
   sumbmit: boolean;
 }
 
@@ -19,5 +19,5 @@ interface SVI {
 export const SVP = proxy<SVI>({ topicselect: true, count: 0 });
 
 export const reset2 = () => {
-  Object.assign(SVP, { topicselect: true, count: 0 });
+  Object.assign(SVP, { topicselect: true, count: -1 });
 };

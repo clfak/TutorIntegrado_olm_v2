@@ -40,12 +40,20 @@ function RadioCard(props: RadioProps) {
 }
 
 // Step 2: Use the `useRadioGroup` hook to control a group of custom radios.
-function Choice({ index, options }: { index: number; options: Array<string> }) {
+function Choice({
+  index,
+  options,
+  question,
+}: {
+  index: number;
+  options: Array<string>;
+  question: string;
+}) {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "mathchoice",
     //defaultValue: 'react',
     onChange: nextValue => {
-      Answers.ans["q" + index] = [{ didreply: true, value: nextValue }];
+      Answers.ans["q" + index] = [{ didreply: true, value: nextValue, question: question }];
       setChange(true);
     },
   });
@@ -53,7 +61,7 @@ function Choice({ index, options }: { index: number; options: Array<string> }) {
   const group = getRootProps();
 
   useEffect(() => {
-    Answers.ans["q" + index] = [{ didreply: false, value: "" }];
+    Answers.ans["q" + index] = [{ didreply: false, value: "", question: question }];
   }, []);
 
   const [change, setChange] = useState(false);
