@@ -1,4 +1,4 @@
-import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, Box } from "@chakra-ui/react";
+import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, Box, Image } from "@chakra-ui/react";
 import NextLink from "next/link";
 import PBLoad from "../progressbar/pbload";
 import { progresscalc } from "../progressbar/progresscalc";
@@ -83,6 +83,9 @@ export const CardSelectionTopic = ({
         </Center>
         {selectedExcercise.ejercicio[index] ? (
           <Center fontSize={"1xl"} paddingBottom={"3"} paddingTop={"1"}>
+            {selectedExcercise.ejercicio[index].img ? (
+              <Image src={"img/" + selectedExcercise.ejercicio[index].img} />
+            ) : null}
             {selectedExcercise.ejercicio[index].type == "ecc5s" ||
             selectedExcercise.ejercicio[index].type == "secl5s" ||
             selectedExcercise.ejercicio[index].type == "ecl2s" ? (

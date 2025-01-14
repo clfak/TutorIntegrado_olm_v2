@@ -16,6 +16,7 @@ import StartModel, {
 import { useSnapshot } from "valtio";
 import { gSelect } from "../components/GroupSelect";
 import { reset2 } from "../components/csurvey/Answers";
+import parameters from "../components/contentSelectComponents/parameters.json";
 
 export default withAuth(function TopicSelect() {
   const router = useRouter();
@@ -72,8 +73,9 @@ export default withAuth(function TopicSelect() {
 
   SelectExcercise(topicCodes);
 
+  //Asegurar que en admin la correlacion entre la id del subtópico y sortindex vaya de menor a mayor
   const sortedChildrens =
-    subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => a.sortIndex - b.sortIndex) || [];
+    subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => Number(a.id) - Number(b.id)) || [];
 
   UserModel(user.id);
   for (let e of user.tags) {
@@ -93,12 +95,36 @@ export default withAuth(function TopicSelect() {
   return (
     <>
       <Center flexDirection="column" p={4}>
-        <Heading mb="4"> Nombre del Tópico </Heading>
+        <Heading>
+          {parameters.CSMain.title}
+          {registerTopic == parameters.CSMain.topic1.registerTopic
+            ? parameters.CSMain.topic1.topic
+            : registerTopic == parameters.CSMain.topic2.registerTopic
+            ? parameters.CSMain.topic2.topic
+            : registerTopic == parameters.CSMain.topic3.registerTopic
+            ? parameters.CSMain.topic3.topic
+            : registerTopic == parameters.CSMain.topic4.registerTopic
+            ? parameters.CSMain.topic4.topic
+            : registerTopic == parameters.CSMain.topic5.registerTopic
+            ? parameters.CSMain.topic5.topic
+            : registerTopic == parameters.CSMain.topic6.registerTopic
+            ? parameters.CSMain.topic6.topic
+            : registerTopic == parameters.CSMain.topic7.registerTopic
+            ? parameters.CSMain.topic7.topic
+            : registerTopic == parameters.CSMain.topic8.registerTopic
+            ? parameters.CSMain.topic8.topic
+            : registerTopic == parameters.CSMain.topic9.registerTopic
+            ? parameters.CSMain.topic9.topic
+            : registerTopic == parameters.CSMain.topic10.registerTopic
+            ? parameters.CSMain.topic10.topic
+            : registerTopic == parameters.CSMain.topic11.registerTopic
+            ? parameters.CSMain.topic11.topic
+            : parameters.CSMain.topic12.topic}
+        </Heading>
         <Text mb="5">Lista de subtópicos</Text>
         <Box w="full" mx="auto" overflowY="auto" p={4}>
           <SimpleGrid columns={[1, 1, 1, 3]} spacing={10} mt="4">
             {!isSubtopicsLoading &&
-              !selectedExcercise.isLoading &&
               !selectedExcercise.isLoading &&
               sortedChildrens.map((ejercicio, i) =>
                 selectedExcercise.kcXtopic[ejercicio.id] &&

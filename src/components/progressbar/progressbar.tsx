@@ -63,13 +63,18 @@ const ProgressComparison = ({
     <>
       <Grid
         color="white"
-        templateColumns="repeat(12, 1fr)"
+        templateColumns={[
+          "repeat(13, 1fr)",
+          "repeat(13, 1fr)",
+          "repeat(13, 1fr)",
+          "repeat(12, 1fr)",
+        ]}
         pt={["0", "0", "0", "2"]}
         fontSize={["xs", "xs", "xs", "md"]}
         templateRows="repeat(3, 1fr)"
         w={["90%", "90%", "90%", "100%"]}
       >
-        <GridItem textAlign="right" colSpan={[3, 3, 3, 2]}>
+        <GridItem textAlign="right" colSpan={[4, 4, 4, 3]}>
           <Text pr="2" alignSelf="center">
             Yo
           </Text>
@@ -84,13 +89,19 @@ const ProgressComparison = ({
             {label1}
           </Text>
         </GridItem>
-        <GridItem textAlign="center" colSpan={2} pb={["1.5", "1.5", "1.5", "2"]} pl={"2"}>
+        <GridItem
+          textAlign="center"
+          alignSelf={"center"}
+          colSpan={[2, 2, 2, 1]}
+          pt={["0", "0", "0", "1"]}
+          pl={"2"}
+        >
           {deltau != undefined ? (
             <Text
               color={"white"}
               bg={Number(deltau) >= 0 ? "green.500" : "red.500"}
               borderRadius="md"
-              h={"100%"}
+              fontSize={"xs"}
             >
               {Number(deltau) > 0 ? "+" + deltau : deltau}
             </Text>
@@ -101,7 +112,7 @@ const ProgressComparison = ({
         <GridItem pl="4" colSpan={1} rowSpan={2} pt={["1.5", "1.5", "1.5", "2"]}>
           {Pbinfo()}
         </GridItem>
-        <GridItem textAlign="right" colSpan={[3, 3, 3, 2]}>
+        <GridItem textAlign="right" colSpan={[4, 4, 4, 3]}>
           <Text pr="2" alignSelf="center">
             Grupo
           </Text>
@@ -138,12 +149,17 @@ const Progress = ({
     <>
       <Grid
         color="white"
-        templateColumns="repeat(12, 1fr)"
+        templateColumns={[
+          "repeat(13, 1fr)",
+          "repeat(13, 1fr)",
+          "repeat(13, 1fr)",
+          "repeat(12, 1fr)",
+        ]}
         pt={["0", "0", "0", "2"]}
         fontSize={["xs", "xs", "xs", "md"]}
         w={["90%", "90%", "90%", "100%"]}
       >
-        <GridItem textAlign="right" colSpan={[3, 3, 3, 2]}>
+        <GridItem textAlign="right" colSpan={[4, 4, 4, 3]}>
           <Text pr="2" alignSelf="center">
             Yo
           </Text>
@@ -158,13 +174,13 @@ const Progress = ({
             {label1}
           </Text>
         </GridItem>
-        <GridItem textAlign="center" colSpan={2} pb={["1.5", "1.5", "1.5", "2"]} pl={"2"}>
+        <GridItem textAlign="center" colSpan={[2, 2, 2, 1]} pt={["0", "0", "0", "1"]} pl={"2"}>
           {deltau != undefined ? (
             <Text
               color={"white"}
               bg={Number(deltau) >= 0 ? "green.500" : "red.500"}
               borderRadius="md"
-              h={"100%"}
+              fontSize={"xs"}
             >
               {Number(deltau) > 0 ? "+" + deltau : deltau}
             </Text>

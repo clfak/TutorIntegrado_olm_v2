@@ -226,13 +226,19 @@ export default withAuth(function ContentSelect() {
                 ? parameters.CSMain.topic7.topic
                 : registerTopic == parameters.CSMain.topic8.registerTopic
                 ? parameters.CSMain.topic8.topic
-                : parameters.CSMain.topic9.topic}
+                : registerTopic == parameters.CSMain.topic9.registerTopic
+                ? parameters.CSMain.topic9.topic
+                : registerTopic == parameters.CSMain.topic10.registerTopic
+                ? parameters.CSMain.topic10.topic
+                : registerTopic == parameters.CSMain.topic11.registerTopic
+                ? parameters.CSMain.topic11.topic
+                : parameters.CSMain.topic12.topic}
             </Heading>
             &nbsp;&nbsp;&nbsp;
           </Center>
 
           <br></br>
-          <Center>
+          <Center paddingTop={"4"}>
             <Box
               w={["100%", "100%", "100%", "md"]}
               p="4"
