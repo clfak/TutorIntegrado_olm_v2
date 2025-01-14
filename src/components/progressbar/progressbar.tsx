@@ -122,7 +122,15 @@ const ProgressComparison = ({
   );
 };
 
-const Progress = ({ uservalues, uLabel }: { uservalues: number; uLabel?: string }) => {
+const Progress = ({
+  uservalues,
+  uLabel,
+  deltau,
+}: {
+  uservalues: number;
+  uLabel?: string;
+  deltau?: string;
+}) => {
   let pw = wstring(uservalues);
   let label1 = pw;
   if (uLabel) label1 = uLabel;
@@ -149,6 +157,20 @@ const Progress = ({ uservalues, uLabel }: { uservalues: number; uLabel?: string 
           <Text pl="1" color={"white"}>
             {label1}
           </Text>
+        </GridItem>
+        <GridItem textAlign="center" colSpan={2} pb={["1.5", "1.5", "1.5", "2"]} pl={"2"}>
+          {deltau != undefined ? (
+            <Text
+              color={"white"}
+              bg={Number(deltau) >= 0 ? "green.500" : "red.500"}
+              borderRadius="md"
+              h={"100%"}
+            >
+              {Number(deltau) > 0 ? "+" + deltau : deltau}
+            </Text>
+          ) : (
+            ""
+          )}
         </GridItem>
         <GridItem pl="4" colSpan={1}>
           {Pbinfo()}
@@ -213,7 +235,7 @@ export const Progressbar = ({
           deltau={deltau}
         />
       ) : (
-        <Progress uservalues={uservalues} uLabel={uLabel} />
+        <Progress uservalues={uservalues} uLabel={uLabel} deltau={deltau} />
       )}
       {msg ? Encouragement(msg, dMaxW) : <></>}
     </Box>
