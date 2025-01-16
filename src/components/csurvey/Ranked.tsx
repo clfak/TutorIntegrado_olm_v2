@@ -19,13 +19,15 @@ const labelStyles = {
   color: "white",
 };
 
-const Ranked = ({ index, question }: { index: number; question: string }) => {
+const Ranked = ({ index, itemText }: { index: number; itemText: string }) => {
   const [change, setChange] = useState(false);
   const [sliderValue, setSliderValue] = React.useState(50);
   const [showTooltip, setShowTooltip] = React.useState(false);
   const sub = useSnapshot(Answers);
   useEffect(() => {
-    Answers.ans["q" + index] = [{ didreply: false, value: "", question: question }];
+    Answers.ans["q" + index] = [
+      { didreply: false, response: "", itemText: itemText, itemId: "-1" },
+    ];
   }, []);
   return (
     <>
@@ -40,7 +42,9 @@ const Ranked = ({ index, question }: { index: number; question: string }) => {
         color={"white"}
         w={"80%"}
         onChange={v => {
-          Answers.ans["q" + index] = [{ didreply: true, value: v.toFixed(0), question: question }];
+          Answers.ans["q" + index] = [
+            { didreply: true, response: v.toFixed(0), itemText: itemText, itemId: "-1" },
+          ];
           setChange(true);
           setSliderValue(v);
         }}

@@ -23,8 +23,9 @@ import { gSelect } from "../components/GroupSelect";
 import { progresscalc } from "../components/progressbar/progresscalc";
 import { reset, SVP } from "../components/csurvey/Answers";
 import { SurveyViewer } from "../components/csurvey/SurveyViewer";
-import sample from "../components/csurvey/SurveySample.json";
-import sample2 from "../components/csurvey/SurveySample2.json";
+import sample from "../components/csurvey/SE.json";
+import sample2 from "../components/csurvey/SEEV.json";
+import sample3 from "../components/csurvey/OSLM_MotivMsgs.json";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();
@@ -167,15 +168,33 @@ export default withAuth(function ContentSelect() {
 
   GroupModel(gs.current.group, user.projects[0].code);
 
-  let pbValues = {
+  interface pbi {
+    uservalues: number;
+    groupvalues?: number;
+    msg?: string;
+    deltau?: string;
+  }
+
+  let pbValues: pbi = {
     uservalues: 0,
   };
 
   //!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading
   if (!uModel.isLoading) {
     pbValues.uservalues = progresscalc(kcsyejercicio.lista, uModel.data);
-    if (uModel.osml) pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
-    if (uModel.motivmsg) pbValues["msg"] = "potato";
+    if (uModel.motivmsg)
+      pbValues["msg"] =
+        "Si no hay OSLM, entonces no se muestran mansajes? si se muestran definirlos";
+    if (uModel.osml) {
+      pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
+      if (pbValues.uservalues >= pbValues.groupvalues) {
+        let max = sample3.items[0].content.options.length;
+        pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
+      } else {
+        let max = sample3.items[0].content.options.length;
+        pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
+      }
+    }
     if (uModel.sprog) {
       let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
       let diff = pbValues.uservalues - ouval;

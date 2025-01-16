@@ -1,7 +1,10 @@
 import { proxy } from "valtio";
 
 interface ans {
-  ans: Record<string, Array<{ didreply: boolean; value: string; question: string }>>;
+  ans: Record<
+    string,
+    Array<{ didreply: boolean; response: string; itemText: string; itemId: string }>
+  >;
   sumbmit: boolean;
 }
 

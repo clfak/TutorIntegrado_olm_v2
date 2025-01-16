@@ -43,17 +43,19 @@ function RadioCard(props: RadioProps) {
 function Choice({
   index,
   options,
-  question,
+  itemText,
 }: {
   index: number;
   options: Array<string>;
-  question: string;
+  itemText: string;
 }) {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "mathchoice",
     //defaultValue: 'react',
     onChange: nextValue => {
-      Answers.ans["q" + index] = [{ didreply: true, value: nextValue, question: question }];
+      Answers.ans["q" + index] = [
+        { didreply: true, response: nextValue, itemText: itemText, itemId: "-1" },
+      ];
       setChange(true);
     },
   });
@@ -61,7 +63,9 @@ function Choice({
   const group = getRootProps();
 
   useEffect(() => {
-    Answers.ans["q" + index] = [{ didreply: false, value: "", question: question }];
+    Answers.ans["q" + index] = [
+      { didreply: false, response: "", itemText: itemText, itemId: "-1" },
+    ];
   }, []);
 
   const [change, setChange] = useState(false);

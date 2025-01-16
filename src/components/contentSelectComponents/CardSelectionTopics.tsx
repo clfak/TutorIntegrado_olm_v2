@@ -5,6 +5,7 @@ import { progresscalc } from "../progressbar/progresscalc";
 import { gModel, kcsyejercicio, selectedExcercise, uModel } from "../../utils/startModel";
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
+import sample3 from "../../components/csurvey/OSLM_MotivMsgs.json";
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
@@ -41,14 +42,32 @@ export const CardSelectionTopic = ({
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
   console.log("id topico ", topicPath);
 
-  let pbValues = {
+  interface pbi {
+    uservalues: number;
+    groupvalues?: number;
+    msg?: string;
+    deltau?: string;
+  }
+
+  let pbValues: pbi = {
     uservalues: 0,
   };
 
   if (!uModel.isLoading) {
-    pbValues.uservalues = progresscalc(listakcs(KCs), uModel.data);
-    if (uModel.osml) pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
-    if (uModel.motivmsg) pbValues["msg"] = "potato";
+    pbValues.uservalues = progresscalc(kcsyejercicio.lista, uModel.data);
+    if (uModel.motivmsg)
+      pbValues["msg"] =
+        "Si no hay OSLM, entonces no se muestran mansajes? si se muestran definirlos";
+    if (uModel.osml) {
+      pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
+      if (pbValues.uservalues >= pbValues.groupvalues) {
+        let max = sample3.items[0].content.options.length;
+        pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
+      } else {
+        let max = sample3.items[0].content.options.length;
+        pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
+      }
+    }
   }
 
   return (

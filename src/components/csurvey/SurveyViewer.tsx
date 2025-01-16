@@ -22,16 +22,21 @@ import { kcsyejercicio } from "../../utils/startModel";
 //import { useAction } from "../../utils/action";
 
 export interface SD {
-  name: string;
+  title: string;
   code: string;
-  questions: Array<{
-    type: string;
-    label?: string;
-    imgurl?: string;
-    rankedLabel?: Array<string>;
-    option?: Array<string>;
-    expression?: string;
+  description?: string;
+  items: Array<{
+    id: number;
+    index: number;
+    content: {
+      type: string;
+      text?: string;
+      rankedLabel?: Array<string>;
+      options?: Array<string>;
+      expression?: string;
+    };
   }>;
+  tags: Array<string>;
 }
 
 export function handleInitialexpresion(e: ExType, svd: SD) {
@@ -50,7 +55,7 @@ export function handleInitialexpresion(e: ExType, svd: SD) {
   //deep copy needed
   var d = JSON.stringify(svd);
   var dd = JSON.parse(d);
-  dd.questions.unshift({ type: "expression", expression: exp });
+  dd.items.unshift({ id: -1, index: -1, content: { type: "expression", expression: exp } });
 
   return dd;
 }
@@ -65,9 +70,9 @@ const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").Math
 const SurveyContent = ({ data }: { data: SD }) => {
   return (
     <VStack align={"center"}>
-      {data.questions && data.questions.length > 0
-        ? data.questions.map((e, i) => {
-            if (e.type.localeCompare("ranked") == 0)
+      {data.items && data.items.length > 0
+        ? data.items.map((e, i) => {
+            if (e.content.type.localeCompare("slider100") == 0)
               return (
                 <VStack
                   key={"VSSV" + i}
@@ -87,11 +92,11 @@ const SurveyContent = ({ data }: { data: SD }) => {
                       w={"90%"}
                       noOfLines={3}
                     >
-                      {e.label}
+                      {e.content.text}
                     </Text>
                   </>
                   <>
-                    <Ranked index={i} key={"sbq" + i} question={e.label} />
+                    <Ranked index={i} key={"sbq" + i} itemText={e.content.text} />
                   </>
                   <Grid
                     key={"GSV" + i}
@@ -101,20 +106,20 @@ const SurveyContent = ({ data }: { data: SD }) => {
                     fontSize={["xs", "xs", "xs", "md"]}
                   >
                     <GridItem textAlign="left" colSpan={3} key={"GiSV1" + i}>
-                      {e.rankedLabel ? e.rankedLabel[0] : ""}
+                      {e.content.rankedLabel ? e.content.rankedLabel[0] : ""}
                     </GridItem>
                     <GridItem colSpan={1} key={"GiSV2" + i} />
                     <GridItem textAlign="center" colSpan={3} key={"GiSV3" + i}>
-                      {e.rankedLabel ? e.rankedLabel[1] : ""}
+                      {e.content.rankedLabel ? e.content.rankedLabel[1] : ""}
                     </GridItem>
                     <GridItem colSpan={1} key={"GiSV4" + i} />
                     <GridItem textAlign="right" colSpan={3} key={"GiSV5" + i}>
-                      {e.rankedLabel ? e.rankedLabel[2] : ""}
+                      {e.content.rankedLabel ? e.content.rankedLabel[2] : ""}
                     </GridItem>
                   </Grid>
                 </VStack>
               );
-            if (e.type.localeCompare("choice") == 0)
+            if (e.content.type.localeCompare("choice") == 0)
               return (
                 <VStack
                   key={"VSSV" + i}
@@ -133,18 +138,18 @@ const SurveyContent = ({ data }: { data: SD }) => {
                       w={"90%"}
                       noOfLines={3}
                     >
-                      {e.label}
+                      {e.content.text}
                     </Text>
                   </>
                   <Choice
                     index={i}
                     key={"sbq" + i}
-                    options={e.option ? e.option : ["no options"]}
-                    question={e.label}
+                    options={e.content.options ? e.content.options : ["no options"]}
+                    itemText={e.content.text}
                   />
                 </VStack>
               );
-            if (e.type.localeCompare("expression") == 0)
+            if (e.content.type.localeCompare("expression") == 0)
               return (
                 <Center
                   key={"BSV1" + i}
@@ -154,7 +159,7 @@ const SurveyContent = ({ data }: { data: SD }) => {
                   w={["340px", "340px", "480px", "480px"]}
                   textAlign={"center"}
                 >
-                  <MathComponent tex={String.raw`${e.expression}`} display={false} />
+                  <MathComponent tex={String.raw`${e.content.expression}`} display={false} />
                 </Center>
               );
             //if (e.type.localeCompare("text")==0) return <TextAnswerView index={i} key={"sbq"+i}/>;
@@ -190,7 +195,7 @@ function BasicUsage({ data }: { data: SD }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader alignSelf={"center"}>{data.name}</ModalHeader>
+          <ModalHeader alignSelf={"center"}>{data.title}</ModalHeader>
           <ModalBody>
             <SurveyContent data={data} />
             <Center pt="4">
