@@ -187,13 +187,16 @@ export default withAuth(function ContentSelect() {
         "Si no hay OSLM, entonces no se muestran mansajes? si se muestran definirlos";
     if (uModel.osml) {
       pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
-      if (pbValues.uservalues >= pbValues.groupvalues) {
-        let max = sample3.items[0].content.options.length;
-        pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
-      } else {
-        let max = sample3.items[0].content.options.length;
-        pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
-      }
+      let diff = pbValues.uservalues - pbValues.groupvalues;
+      if (Math.abs(diff) > 0.1) {
+        if (diff >= 0) {
+          let max = sample3.items[0].content.options.length;
+          pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
+        } else {
+          let max = sample3.items[0].content.options.length;
+          pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
+        }
+      } else pbValues["msg"] = null;
     }
     if (uModel.sprog) {
       let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);

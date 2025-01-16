@@ -49,7 +49,7 @@ export const CardSelectionTopic = ({
   }
 
   let pbValues: pbi = {
-    uservalues: 0.0,
+    uservalues: 0,
   };
 
   if (!uModel.isLoading) {
@@ -59,13 +59,16 @@ export const CardSelectionTopic = ({
         "Si no hay OSLM, entonces no se muestran mansajes? si se muestran definirlos";
     if (uModel.osml) {
       pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
-      if (pbValues.uservalues >= pbValues.groupvalues) {
-        let max = sample3.items[0].content.options.length;
-        pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
-      } else {
-        let max = sample3.items[0].content.options.length;
-        pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
-      }
+      let diff = pbValues.uservalues - pbValues.groupvalues;
+      if (Math.abs(diff) > 0.1) {
+        if (diff >= 0) {
+          let max = sample3.items[0].content.options.length;
+          pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
+        } else {
+          let max = sample3.items[0].content.options.length;
+          pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
+        }
+      } else pbValues["msg"] = null;
     }
   }
 
