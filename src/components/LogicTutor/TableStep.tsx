@@ -164,7 +164,7 @@ const TableStep = ({
         </Box>
       )}
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-      {!isCorrectValue && (
+        {!isCorrectValue && (
           <>
             <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
               Enviar
@@ -183,7 +183,7 @@ const TableStep = ({
               setLastHint={setLastHint}
             ></Hint>
           </>
-      )}
+        )}
       </Stack>
       {firstTime ? null : !isCorrectValue ? (
         <Alert status="error">

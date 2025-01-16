@@ -115,39 +115,38 @@ const MultiplePlaceholders = ({
               verticalAlign="middle"
               boxSize="25px"
               mx="2px"
-              />{" "}
+            />{" "}
           </Text>
           <Mathfield
             readOnly={true}
             mfe={mfe}
             value={`\\large ${exc.steps[nStep].expression}\\;`}
             onChange={test}
-            ></Mathfield>
+          ></Mathfield>
         </Box>
       </Center>
 
       <Stack spacing={4} m={2} direction={{ base: "row" }} justifyContent="center">
         {!isCorrectValue && (
           <>
-          <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
-            Enviar
-          </Button>
-          <Hint
-            hints={exc.steps[nStep].hints}
-            contentId={exc.code}
-            topicId={topic}
-            stepId={exc.steps[nStep].stepId}
-            matchingError={exc.steps[nStep].matchingError}
-            response={ValuesArray}
-            error={error}
-            setError={setError}
-            hintCount={hints}
-            setHints={setHints}
-            setLastHint={setLastHint}
+            <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
+              Enviar
+            </Button>
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={ValuesArray}
+              error={error}
+              setError={setError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
             />
           </>
         )}
-
       </Stack>
       {error && (
         <Alert status="error">

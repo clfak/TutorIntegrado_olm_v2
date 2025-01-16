@@ -122,7 +122,7 @@ const SingleAnswer = ({ exc, nStep, setCompleted, topic }) => {
         </Box>
       </Center>
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-      {!isCorrectValue && (
+        {!isCorrectValue && (
           <>
             <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
               Enviar
@@ -141,7 +141,7 @@ const SingleAnswer = ({ exc, nStep, setCompleted, topic }) => {
               setLastHint={() => {}}
             ></Hint>
           </>
-      )}
+        )}
       </Stack>
 
       {error && (
