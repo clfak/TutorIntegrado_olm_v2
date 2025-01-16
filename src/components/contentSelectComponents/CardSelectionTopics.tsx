@@ -40,7 +40,6 @@ export const CardSelectionTopic = ({
   index: number;
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
-  console.log("id topico ", topicPath);
 
   interface pbi {
     uservalues: number;
@@ -50,16 +49,16 @@ export const CardSelectionTopic = ({
   }
 
   let pbValues: pbi = {
-    uservalues: 0,
+    uservalues: 0.0,
   };
 
   if (!uModel.isLoading) {
-    pbValues.uservalues = progresscalc(kcsyejercicio.lista, uModel.data);
+    pbValues.uservalues = progresscalc(listakcs(KCs), uModel.data);
     if (uModel.motivmsg)
       pbValues["msg"] =
         "Si no hay OSLM, entonces no se muestran mansajes? si se muestran definirlos";
     if (uModel.osml) {
-      pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
+      pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
       if (pbValues.uservalues >= pbValues.groupvalues) {
         let max = sample3.items[0].content.options.length;
         pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -69,6 +68,8 @@ export const CardSelectionTopic = ({
       }
     }
   }
+
+  console.log(uModel.isLoading, pbValues);
 
   return (
     <Box bg="blue.700" rounded="md">
