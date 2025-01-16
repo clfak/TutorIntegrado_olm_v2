@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import RatingQuestion from "../RatingQuestion";
 import {
   Box,
   AccordionButton,
@@ -118,6 +119,7 @@ const ShowSteps = ({
               {setReport(false)}
             </>
           )}
+          <RatingQuestion />
         </>
       ) : completed && next !== -1 ? (
         <>

@@ -164,22 +164,26 @@ const TableStep = ({
         </Box>
       )}
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-        <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
-          Enviar
-        </Button>
-        <Hint
-          hints={exc.steps[nStep].hints}
-          contentId={exc.code}
-          topicId={topic}
-          stepId={exc.steps[nStep].stepId}
-          matchingError={exc.steps[nStep].matchingError}
-          response={userAnswers}
-          error={error}
-          setError={setError}
-          hintCount={hints}
-          setHints={setHints}
-          setLastHint={setLastHint}
-        ></Hint>
+      {!isCorrectValue && (
+          <>
+            <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
+              Enviar
+            </Button>
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={userAnswers}
+              error={error}
+              setError={setError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
+            ></Hint>
+          </>
+      )}
       </Stack>
       {firstTime ? null : !isCorrectValue ? (
         <Alert status="error">
