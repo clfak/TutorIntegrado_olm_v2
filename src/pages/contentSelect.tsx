@@ -25,7 +25,7 @@ import { reset, SVP } from "../components/csurvey/Answers";
 import { SurveyViewer } from "../components/csurvey/SurveyViewer";
 import sample from "../components/csurvey/SE.json";
 import sample2 from "../components/csurvey/SEEV.json";
-import sample3 from "../components/csurvey/OSLM_MotivMsgs.json";
+import sample3 from "../components/csurvey/OSLMMotivMsgs.json";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();

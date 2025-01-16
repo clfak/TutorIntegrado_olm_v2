@@ -5,7 +5,7 @@ import { progresscalc } from "../progressbar/progresscalc";
 import { gModel, kcsyejercicio, selectedExcercise, uModel } from "../../utils/startModel";
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
-import sample3 from "../../components/csurvey/OSLM_MotivMsgs.json";
+import sample3 from "../../components/csurvey/OSLMMotivMsgs.json";
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
