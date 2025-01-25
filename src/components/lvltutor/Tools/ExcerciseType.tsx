@@ -22,6 +22,8 @@ export interface option {
   expression?: string;
   correct: boolean;
   type?: string;
+  feedbackMsg?: string;
+  feedbackMsgExp?: string;
 }
 
 export interface Step {
