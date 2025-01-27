@@ -181,7 +181,7 @@ function handleAnswer() {
   return close ? required : false;
 }
 
-function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
+function BasicUsage({ data, topicId }: { data: SD; topicId: string; }) {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
   const action = useAction();
 
@@ -231,7 +231,7 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
   );
 }
 
-export const SurveyViewer = ({ data, topicId }: { data: SD; topicId: string }) => {
+export const SurveyViewer = ({ data, topicId }: { data: SD; topicId: string; }) => {
   const [d, setD] = useState<SD>();
   useEffect(() => {
     reset();
