@@ -217,9 +217,15 @@ export default withAuth(function ContentSelect() {
     <>
       {pageload ? (
         SVP.topicselect ? (
-          <SurveyViewer data={Surveys.data[Surveys.tagXindex["poll-srl1"]]} />
+          <SurveyViewer
+            data={Surveys.data[Surveys.tagXindex["poll-srl1"]]}
+            topiId={registerTopic}
+          />
         ) : SVP.count % 3 == 2 ? (
-          <SurveyViewer data={Surveys.data[Surveys.tagXindex["poll-srl2"]]} />
+          <SurveyViewer
+            data={Surveys.data[Surveys.tagXindex["poll-srl2"]]}
+            topiId={registerTopic}
+          />
         ) : null
       ) : null}
       {isError ? (
