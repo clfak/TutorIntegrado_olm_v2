@@ -321,13 +321,16 @@ function ShuffledLoad({
   topicId: string;
   disablehint: boolean;
 }) {
+  //deepcopy
+  var d = JSON.stringify(step);
+  var dd = JSON.parse(d);
   return (
     <CChoice
       step={step}
       content={content}
       topicId={topicId}
       disablehint={disablehint}
-      options={fishyShuffle(step.multipleChoice)}
+      options={fishyShuffle(dd.multipleChoice)}
     />
   );
 }
