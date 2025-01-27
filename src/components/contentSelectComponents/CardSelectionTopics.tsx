@@ -5,7 +5,7 @@ import { progresscalc } from "../progressbar/progresscalc";
 import { gModel, kcsyejercicio, selectedExcercise, uModel } from "../../utils/startModel";
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
-import sample3 from "../../components/csurvey/OSLMMotivMsgs.json";
+import { Surveys } from "../csurvey/Answers";
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
@@ -60,7 +60,8 @@ export const CardSelectionTopic = ({
     if (uModel.osml) {
       pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
-      if (Math.abs(diff) > 0.1) {
+      let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
+      if (Math.abs(diff) > 0.1 && sample3 != undefined) {
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -71,8 +72,6 @@ export const CardSelectionTopic = ({
       } else pbValues["msg"] = null;
     }
   }
-
-  console.log(uModel.isLoading, pbValues);
 
   return (
     <Box bg="blue.700" rounded="md">

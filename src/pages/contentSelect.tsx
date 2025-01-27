@@ -21,11 +21,8 @@ import {
 } from "../utils/startModel";
 import { gSelect } from "../components/GroupSelect";
 import { progresscalc } from "../components/progressbar/progresscalc";
-import { reset, SVP } from "../components/csurvey/Answers";
+import { reset, Surveys, SVP } from "../components/csurvey/Answers";
 import { SurveyViewer } from "../components/csurvey/SurveyViewer";
-import sample from "../components/csurvey/SE.json";
-import sample2 from "../components/csurvey/SEEV.json";
-import sample3 from "../components/csurvey/OSLMMotivMsgs.json";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();
@@ -189,6 +186,7 @@ export default withAuth(function ContentSelect() {
       pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
       if (Math.abs(diff) > 0.1) {
+        let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -217,9 +215,9 @@ export default withAuth(function ContentSelect() {
     <>
       {pageload ? (
         SVP.topicselect ? (
-          <SurveyViewer data={sample} />
+          <SurveyViewer data={Surveys.data[Surveys.tagXindex["poll-srl1"]]} />
         ) : SVP.count % 3 == 2 ? (
-          <SurveyViewer data={sample2} />
+          <SurveyViewer data={Surveys.data[Surveys.tagXindex["poll-srl2"]]} />
         ) : null
       ) : null}
       {isError ? (

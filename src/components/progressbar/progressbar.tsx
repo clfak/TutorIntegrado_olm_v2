@@ -200,10 +200,10 @@ const before2 = {
   content: "",
   width: "0px",
   height: "0px",
-  "border-right": "7px solid white",
-  "border-left": "7px solid transparent",
-  "border-bottom": "7px solid white",
-  "border-top": "7px solid transparent",
+  borderRight: "7px solid white",
+  borderLeft: "7px solid transparent",
+  borderBottom: "7px solid white",
+  borderTop: "7px solid transparent",
 };
 
 const Encouragement = (msg: string, maxW?: string) => {

@@ -26,7 +26,7 @@ export interface SD {
   code: string;
   description?: string;
   items: Array<{
-    id: number;
+    id: string;
     index: number;
     content: {
       type: string;
