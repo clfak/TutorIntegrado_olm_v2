@@ -219,12 +219,12 @@ export default withAuth(function ContentSelect() {
         SVP.topicselect ? (
           <SurveyViewer
             data={Surveys.data[Surveys.tagXindex["poll-srl1"]]}
-            topicId={registerTopic}
+            topicId={"0"}
           />
         ) : SVP.count % 3 == 2 ? (
           <SurveyViewer
             data={Surveys.data[Surveys.tagXindex["poll-srl2"]]}
-            topicId={registerTopic}
+            topicId={"0"}
           />
         ) : null
       ) : null}
