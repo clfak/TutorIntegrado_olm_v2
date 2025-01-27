@@ -176,12 +176,12 @@ function handleAnswer() {
   var required = true;
   for (var e in Answers.ans) {
     if (!close) close = true;
-    required = Answers.ans[e][0].didreply && required;
+    required = Answers.ans[e].didreply && required;
   }
   return close ? required : false;
 }
 
-function BasicUsage({ data, topicId }: { data: SD; topicId: string; }) {
+function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
   const action = useAction();
 
@@ -206,6 +206,7 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string; }) {
                 onClick={() => {
                   if (handleAnswer()) {
                     let ak = [];
+                    console.log(Answers.ans);
                     for (var e in Answers.ans) ak.push(JSON.parse(JSON.stringify(Answers.ans[e])));
                     action({
                       verbName: "pollResponse",
@@ -231,7 +232,7 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string; }) {
   );
 }
 
-export const SurveyViewer = ({ data, topicId }: { data: SD; topicId: string; }) => {
+export const SurveyViewer = ({ data, topicId }: { data: SD; topicId: string }) => {
   const [d, setD] = useState<SD>();
   useEffect(() => {
     reset();

@@ -33,9 +33,12 @@ const Ranked = ({
   const [showTooltip, setShowTooltip] = React.useState(false);
   const sub = useSnapshot(Answers);
   useEffect(() => {
-    Answers.ans["q" + index] = [
-      { didreply: false, response: "", itemText: itemText, itemId: itemId },
-    ];
+    Answers.ans["q" + index] = {
+      didreply: false,
+      response: "",
+      itemText: itemText,
+      itemId: itemId,
+    };
   }, []);
   return (
     <>
@@ -50,9 +53,12 @@ const Ranked = ({
         color={"white"}
         w={"80%"}
         onChange={v => {
-          Answers.ans["q" + index] = [
-            { didreply: true, response: v.toFixed(0), itemText: itemText, itemId: itemId },
-          ];
+          Answers.ans["q" + index] = {
+            didreply: true,
+            response: v.toFixed(0),
+            itemText: itemText,
+            itemId: itemId,
+          };
           setChange(true);
           setSliderValue(v);
         }}

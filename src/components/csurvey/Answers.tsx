@@ -4,10 +4,7 @@ import { gql } from "../../graphql";
 import { useEffect } from "react";
 
 interface ans {
-  ans: Record<
-    string,
-    Array<{ didreply: boolean; response: string; itemText: string; itemId: string }>
-  >;
+  ans: Record<string, { didreply: boolean; response: string; itemText: string; itemId: string }>;
   sumbmit: boolean;
 }
 

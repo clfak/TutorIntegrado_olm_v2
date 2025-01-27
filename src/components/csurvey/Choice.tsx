@@ -55,9 +55,12 @@ function Choice({
     name: "mathchoice",
     //defaultValue: 'react',
     onChange: nextValue => {
-      Answers.ans["q" + index] = [
-        { didreply: true, response: nextValue, itemText: itemText, itemId: itemId },
-      ];
+      Answers.ans["q" + index] = {
+        didreply: true,
+        response: nextValue,
+        itemText: itemText,
+        itemId: itemId,
+      };
       setChange(true);
     },
   });
@@ -65,9 +68,12 @@ function Choice({
   const group = getRootProps();
 
   useEffect(() => {
-    Answers.ans["q" + index] = [
-      { didreply: false, response: "", itemText: itemText, itemId: itemId },
-    ];
+    Answers.ans["q" + index] = {
+      didreply: false,
+      response: "",
+      itemText: itemText,
+      itemId: itemId,
+    };
   }, []);
 
   const [change, setChange] = useState(false);
