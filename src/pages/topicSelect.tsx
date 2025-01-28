@@ -123,7 +123,7 @@ export default withAuth(function TopicSelect() {
             : parameters.CSMain.topic12.topic}
         </Heading>
         <Text mb="5">Lista de subtópicos</Text>
-        <Box w="full" mx="auto" overflowY="auto" p={4}>
+        <Box w="full" mx="auto" p={4}>
           <SimpleGrid columns={[1, 1, 1, 3]} spacing={10} mt="4">
             {!isSubtopicsLoading &&
               !selectedExcercise.isLoading &&

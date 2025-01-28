@@ -32,13 +32,25 @@ const DynamicTutorWP = dynamic<{ exercise?: Object; topicId?: string }>(() =>
 export default withAuth(function ShowContent() {
   const content = sessionState.currentContent;
   const topic = sessionState.topic;
+  const code = sessionState.currentContent.code;
 
   //console.log("Content --------->", content);
   //console.log("topic --------->", topic);
 
   return (
     <>
-      <Box textAlign="right">
+      <Box
+        position="absolute"
+        top="0"
+        right="0"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={4}
+      >
+        <Text fontSize="sm" color="gray.500">
+          {code}
+        </Text>
         <Info />
       </Box>
 

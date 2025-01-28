@@ -185,8 +185,8 @@ export default withAuth(function ContentSelect() {
         "La barra de progreso muestra el avance que tienes en las habilidades asociadas al tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes un paso incorrectamente, Mateo puede considerar una baja de las habilidades e incluso disminuir la barra. La barra de progreso del grupo promedia el progreso de todos los estudiantes del grupo que han realizado alguna acción en el sistema.";
       pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
-      if (Math.abs(diff) > 0.1) {
-        let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
+      let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
+      if (Math.abs(diff) > 0.1 && pbValues.uservalues < 1 && sample3 != undefined) {
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];

@@ -227,7 +227,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
     <Flex alignItems="center" justifyContent="center" margin={"auto"}>
       <Flex
         direction="column"
-        p={12}
+        p={1}
         rounded={6}
         w="100%"
         maxW="3xl"

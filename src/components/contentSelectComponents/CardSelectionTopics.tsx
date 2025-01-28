@@ -61,7 +61,7 @@ export const CardSelectionTopic = ({
       pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
       let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
-      if (Math.abs(diff) > 0.1 && sample3 != undefined) {
+      if (Math.abs(diff) > 0.1 && pbValues.uservalues < 1 && sample3 != undefined) {
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -108,7 +108,7 @@ export const CardSelectionTopic = ({
           </HStack>
         </Center>
         {selectedExcercise.ejercicio[index] ? (
-          <Center fontSize={"1xl"} paddingBottom={"3"} paddingTop={"1"}>
+          <Center fontSize={"2xl"} paddingBottom={"3"} paddingTop={"1"} overflow="hidden">
             {selectedExcercise.ejercicio[index].img ? (
               <Image src={"img/" + selectedExcercise.ejercicio[index].img} />
             ) : null}
