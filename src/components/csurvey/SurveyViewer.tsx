@@ -19,14 +19,14 @@ import dynamic from "next/dynamic";
 import { ComponentProps, useEffect, useState } from "react";
 import type { ExType } from "../lvltutor/Tools/ExcerciseType";
 import { kcsyejercicio } from "../../utils/startModel";
-//import { useAction } from "../../utils/action";
+import { useAction } from "../../utils/action";
 
 export interface SD {
   title: string;
   code: string;
   description?: string;
   items: Array<{
-    id: number;
+    id: string;
     index: number;
     content: {
       type: string;
@@ -96,7 +96,7 @@ const SurveyContent = ({ data }: { data: SD }) => {
                     </Text>
                   </>
                   <>
-                    <Ranked index={i} key={"sbq" + i} itemText={e.content.text} />
+                    <Ranked index={i} key={"sbq" + i} itemText={e.content.text} itemId={e.id} />
                   </>
                   <Grid
                     key={"GSV" + i}
@@ -146,6 +146,7 @@ const SurveyContent = ({ data }: { data: SD }) => {
                     key={"sbq" + i}
                     options={e.content.options ? e.content.options : ["no options"]}
                     itemText={e.content.text}
+                    itemId={e.id}
                   />
                 </VStack>
               );
@@ -175,14 +176,14 @@ function handleAnswer() {
   var required = true;
   for (var e in Answers.ans) {
     if (!close) close = true;
-    required = Answers.ans[e][0].didreply && required;
+    required = Answers.ans[e].didreply && required;
   }
   return close ? required : false;
 }
 
-function BasicUsage({ data }: { data: SD }) {
+function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
-  //const action = useAction();
+  const action = useAction();
 
   return (
     <>
@@ -204,16 +205,17 @@ function BasicUsage({ data }: { data: SD }) {
                 mr={3}
                 onClick={() => {
                   if (handleAnswer()) {
-                    /*action(
-                      {                        
-                        verbName: "pollResponse",
-                        topicID: "cambiar",
-                        extra: {
-                          pollCode: "cambiar",
-                          responses: Answers.ans
-                        },
-                      }
-                    );*/
+                    let ak = [];
+                    console.log(Answers.ans);
+                    for (var e in Answers.ans) ak.push(JSON.parse(JSON.stringify(Answers.ans[e])));
+                    action({
+                      verbName: "pollResponse",
+                      topicID: topicId,
+                      extra: {
+                        pollCode: data.code,
+                        responses: ak,
+                      },
+                    });
                     onClose();
                     SVP.topicselect = false;
                   }
@@ -230,11 +232,11 @@ function BasicUsage({ data }: { data: SD }) {
   );
 }
 
-export const SurveyViewer = ({ data }: { data: SD }) => {
+export const SurveyViewer = ({ data, topicId }: { data: SD; topicId: string }) => {
   const [d, setD] = useState<SD>();
   useEffect(() => {
     reset();
     setD(handleInitialexpresion(kcsyejercicio.ejercicio as ExType, data));
   }, []);
-  return <>{d != undefined ? <BasicUsage data={d} /> : null}</>;
+  return <>{d != undefined ? <BasicUsage data={d} topicId={topicId} /> : null}</>;
 };

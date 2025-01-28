@@ -8,6 +8,10 @@ import {
   AlertIcon,
   VStack,
   Text,
+  Grid,
+  GridItem,
+  Center,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import Hint from "../../Hint";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
@@ -66,9 +70,9 @@ const Enabledhint = ({
   }
 };
 
-function handleAnswer(ans: string, uans: string, attemps: number, stepid: string) {
+function handleAnswer(oans: option, ans: string, uans: string, attemps: number, stepid: string) {
   let correctAns = false;
-  let at: "info" | "warning" | "success" | "error" | undefined = "error";
+  let at: "info" | "warning" | "success" | "error" | undefined;
   let output = {
     result: 0,
     attempts: attemps,
@@ -92,6 +96,14 @@ function handleAnswer(ans: string, uans: string, attemps: number, stepid: string
     output.alerthidden = false;
     MQProxy.error = true;
   }
+  if (oans.feedbackMsg != undefined) {
+    output.alertmsg = oans.feedbackMsg;
+    MQProxy.spaghettimsg = oans.feedbackMsg;
+  }
+  if (oans.feedbackMsgExp != undefined) {
+    MQProxy.spaghettimsgexp = oans.feedbackMsgExp;
+  }
+
   MQProxy.submit = true;
   output.attempts = attemps + 1;
 
@@ -136,10 +148,10 @@ function ChoiceContent(option: option) {
   let text = option.text;
   let exp = option.expression;
   return (
-    <>
+    <VStack alignItems={"center"} alignContent={"center"}>
       {text ? <Text>{text}</Text> : null}
       {exp ? <MQStaticMathField exp={exp} currentExpIndex={true} /> : null}
-    </>
+    </VStack>
   );
 }
 
@@ -168,9 +180,10 @@ function CChoice({
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "mathchoice",
-    //defaultValue: 'react',
-    onChange: nextValue => {
-      answer.current = nextValue;
+    //defaultValue:"1",
+    value: undefined,
+    onChange: val => {
+      answer.current = val;
     },
   });
 
@@ -183,24 +196,37 @@ function CChoice({
 
   return (
     <>
-      <VStack {...group}>
-        {options.map(value => {
-          const radio = getRadioProps({ value: value.id });
+      <SimpleGrid columns={[1, 1, 1, 2]} spacing={2} {...group}>
+        {options.map((v, i) => {
+          const radio = getRadioProps({ value: String(v.id) });
           return (
-            <RadioCard key={"cchoice" + value.id} {...radio}>
-              {ChoiceContent(value)}
+            <RadioCard key={v.id} {...radio}>
+              <Grid templateColumns="repeat(20, 1fr)">
+                <GridItem colSpan={2}>
+                  <Text>{String.fromCharCode(97 + i) + ") "}</Text>
+                </GridItem>
+                <GridItem colSpan={16}>
+                  <Center>{ChoiceContent(v)}</Center>
+                </GridItem>
+              </Grid>
             </RadioCard>
           );
         })}
-      </VStack>
-      <HStack spacing="4px" alignItems="center" justifyContent="center" margin={"auto"}>
+      </SimpleGrid>
+      <HStack spacing="4px" alignItems="center" justifyContent="center" margin={"auto"} padding="4">
         <Box>
           <Button
             colorScheme="teal"
             height={"32px"}
             width={"88px"}
             onClick={() => {
-              let ans = handleAnswer("" + cans.id, answer.current, attempts, step.stepId);
+              let ans = handleAnswer(
+                step.multipleChoice[Number(answer.current)],
+                "" + cans.id,
+                answer.current,
+                attempts,
+                step.stepId,
+              );
               let ansv = "";
               for (let e of step.multipleChoice)
                 if (("" + e.id).localeCompare(answer.current) == 0) {
@@ -246,8 +272,23 @@ function CChoice({
         />
       </HStack>
       <Alert key={"Alert" + topicId + "i"} status={alertType} mt={2} hidden={alertHidden}>
-        <AlertIcon key={"AlertIcon" + topicId + "i"} />
-        {"(" + attempts + ") " + alertMsg}
+        <Grid templateRows="repeat(2, 1fr)" templateColumns="repeat(20, 1fr)">
+          <GridItem rowSpan={1} colSpan={1}>
+            <AlertIcon key={"AlertIcon" + topicId + "i"} />
+          </GridItem>
+          <GridItem rowSpan={1} colSpan={19}>
+            <Text alignSelf={"left"} alignItems="start">
+              {"(" + attempts + ") " + alertMsg}
+            </Text>
+          </GridItem>
+          <GridItem rowSpan={1} colSpan={20}>
+            {MQProxy.spaghettimsgexp ? (
+              <Center>
+                <MQStaticMathField exp={MQProxy.spaghettimsgexp} currentExpIndex={true} />
+              </Center>
+            ) : null}
+          </GridItem>
+        </Grid>
       </Alert>
     </>
   );
@@ -280,13 +321,16 @@ function ShuffledLoad({
   topicId: string;
   disablehint: boolean;
 }) {
+  //deepcopy
+  var d = JSON.stringify(step);
+  var dd = JSON.parse(d);
   return (
     <CChoice
       step={step}
       content={content}
       topicId={topicId}
       disablehint={disablehint}
-      options={fishyShuffle(step.multipleChoice)}
+      options={fishyShuffle(dd.multipleChoice)}
     />
   );
 }

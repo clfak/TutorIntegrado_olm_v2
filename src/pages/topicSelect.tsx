@@ -15,7 +15,7 @@ import StartModel, {
 } from "../utils/startModel";
 import { useSnapshot } from "valtio";
 import { gSelect } from "../components/GroupSelect";
-import { reset2 } from "../components/csurvey/Answers";
+import SuerveyQ, { reset2 } from "../components/csurvey/Answers";
 import parameters from "../components/contentSelectComponents/parameters.json";
 
 export default withAuth(function TopicSelect() {
@@ -29,6 +29,7 @@ export default withAuth(function TopicSelect() {
   const [topicCodes, setTopicCodes] = useState<string[]>([]);
 
   StartModel(user.id);
+  SuerveyQ("4", ["poll-srl1", "poll-srl2", "motiv-msg"]);
 
   const { data: subtopicsData, isLoading: isSubtopicsLoading } = useGQLQuery(
     gql(/* GraphQL */ `

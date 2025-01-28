@@ -77,7 +77,7 @@ const Steporans = ({
           <MQStaticMathField key={"respuesta" + i} exp={answer} currentExpIndex={true} />
           <Alert key={"Alert" + topicId + "i"} status={"success"} mt={2}>
             <AlertIcon key={"AlertIcon" + topicId + "i"} />
-            {step.correctMsg}
+            {MQProxy.spaghettimsg ? MQProxy.spaghettimsg : step.correctMsg}
           </Alert>
         </>,
       );

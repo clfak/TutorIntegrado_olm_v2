@@ -14,7 +14,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-function Pbinfo() {
+function Pbinfo(info: string) {
   return (
     <Popover>
       <PopoverTrigger>
@@ -25,7 +25,9 @@ function Pbinfo() {
       <PopoverContent>
         <PopoverArrow />
         <PopoverCloseButton />
-        <PopoverBody textColor={"black"}>potato</PopoverBody>
+        <PopoverBody textColor={"black"} textAlign={"justify"}>
+          {info}
+        </PopoverBody>
       </PopoverContent>
     </Popover>
   );
@@ -44,12 +46,14 @@ const ProgressComparison = ({
   uLabel,
   gLabel,
   deltau,
+  info,
 }: {
   uservalues: number;
   groupvalues: number;
   uLabel?: string;
   gLabel?: string;
   deltau?: string;
+  info?: string;
 }) => {
   let pw = wstring(uservalues);
   let pwg = wstring(groupvalues);
@@ -110,7 +114,7 @@ const ProgressComparison = ({
           )}
         </GridItem>
         <GridItem pl="4" colSpan={1} rowSpan={2} pt={["1.5", "1.5", "1.5", "2"]}>
-          {Pbinfo()}
+          {Pbinfo(info)}
         </GridItem>
         <GridItem textAlign="right" colSpan={[4, 4, 4, 3]}>
           <Text pr="2" alignSelf="center">
@@ -137,10 +141,12 @@ const Progress = ({
   uservalues,
   uLabel,
   deltau,
+  info,
 }: {
   uservalues: number;
   uLabel?: string;
   deltau?: string;
+  info?: string;
 }) => {
   let pw = wstring(uservalues);
   let label1 = pw;
@@ -189,7 +195,7 @@ const Progress = ({
           )}
         </GridItem>
         <GridItem pl="4" colSpan={1}>
-          {Pbinfo()}
+          {Pbinfo(info)}
         </GridItem>
       </Grid>
     </>
@@ -200,10 +206,10 @@ const before2 = {
   content: "",
   width: "0px",
   height: "0px",
-  "border-right": "7px solid white",
-  "border-left": "7px solid transparent",
-  "border-bottom": "7px solid white",
-  "border-top": "7px solid transparent",
+  borderRight: "7px solid white",
+  borderLeft: "7px solid transparent",
+  borderBottom: "7px solid white",
+  borderTop: "7px solid transparent",
 };
 
 const Encouragement = (msg: string, maxW?: string) => {
@@ -228,6 +234,7 @@ export const Progressbar = ({
   uLabel,
   gLabel,
   deltau,
+  info,
 }: {
   uservalues: number;
   groupvalues?: number;
@@ -236,6 +243,7 @@ export const Progressbar = ({
   uLabel?: string;
   gLabel?: string;
   deltau?: string;
+  info?: string;
 }) => {
   let minw = "275px";
   let minh = "50px";
@@ -249,9 +257,10 @@ export const Progressbar = ({
           uLabel={uLabel}
           gLabel={gLabel}
           deltau={deltau}
+          info={info}
         />
       ) : (
-        <Progress uservalues={uservalues} uLabel={uLabel} deltau={deltau} />
+        <Progress uservalues={uservalues} uLabel={uLabel} deltau={deltau} info={info} />
       )}
       {msg ? Encouragement(msg, dMaxW) : <></>}
     </Box>

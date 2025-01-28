@@ -21,11 +21,8 @@ import {
 } from "../utils/startModel";
 import { gSelect } from "../components/GroupSelect";
 import { progresscalc } from "../components/progressbar/progresscalc";
-import { reset, SVP } from "../components/csurvey/Answers";
+import { reset, Surveys, SVP } from "../components/csurvey/Answers";
 import { SurveyViewer } from "../components/csurvey/SurveyViewer";
-import sample from "../components/csurvey/SE.json";
-import sample2 from "../components/csurvey/SEEV.json";
-import sample3 from "../components/csurvey/OSLMMotivMsgs.json";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();
@@ -173,6 +170,7 @@ export default withAuth(function ContentSelect() {
     groupvalues?: number;
     msg?: string;
     deltau?: string;
+    info?: string;
   }
 
   let pbValues: pbi = {
@@ -182,13 +180,13 @@ export default withAuth(function ContentSelect() {
   //!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading
   if (!uModel.isLoading) {
     pbValues.uservalues = progresscalc(kcsyejercicio.lista, uModel.data);
-    if (uModel.motivmsg)
-      pbValues["msg"] =
-        "Si no hay OSLM, entonces no se muestran mansajes? si se muestran definirlos";
     if (uModel.osml) {
+      pbValues["info"] =
+        "La barra de progreso muestra el avance que tienes en las habilidades asociadas al tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes un paso incorrectamente, Mateo puede considerar una baja de las habilidades e incluso disminuir la barra. La barra de progreso del grupo promedia el progreso de todos los estudiantes del grupo que han realizado alguna acción en el sistema.";
       pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
       if (Math.abs(diff) > 0.1) {
+        let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -197,7 +195,9 @@ export default withAuth(function ContentSelect() {
           pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
         }
       } else pbValues["msg"] = null;
-    }
+    } else
+      pbValues["info"] =
+        "La barra de progreso muestra el avance que tienes en las habilidades asociadas al tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes un paso incorrectamente, Mateo puede considerar una baja de las habilidades e incluso disminuir la barra.";
     if (uModel.sprog) {
       let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
       let diff = pbValues.uservalues - ouval;
@@ -217,9 +217,15 @@ export default withAuth(function ContentSelect() {
     <>
       {pageload ? (
         SVP.topicselect ? (
-          <SurveyViewer data={sample} />
+          <SurveyViewer
+            data={Surveys.data[Surveys.tagXindex["poll-srl1"]]}
+            topicId={registerTopic}
+          />
         ) : SVP.count % 3 == 2 ? (
-          <SurveyViewer data={sample2} />
+          <SurveyViewer
+            data={Surveys.data[Surveys.tagXindex["poll-srl2"]]}
+            topicId={registerTopic}
+          />
         ) : null
       ) : null}
       {isError ? (
