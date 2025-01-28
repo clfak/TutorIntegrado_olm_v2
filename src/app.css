@@ -1,0 +1,12 @@
+.mq-root-block sup{
+    position: unset !important;
+}
+
+.mq-sup {
+    margin-bottom: 0px !important;
+}
+
+
+/*.mq-root-block {
+    overflow: visible !important;
+}*/
