@@ -79,23 +79,22 @@ export default withAuth(function TopicSelect() {
     subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => Number(a.id) - Number(b.id)) || [];
 
   UserModel(user.id);
-  for (let e of user.groups) {
-    if (e.id.localeCompare(gSelect.group) == 0) {
-      for (let ee of e.tags) {
-        if (ee.localeCompare("oslm") == 0) uModel.osml = true;
-        if (ee.localeCompare("motiv-msg") == 0) uModel.motivmsg = true;
-        if (ee.localeCompare("session-progress") == 0) uModel.sprog = true;
-      }
-    }
-  }
-
   const gs = useSnapshot(gSelect);
 
-  GroupModel(gs.group, user.projects[0].code);
+  GroupModel(gs.group.id, user.projects[0].code);
 
   console.log("aa", selectedExcercise.kcXtopic, selectedExcercise.ejercicio);
 
-  useEffect(() => reset2(), []);
+  useEffect(() => {
+    reset2();
+    let alltags = user.tags.concat(gs.group.tags);
+
+    for (var e of alltags) {
+      if (e === "oslm") uModel.osml = true;
+      if (e === "motiv-msg") uModel.motivmsg = true;
+      if (e === "session-progress") uModel.sprog = true;
+    }
+  }, []);
 
   return (
     <>

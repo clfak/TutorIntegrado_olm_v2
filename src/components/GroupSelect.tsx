@@ -3,12 +3,19 @@ import { useAuth } from "./Auth";
 import { proxy } from "valtio";
 import { useEffect } from "react";
 
+interface group {
+  id: string;
+  code: string;
+  label: string;
+  tags: Array<string>;
+}
+
 export const gSelect = proxy<{
-  group: string;
+  group?: group;
   hasGroup: boolean;
   onChange: boolean;
 }>({
-  group: "2",
+  group: null,
   hasGroup: false,
   onChange: false,
 });
@@ -19,7 +26,7 @@ export const GroupSelect = () => {
   let gs: boolean = true;
   if (isLoading || !user || user.groups.length == 0) gs = false;
   useEffect(() => {
-    if (gs) gSelect.group = user.groups[0].id;
+    if (gs) gSelect.group = user.groups[0] as group;
     else gSelect.group = null;
   }, [user]);
 
@@ -31,12 +38,12 @@ export const GroupSelect = () => {
           color="black"
           bg="white"
           onChange={e => {
-            gSelect.group = e.target.value;
+            gSelect.group = user.groups[Number(e.target.value)] as group;
             gSelect.onChange = true;
           }}
         >
           {user.groups.map((group, i) => (
-            <option key={"GroupSelectOption" + i} value={group.id}>
+            <option key={"GroupSelectOption" + i} value={"" + i}>
               Grupo: {group.label}
             </option>
           ))}
