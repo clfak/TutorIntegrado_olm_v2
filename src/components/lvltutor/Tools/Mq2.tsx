@@ -456,7 +456,7 @@ const Mq2 = ({
       </HStack>
       <Alert key={"Alert" + topicId + "i"} status={alertType} mt={2} hidden={alertHidden}>
         <AlertIcon key={"AlertIcon" + topicId + "i"} />
-        {"(" + attempts + ") " + alertMsg}
+        {"¡Inténtalo nuevamente! (intentos: " + attempts + ") " + alertMsg}
       </Alert>
     </>
   );

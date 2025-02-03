@@ -12,6 +12,7 @@ import {
   GridItem,
   Center,
   SimpleGrid,
+  Icon,
 } from "@chakra-ui/react";
 import Hint from "../../Hint";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
@@ -204,8 +205,8 @@ function CChoice({
           return (
             <RadioCard key={v.id} {...radio}>
               <Grid templateColumns="repeat(20, 1fr)">
-                <GridItem colSpan={2}>
-                  <Text>{String.fromCharCode(97 + i) + ") "}</Text>
+                <GridItem colSpan={2} alignContent={"center"}>
+                  <Box borderRadius={"full"} bg="black" h={"2"} w={"2"} />
                 </GridItem>
                 <GridItem colSpan={16}>
                   <Center>{ChoiceContent(v)}</Center>
@@ -279,7 +280,7 @@ function CChoice({
           </GridItem>
           <GridItem rowSpan={1} colSpan={19}>
             <Text alignSelf={"left"} alignItems="start">
-              {"(" + attempts + ") " + alertMsg}
+              {"¡Inténtalo nuevamente! (intentos: " + attempts + ") " + alertMsg}
             </Text>
           </GridItem>
           <GridItem rowSpan={1} colSpan={20}>

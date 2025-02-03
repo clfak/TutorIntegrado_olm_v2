@@ -77,7 +77,7 @@ export const CardSelectionTopic = ({
     pbValues.uservalues = progresscalc(listakcs(KCs), uModel.data);
     if (uModel.osml) {
       pbValues["info"] =
-        "La barra de progreso muestra el avance que tienes en las habilidades asociadas al tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes un paso incorrectamente, Mateo puede considerar una baja de las habilidades e incluso disminuir la barra. La barra de progreso del grupo promedia el progreso de todos los estudiantes del grupo que han realizado alguna acción en el sistema.";
+        "La barra de progreso muestra tu avance en las habilidades del tópico. Cada vez que respondes correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes incorrectamente, Mateo puede disminuir la barra. La barra del grupo promedia el progreso de todos los estudiantes del grupo que han usado el sistema.";
       pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
       let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
@@ -94,7 +94,7 @@ export const CardSelectionTopic = ({
       }
     } else
       pbValues["info"] =
-        "La barra de progreso muestra el avance que tienes en las habilidades asociadas al tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes un paso incorrectamente, Mateo puede considerar una baja de las habilidades e incluso disminuir la barra.";
+        "La barra de progreso muestra tu avance en habilidades del tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes incorrectamente, Mateo puede disminuir la barra.";
   }
 
   return (
