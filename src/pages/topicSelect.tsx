@@ -79,10 +79,14 @@ export default withAuth(function TopicSelect() {
     subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => Number(a.id) - Number(b.id)) || [];
 
   UserModel(user.id);
-  for (let e of user.tags) {
-    if (e.localeCompare("oslm") == 0) uModel.osml = true;
-    if (e.localeCompare("motiv-msg") == 0) uModel.motivmsg = true;
-    if (e.localeCompare("session-progress") == 0) uModel.sprog = true;
+  for (let e of user.groups) {
+    if (e.id.localeCompare(gSelect.group) == 0) {
+      for (let ee of e.tags) {
+        if (ee.localeCompare("oslm") == 0) uModel.osml = true;
+        if (ee.localeCompare("motiv-msg") == 0) uModel.motivmsg = true;
+        if (ee.localeCompare("session-progress") == 0) uModel.sprog = true;
+      }
+    }
   }
 
   const gs = useSnapshot(gSelect);

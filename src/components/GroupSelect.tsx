@@ -1,6 +1,7 @@
 import { Select } from "@chakra-ui/react";
 import { useAuth } from "./Auth";
 import { proxy } from "valtio";
+import { useEffect } from "react";
 
 export const gSelect = proxy<{
   group: string;
@@ -15,6 +16,11 @@ export const gSelect = proxy<{
 export const GroupSelect = () => {
   const { isLoading, user } = useAuth();
   if (isLoading || !user || user.groups.length == 0) return <></>;
+
+  useEffect(() => {
+    if (isLoading || !user || user.groups.length == 0) gSelect.group = null;
+    else gSelect.group = user.groups[0].id;
+  }, []);
 
   return (
     <Select
