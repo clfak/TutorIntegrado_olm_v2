@@ -12,7 +12,6 @@ import {
   GridItem,
   Center,
   SimpleGrid,
-  Icon,
 } from "@chakra-ui/react";
 import Hint from "../../Hint";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
@@ -200,7 +199,7 @@ function CChoice({
   return (
     <>
       <SimpleGrid columns={[1, 1, 1, 2]} spacing={2} {...group}>
-        {options.map((v, i) => {
+        {options.map(v => {
           const radio = getRadioProps({ value: String(v.id) });
           return (
             <RadioCard key={v.id} {...radio}>
