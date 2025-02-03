@@ -15,28 +15,33 @@ export const gSelect = proxy<{
 
 export const GroupSelect = () => {
   const { isLoading, user } = useAuth();
-  if (isLoading || !user || user.groups.length == 0) return <></>;
 
+  let gs: boolean = true;
+  if (isLoading || !user || user.groups.length == 0) gs = false;
   useEffect(() => {
-    if (isLoading || !user || user.groups.length == 0) gSelect.group = null;
-    else gSelect.group = user.groups[0].id;
-  }, []);
+    if (gs) gSelect.group = user.groups[0].id;
+    else gSelect.group = null;
+  }, [user]);
 
   return (
-    <Select
-      size={"sm"}
-      color="black"
-      bg="white"
-      onChange={e => {
-        gSelect.group = e.target.value;
-        gSelect.onChange = true;
-      }}
-    >
-      {user.groups.map((group, i) => (
-        <option key={"GroupSelectOption" + i} value={group.id}>
-          Grupo: {group.label}
-        </option>
-      ))}
-    </Select>
+    <>
+      {gs ? (
+        <Select
+          size={"sm"}
+          color="black"
+          bg="white"
+          onChange={e => {
+            gSelect.group = e.target.value;
+            gSelect.onChange = true;
+          }}
+        >
+          {user.groups.map((group, i) => (
+            <option key={"GroupSelectOption" + i} value={group.id}>
+              Grupo: {group.label}
+            </option>
+          ))}
+        </Select>
+      ) : null}
+    </>
   );
 };
