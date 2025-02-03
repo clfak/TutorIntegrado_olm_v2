@@ -220,11 +220,13 @@ export default withAuth(function ContentSelect() {
           <SurveyViewer
             data={Surveys.data[Surveys.tagXindex["poll-srl1"]]}
             topicId={registerTopic}
+            iExp={kcsyejercicio.ejercicio as ExType}
           />
         ) : SVP.count % 3 == 2 ? (
           <SurveyViewer
             data={Surveys.data[Surveys.tagXindex["poll-srl2"]]}
             topicId={registerTopic}
+            iExp={kcsyejercicio.ejercicio as ExType}
           />
         ) : null
       ) : null}

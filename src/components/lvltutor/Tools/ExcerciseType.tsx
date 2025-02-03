@@ -57,4 +57,5 @@ export interface ExType extends Record<string, string | object | Array<Step>> {
   steps: Array<Step>;
   img?: string;
   initialExpression?: string;
+  finalAnswer?: Step;
 }

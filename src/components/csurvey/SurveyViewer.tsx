@@ -18,7 +18,6 @@ import { Answers, SVP, reset } from "./Answers";
 import dynamic from "next/dynamic";
 import { ComponentProps, useEffect, useState } from "react";
 import type { ExType } from "../lvltutor/Tools/ExcerciseType";
-import { kcsyejercicio } from "../../utils/startModel";
 import { useAction } from "../../utils/action";
 
 export interface SD {
@@ -213,6 +212,9 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
                       topicID: topicId,
                       extra: {
                         pollCode: data.code,
+                        context: data.items[0].content.expression
+                          ? data.items[0].content.expression
+                          : "-1",
                         responses: ak,
                       },
                     });
@@ -232,11 +234,20 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
   );
 }
 
-export const SurveyViewer = ({ data, topicId }: { data: SD; topicId: string }) => {
+export const SurveyViewer = ({
+  data,
+  topicId,
+  iExp,
+}: {
+  data: SD;
+  topicId: string;
+  iExp?: ExType;
+}) => {
   const [d, setD] = useState<SD>();
   useEffect(() => {
     reset();
-    setD(handleInitialexpresion(kcsyejercicio.ejercicio as ExType, data));
+    if (iExp != undefined) setD(handleInitialexpresion(iExp, data));
+    else setD(data);
   }, []);
   return <>{d != undefined ? <BasicUsage data={d} topicId={topicId} /> : null}</>;
 };

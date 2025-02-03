@@ -70,7 +70,13 @@ const Enabledhint = ({
   }
 };
 
-function handleAnswer(oans: option, ans: string, uans: string, attemps: number, stepid: string) {
+function handleAnswer(
+  oans: option,
+  ans: Array<option>,
+  uans: string,
+  attemps: number,
+  stepid: string,
+) {
   let correctAns = false;
   let at: "info" | "warning" | "success" | "error" | undefined;
   let output = {
@@ -81,7 +87,7 @@ function handleAnswer(oans: option, ans: string, uans: string, attemps: number, 
     alerthidden: false,
   };
 
-  if (ans.localeCompare(uans) == 0) correctAns = true;
+  for (var e of ans) if (e.correct && ("" + e.id).localeCompare(uans) == 0) correctAns = true;
 
   //console.log(validationType, correctAns);
   if (correctAns) {
@@ -188,10 +194,6 @@ function CChoice({
   });
 
   const group = getRootProps();
-
-  let cans: option;
-  for (let e of step.multipleChoice) if (e.correct) cans = e;
-
   const action = useAction();
 
   return (
@@ -222,7 +224,7 @@ function CChoice({
             onClick={() => {
               let ans = handleAnswer(
                 step.multipleChoice[Number(answer.current)],
-                "" + cans.id,
+                step.multipleChoice,
                 answer.current,
                 attempts,
                 step.stepId,
@@ -233,7 +235,6 @@ function CChoice({
                   if (e.expression) ansv = e.expression;
                   else ansv = e.text;
                 }
-              console.log(cans, answer.current, ans);
               setAttempts(ans.attempts);
               setAlertType(ans.alerttype);
               setAlertMsg(ans.alertmsg);

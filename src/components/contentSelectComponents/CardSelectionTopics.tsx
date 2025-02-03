@@ -6,6 +6,9 @@ import { gModel, kcsyejercicio, selectedExcercise, uModel } from "../../utils/st
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
 import { Surveys } from "../csurvey/Answers";
+import { useAction } from "../../utils/action";
+import type { ExType } from "../lvltutor/Tools/ExcerciseType";
+import { InitialModel } from "../../utils/startModel";
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
@@ -24,6 +27,22 @@ const listakcs = (kcs: { code: string }[]): string[] => {
   return kcnames;
 };
 
+//follows the same logic as the exp displayed on the mathcomponents at the cards
+function displayExp(e: ExType): string {
+  let ejercicio = e;
+  let exp = "";
+  if (
+    ejercicio.type.localeCompare("ecc5s") == 0 ||
+    ejercicio.type.localeCompare("secl5s") == 0 ||
+    ejercicio.type.localeCompare("ecl2s") == 0
+  )
+    exp = ejercicio.eqc;
+  else if (ejercicio.type.localeCompare("wordProblem") == 0) exp = "";
+  else if (ejercicio.initialExpression != undefined) exp = ejercicio.initialExpression;
+  else exp = ejercicio.steps[0].expression;
+  return exp;
+}
+
 export const CardSelectionTopic = ({
   id,
   label,
@@ -40,6 +59,7 @@ export const CardSelectionTopic = ({
   index: number;
 }) => {
   const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
+  const action = useAction();
 
   interface pbi {
     uservalues: number;
@@ -98,6 +118,22 @@ export const CardSelectionTopic = ({
             kcsyejercicio.lista = listakcs(KCs);
             kcsyejercicio.ejercicio = selectedExcercise.ejercicio[index];
           }
+          if (uModel.sprog) {
+            let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
+            let diff = pbValues.uservalues - ouval;
+            pbValues["deltau"] = (diff * 100).toFixed(0);
+          }
+          action({
+            verbName: "selectSubtopic",
+            topicID: registerTopic,
+            extra: {
+              shownExpression: displayExp(kcsyejercicio.ejercicio as ExType),
+              progressMe: pbValues.uservalues ? pbValues.uservalues : -1,
+              progressGroup: pbValues.groupvalues ? pbValues.groupvalues : -1,
+              sessionProgressMe: pbValues.deltau ? pbValues.deltau : "-1",
+              shownMsg: pbValues.msg ? pbValues.msg : "-1",
+            },
+          });
         }}
       >
         <Center>
