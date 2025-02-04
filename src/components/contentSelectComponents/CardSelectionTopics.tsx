@@ -58,7 +58,7 @@ export const CardSelectionTopic = ({
   KCs: { code: string }[];
   index: number;
 }) => {
-  const topicPath = `contentSelect?topic=${id}&registerTopic=${registerTopic}`;
+  const topicPath = `contentSelect?topic=${id}&registerTopic=${id}`;
   const action = useAction();
 
   interface pbi {
