@@ -81,13 +81,16 @@ export default withAuth(function TopicSelect() {
   UserModel(user.id);
   const gs = useSnapshot(gSelect);
 
-  GroupModel(gs.group.id, user.projects[0].code);
+  GroupModel(gs.group ? gs.group.id : "-1", user.projects[0].code);
 
   console.log("aa", selectedExcercise.kcXtopic, selectedExcercise.ejercicio);
 
   useEffect(() => {
     reset2();
-    let alltags = user.tags.concat(gs.group.tags);
+    let alltags = user.tags;
+    if (gs.group) {
+      alltags = user.tags.concat(gs.group.tags);
+    }
 
     for (var e of alltags) {
       if (e === "oslm") uModel.osml = true;

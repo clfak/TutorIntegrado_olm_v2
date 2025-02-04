@@ -163,7 +163,7 @@ export default withAuth(function ContentSelect() {
 
   const gs = useRef(gSelect);
 
-  GroupModel(gs.current.group.id, user.projects[0].code);
+  GroupModel(gs.current.group ? gs.current.group.id : "-1", user.projects[0].code);
 
   interface pbi {
     uservalues: number;

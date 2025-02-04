@@ -3,6 +3,7 @@ import { gql } from "../graphql";
 import { proxy } from "valtio";
 import { useEffect } from "react";
 import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
+import { gSelect } from "../components/GroupSelect";
 export interface model {
   mth: number;
   level: number;
@@ -146,7 +147,7 @@ export function GroupModel(gid: string, pid: string) {
     `),
     { groupId: gid, projectCode: pid },
     {
-      enabled: uModel.osml,
+      enabled: gSelect.group ? true : false && uModel.osml,
       onSuccess(data) {
         gModel.data = data.groupModelStates;
       },
