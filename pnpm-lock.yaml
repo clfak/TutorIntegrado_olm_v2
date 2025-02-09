@@ -63,8 +63,8 @@ importers:
         specifier: 1.0.6
         version: 1.0.6(mathjax-full@3.2.2)(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       mathlive:
-        specifier: ^0.95.5
-        version: 0.95.5
+        specifier: ^0.104.0
+        version: 0.104.0
       next:
         specifier: ^12.0.8
         version: 12.0.8(@babel/core@7.16.12)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -795,6 +795,10 @@ packages:
 
   '@cortex-js/compute-engine@0.12.3':
     resolution: {integrity: sha512-LuiSWMSlgsLFcRWm5ifR8ZeE9HXWOrJ+hE6F211eVI+S+w9SQQvZhhCdUCBusyspW0+29R8lksJPH4qFFr3Xag==}
+    engines: {node: '>=16.14.2', npm: '>=8.5.0'}
+
+  '@cortex-js/compute-engine@0.27.0':
+    resolution: {integrity: sha512-iMK2F/iwZGVCB4L/GiTmeQsRaor/5DvLgUfBNZEskfMAYxDeRu3qM1I68QnZ3c0oqMW2bTFn8GX+SEWmNNkMKA==}
     engines: {node: '>=16.14.2', npm: '>=8.5.0'}
 
   '@ctrl/tinycolor@3.4.0':
@@ -1665,6 +1669,10 @@ packages:
   common-tags@1.8.2:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
+
+  complex-esm@2.1.1-esm1:
+    resolution: {integrity: sha512-IShBEWHILB9s7MnfyevqNGxV0A1cfcSnewL/4uPFiSxkcQL4Mm3FxJ0pXMtCXuWLjYz3lRRyk6OfkeDZcjD6nw==}
+    engines: {node: '>=16.14.2', npm: '>=8.5.0'}
 
   complex.js@2.1.1:
     resolution: {integrity: sha512-8njCHOTtFFLtegk6zQo0kkVX1rngygb/KQI6z1qZxlFI3scluC+LVTCFbrkWjBv4vvLlbQ9t88IPMC6k95VTTg==}
@@ -2895,9 +2903,9 @@ packages:
       react: ^15.0.0 || ^16.0.0
       react-dom: ^15.0.0 || ^16.0.0
 
-  mathlive@0.95.5:
-    resolution: {integrity: sha512-FAAyx0m7hcYNIZKdmQ3/x+vk1lwSmQU30aGYRN2c5+Zz4H0z+B8+0h9fZgUN7SRvc1MmoeaOrO2iGvC2/RYDEg==}
-    engines: {node: '>=16.14.2', npm: '>=8.5.0'}
+  mathlive@0.104.0:
+    resolution: {integrity: sha512-RFVJajzFfhPxq+guj6VWsQ2HOjY3J0VEiZ2V6PvR0i5cj0ncUyNl9BMtQ4KZ6ROL7dB5RQmwuoFDKtgfMFuprg==}
+    engines: {node: '>=21.0.0', npm: '>=10.5.0'}
 
   meow@10.1.2:
     resolution: {integrity: sha512-zbuAlN+V/sXlbGchNS9WTWjUzeamwMt/BApKCJi7B0QyZstZaMx0n4Unll/fg0njGtMdC9UP5SAscvOCLYdM+Q==}
@@ -5137,6 +5145,11 @@ snapshots:
       complex.js: 2.1.1
       decimal.js: 10.4.3
 
+  '@cortex-js/compute-engine@0.27.0':
+    dependencies:
+      complex-esm: 2.1.1-esm1
+      decimal.js: 10.4.3
+
   '@ctrl/tinycolor@3.4.0': {}
 
   '@emotion/babel-plugin@11.7.2(@babel/core@7.16.12)':
@@ -6267,6 +6280,8 @@ snapshots:
   commander@9.2.0: {}
 
   common-tags@1.8.2: {}
+
+  complex-esm@2.1.1-esm1: {}
 
   complex.js@2.1.1: {}
 
@@ -7642,9 +7657,9 @@ snapshots:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
 
-  mathlive@0.95.5:
+  mathlive@0.104.0:
     dependencies:
-      '@cortex-js/compute-engine': 0.12.3
+      '@cortex-js/compute-engine': 0.27.0
 
   meow@10.1.2:
     dependencies:
