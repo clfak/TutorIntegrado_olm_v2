@@ -168,21 +168,21 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   useEffect(() => {
     if (mqSnap.submit) {
       if (!mqSnap.submitValues.fail) {
-        currentStep.current = mqSnap.defaultIndex[0]!;
+        currentStep.current = mqSnap.defaultIndex[1]!;
         let currentStepValue = test;
         let duration = (MQProxy.endDate - MQProxy.startDate) / 1000;
         let sv = MQProxy.submitValues;
         sv.duration = duration;
         MQProxy.startDate = Date.now();
-        currentStepValue[mqSnap.defaultIndex[0]! - 1] = {
+        currentStepValue[mqSnap.defaultIndex[0]] = {
           disabled: false,
           hidden: false,
           answer: true,
           value: sv,
           open: false,
         };
-        if (mqSnap.defaultIndex[0]! < cantidadDePasos) {
-          currentStepValue[mqSnap.defaultIndex[0]!] = {
+        if (mqSnap.defaultIndex[1]! < cantidadDePasos) {
+          currentStepValue[mqSnap.defaultIndex[1]] = {
             disabled: false,
             hidden: false,
             answer: false,

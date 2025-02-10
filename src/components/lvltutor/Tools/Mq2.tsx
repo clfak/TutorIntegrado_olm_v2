@@ -199,7 +199,7 @@ const Mq2 = ({
     if (correctAns) {
       result.current = true;
       MQProxy.endDate = Date.now();
-      MQProxy.defaultIndex = [parseInt(step.stepId) + 1];
+      MQProxy.defaultIndex = [parseInt(step.stepId), parseInt(step.stepId) + 1];
       MQProxy.submitValues = {
         ans: latex,
         att: attempts,
@@ -260,7 +260,11 @@ const Mq2 = ({
       <VStack alignItems="center" justifyContent="center" margin={"auto"}>
         <MQStaticMathField
           exp={step.expression}
-          currentExpIndex={parseInt(step.stepId) == mqSnap.defaultIndex[0] ? true : false}
+          currentExpIndex={
+            parseInt(step.stepId) == mqSnap.defaultIndex[mqSnap.defaultIndex.length - 1]
+              ? true
+              : false
+          }
         />
         <Box>
           <Stack spacing={4} direction="row" align="center" pb={4}>
@@ -298,7 +302,11 @@ const Mq2 = ({
             >
               <MQStaticMathField
                 exp={"x^y"}
-                currentExpIndex={parseInt(step.stepId) == mqSnap.defaultIndex[0] ? true : false}
+                currentExpIndex={
+                  parseInt(step.stepId) == mqSnap.defaultIndex[mqSnap.defaultIndex.length - 1]
+                    ? true
+                    : false
+                }
               />
             </Button>
             <Button
@@ -312,7 +320,11 @@ const Mq2 = ({
             >
               <MQStaticMathField
                 exp={"\\sqrt{x}"}
-                currentExpIndex={parseInt(step.stepId) == mqSnap.defaultIndex[0] ? true : false}
+                currentExpIndex={
+                  parseInt(step.stepId) == mqSnap.defaultIndex[mqSnap.defaultIndex.length - 1]
+                    ? true
+                    : false
+                }
               />
             </Button>
             <Button
@@ -326,7 +338,11 @@ const Mq2 = ({
             >
               <MQStaticMathField
                 exp={"\\sqrt[y]{x}"}
-                currentExpIndex={parseInt(step.stepId) == mqSnap.defaultIndex[0] ? true : false}
+                currentExpIndex={
+                  parseInt(step.stepId) == mqSnap.defaultIndex[mqSnap.defaultIndex.length - 1]
+                    ? true
+                    : false
+                }
               />
             </Button>
           </Stack>

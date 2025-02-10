@@ -93,21 +93,23 @@ function handleAnswer(
   if (correctAns) {
     output.result = 1;
     MQProxy.endDate = Date.now();
-    MQProxy.defaultIndex = [parseInt(stepid) + 1];
+    MQProxy.defaultIndex = [parseInt(stepid), parseInt(stepid) + 1];
     MQProxy.error = false;
   } else {
     output.result = 0;
     output.alerttype = "error";
-    output.alertmsg = "La expresion ingresada no es correcta.";
+    output.alertmsg = "No has elegido una respuesta!.";
     output.alerthidden = false;
     MQProxy.error = true;
   }
-  if (oans.feedbackMsg != undefined) {
-    output.alertmsg = oans.feedbackMsg;
-    MQProxy.spaghettimsg = oans.feedbackMsg;
-  }
-  if (oans.feedbackMsgExp != undefined) {
-    MQProxy.spaghettimsgexp = oans.feedbackMsgExp;
+  if (oans != undefined) {
+    if (oans.feedbackMsg != undefined) {
+      output.alertmsg = oans.feedbackMsg;
+      MQProxy.spaghettimsg = oans.feedbackMsg;
+    }
+    if (oans.feedbackMsgExp != undefined) {
+      MQProxy.spaghettimsgexp = oans.feedbackMsgExp;
+    }
   }
 
   MQProxy.submit = true;
