@@ -144,7 +144,8 @@ function RadioCard(props) {
         }}
         px={1}
         py={1}
-        w={"240px"}
+        w={"100%"}
+        h={"100%"}
       >
         {props.children}
       </Box>
