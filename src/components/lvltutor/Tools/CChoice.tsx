@@ -111,6 +111,8 @@ function handleAnswer(
     }
     if (oans.feedbackMsgExp != undefined) {
       MQProxy.spaghettimsgexp = oans.feedbackMsgExp;
+    } else {
+      MQProxy.spaghettimsgexp = undefined;
     }
   }
 
