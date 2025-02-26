@@ -5,30 +5,35 @@
   "img": "",
   "meta": {},
   "text": "Reconoce si la siguiente frase representa una proposición. En caso de serlo, dé su valor de verdad.",
+  "initialExpression": " ",
   "steps": [
     {
       "stepId": "0",
-      "expression": "",
-      "StepType": "Alternatives",
+      "expression": "\\text{ 6 es divisible por 2 y por 3 a la vez}",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 1: Reconozca si la frase es una proposición",
-      "displayResult": ["\\text{ 6 es divisible por 2 y por 3 a la vez}"],
+      "displayResult": ["\\text{Es una proposición pues posee una condición asociada}"],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Si, pues posee una condición asociada"
+          "id": 0,
+          "text": "Si, pues posee una condición asociada",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "No, pues no posee una condicion asociada"
+          "id": 1,
+          "text": "No, pues no posee una condicion asociada",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "No, pues la proposición no está bien definida"
+          "id": 2,
+          "text": "No, pues la proposición no está bien definida",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Si, pues se puede obtener valor numérico a partir de la frase"
+          "id": 3,
+          "text": "Si, pues se puede obtener valor numérico a partir de la frase",
+          "correct": false
         }
       ],
       "hints": [
@@ -40,37 +45,41 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Si, pues posee una condición asociada"],
+          "answer": ["0"],
           "nextStep": "1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
+      "summary": "1) Se reconoce si es una proposición y por qué"
     },
     {
       "stepId": "1",
       "expression": "",
-      "StepType": "Alternatives",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 2: Determine el valor de verdad de la proposicion",
-      "displayResult": ["\\text{ 6 es divisible por 2 y por 3 a la vez}"],
+      "displayResult": ["\\text{Verdadero, pues ambas condiciones son ciertas}"],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Verdadero, ya que ambas condiciones son ciertas"
+          "id": 0,
+          "text": "Verdadero, ya que ambas condiciones son ciertas",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "Falso, pues 6 no es divisible por 2"
+          "id": 1,
+          "text": "Falso, pues 6 no es divisible por 2",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Falso, pues 6 no es divisible por 3"
+          "id": 2,
+          "text": "Falso, pues 6 no es divisible por 3",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Verdadero, pues ambas condiciones son falsas"
+          "id": 3,
+          "text": "Verdadero, pues ambas condiciones son falsas",
+          "correct": false
         }
       ],
       "hints": [
@@ -82,13 +91,13 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Verdadero, ya que ambas condiciones son ciertas"],
+          "answer": ["0"],
           "nextStep": "-1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
+      "summary": "2) Se determina el valor de verdad de la proposición"
     }
   ]
 }

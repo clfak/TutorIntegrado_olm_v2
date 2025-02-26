@@ -5,30 +5,35 @@
   "img": "",
   "meta": {},
   "text": "Reconoce si la siguiente frase representa una proposición. En caso de serlo, dé su valor de verdad.",
+  "initialExpression": " ",
   "steps": [
     {
       "stepId": "0",
-      "expression": "",
-      "StepType": "Alternatives",
+      "expression": "\\text{La raíz cuadrada de 25 es 5}",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 1: Reconozca si la frase es una proposición",
-      "displayResult": ["\\text{La raíz cuadrada de 25 es 5}"],
+      "displayResult": ["\\text{Es una proposición pues posee una condición asociada}"],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Si, pues posee una condición asociada"
+          "id": 0,
+          "text": "Si, pues posee una condición asociada",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "No, pues no posee una condicion asociada"
+          "id": 1,
+          "text": "No, pues no posee una condicion asociada",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "No, pues la proposición no está bien definida"
+          "id": 2,
+          "text": "No, pues la proposición no está bien definida",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Si, pues se puede obtener valor numérico a partir de la frase"
+          "id": 3,
+          "text": "Si, pues se puede obtener valor numérico a partir de la frase",
+          "correct": false
         }
       ],
       "hints": [
@@ -40,55 +45,61 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Si, pues posee una condición asociada"],
+          "answer": ["0"],
           "nextStep": "1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
+      "summary": "1) Se reconoce si es una proposición y por qué"
     },
     {
       "stepId": "1",
-      "expression": "",
-      "StepType": "Alternatives",
+      "expression": "\\text{La raíz cuadrada de 25 es 5}",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 2: Determine el valor de verdad de la proposicion",
-      "displayResult": ["\\text{La raíz cuadrada de 25 es 5}"],
+      "displayResult": [
+        "\\text{La proposición es verdadera, ua que por definicion la raiz es un numero positivo}"
+      ],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Verdadero, ya que la raíz cuadrada de 5x5=25"
+          "id": 0,
+          "text": "Verdadero, ya que por definición es un número positivo",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "Falso, pues 25 no es divisible por 5"
+          "id": 1,
+          "text": "Falso, pues 25 no es divisible por 5",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Falso, pues -5 también es raíz cuadrada de 25"
+          "id": 2,
+          "text": "Falso, pues -5 también es raíz cuadrada de 25",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Verdadero, ya que al dividir 25 por 5 resulta 5"
+          "id": 3,
+          "text": "Verdadero, ya que al dividir 25 por 5 resulta 5",
+          "correct": false
         }
       ],
       "hints": [
         {
           "hintId": 0,
-          "hint": "Si ambas condiciones son ciertas el valor de verdad de la proposicion es verdadero"
+          "hint": "Por definición la raiz cuadrada de un numero debe ser positiva"
         }
       ],
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Falso, pues -5 también es raíz cuadrada de 25"],
+          "answer": ["0"],
           "nextStep": "-1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
+      "summary": "2) Se determina el valor de verdad de la proposición"
     }
   ]
 }

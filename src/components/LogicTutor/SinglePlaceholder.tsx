@@ -127,7 +127,7 @@ const SinglePlaceholder = ({
         <Hint
           hints={exc.steps[nStep].hints}
           contentId={exc.code}
-          topicId={exc.type}
+          topicId={topic}
           stepId={exc.steps[nStep].stepId}
           matchingError={exc.steps[nStep].matchingError}
           response={[latex]}

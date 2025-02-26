@@ -4,24 +4,26 @@
   "type": "lvltutor2",
   "img": "",
   "meta": {},
-  "eqc": "\\text{P: El área de un círculo es: }\\pi*r² \\\\ Q:4²=8 \\\\ \\text{Determine el valor de verdad de la siguiente conjunción} \\\\ P\\wedge Q",
+  "initialExpression": "\\text{P: El área de un círculo es: }\\pi*r² \\\\ Q:4²=8 \\\\ \\text{Determine el valor de verdad de la siguiente conjunción} \\\\ P\\wedge Q",
   "text": "Dadas las siguientes proposiciones ",
   "steps": [
     {
       "stepId": "0",
-      "expression": "",
-      "StepType": "Alternatives",
+      "expression": "\\text{P: El área de un círculo es: }\\pi*r²",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 1: Determine el valor de verdad de la proposicion P",
-      "displayResult": ["\\text{P: El área de un círculo es: }\\pi*r²"],
+      "displayResult": ["\\text{Verdadero}"],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Verdadero"
+          "id": 0,
+          "text": "Verdadero",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "Falso"
+          "id": 1,
+          "text": "Falso",
+          "correct": false
         }
       ],
       "hints": [
@@ -33,20 +35,20 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Verdadero"],
+          "answer": ["0"],
           "nextStep": "1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1) Se determina el valor de verdad de la proposición"
+      "summary": "1) El valor de verdad de la proposición es"
     },
     {
       "stepId": "1",
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
+      "expression": "Q:4²=\\placeholder[a]{}",
+      "stepType": "MultiplePlaceholders",
       "stepTitle": "Paso 2: Resuelva la proposición",
-      "displayResult": ["Q:4²=\\placeholder[a]{}"],
+      "displayResult": ["16"],
       "KCs": ["EvProp"],
       "values": [],
       "hints": [
@@ -64,27 +66,30 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
+      "summary": "2) El valor de la izquierda de Q es"
     },
     {
       "stepId": "2",
-      "expression": "",
-      "StepType": "Alternatives",
+      "expression": "4²=8",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 3: Determine el valor de verdad de la proposicion",
-      "displayResult": ["4²=8"],
+      "displayResult": ["Falso"],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Verdadero, ya que 4²=4*2=8"
+          "id": 0,
+          "text": "Verdadero, ya que 4²=4*2=8",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Falso, pues 4² es distinto a 8"
+          "id": 1,
+          "text": "Falso, pues 4² es distinto a 8",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "Verdadero, pues ambas condiciones son falsas"
+          "id": 2,
+          "text": "Verdadero, pues ambas condiciones son falsas",
+          "correct": false
         }
       ],
       "hints": [
@@ -96,49 +101,55 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Falso, pues 4² es distinto a 8"],
+          "answer": ["1"],
           "nextStep": "3"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
+      "summary": "3)El valor de verdad de la proposición es:"
     },
     {
       "stepId": "3",
-      "expression": "",
-      "StepType": "Alternatives",
+      "expression": "P\\wedge Q",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 4: Determine el valor de verdad de la conjunción",
-      "displayResult": ["P\\wedge Q"],
+      "displayResult": [
+        "\\text{La conjunción es falta ya que una de las 2 propocisiones es falsa}"
+      ],
       "KCs": ["RecProp"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "Ya que una de las 2 proposiciones es falsa, la conjunción es falsa"
+          "id": 0,
+          "text": "Ya que una de las 2 proposiciones es falsa, la conjunción es falsa",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "Ambas proposiciones son falsas por lo que la conjunción es falsa"
+          "id": 1,
+          "text": "Ambas proposiciones son falsas por lo que la conjunción es falsa",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Ambas preposiciones son verdaderas por lo que la conjunción es verdadera"
+          "id": 2,
+          "text": "Ambas preposiciones son verdaderas por lo que la conjunción es verdadera",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera"
+          "id": 3,
+          "text": "Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera",
+          "correct": false
         }
       ],
       "hints": [
         {
           "hintId": 0,
-          "hint": "Para verificar si la conjuncion "
+          "hint": "Una conjuncion es verdadera si ambas proposiciones son verdaderas "
         }
       ],
       "matchingError": [],
       "answers": [
         {
-          "answer": ["Ya que una de las 2 proposiciones es falsa, la conjunción es falsa"],
+          "answer": ["0"],
           "nextStep": "-1"
         }
       ],

@@ -56,7 +56,7 @@ const DynamicTutorLogic = ({ exc, topicId }: { exc: ExLog; topicId: string }) =>
                 objectFit="cover"
                 src={`img/${exc.img}`}
                 alt="Broken image"
-                maxW={{ base: "80%" }}
+                maxW={{ base: "100%" }}
               />
             </Center>
           </>

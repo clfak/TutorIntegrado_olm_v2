@@ -14,6 +14,7 @@ import Latex from "react-latex-next";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import { FaHandPointRight } from "react-icons/fa";
 import { useAction } from "../../utils/action";
+import Summary from "./Summary";
 
 const TrueFalse = dynamic(() => import("./TrueFalse"), { ssr: false });
 const Blank = dynamic(() => import("./Blank"), { ssr: false });
@@ -119,6 +120,7 @@ const ShowSteps = ({
               {setReport(false)}
             </>
           )}
+          <Summary exc={exc} />
           <RatingQuestion />
         </>
       ) : completed && next !== -1 ? (
