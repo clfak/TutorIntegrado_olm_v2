@@ -168,9 +168,11 @@ export function GroupModel(gid: string, pid: string) {
 export const kcsyejercicio = proxy<{
   lista: Array<string>;
   ejercicio: Object;
+  title: string;
 }>({
   lista: [],
   ejercicio: {},
+  title: "",
 });
 
 export const selectedExcercise = proxy<{

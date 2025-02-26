@@ -117,6 +117,7 @@ export const CardSelectionTopic = ({
           if (KCs && KCs.length > 0) {
             kcsyejercicio.lista = listakcs(KCs);
             kcsyejercicio.ejercicio = selectedExcercise.ejercicio[index];
+            kcsyejercicio.title = label;
           }
           if (uModel.sprog) {
             let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);

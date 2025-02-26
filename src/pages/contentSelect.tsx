@@ -240,29 +240,7 @@ export default withAuth(function ContentSelect() {
           <Center>
             <Heading>
               {parameters.CSMain.title}
-              {registerTopic == parameters.CSMain.topic1.registerTopic
-                ? parameters.CSMain.topic1.topic
-                : registerTopic == parameters.CSMain.topic2.registerTopic
-                ? parameters.CSMain.topic2.topic
-                : registerTopic == parameters.CSMain.topic3.registerTopic
-                ? parameters.CSMain.topic3.topic
-                : registerTopic == parameters.CSMain.topic4.registerTopic
-                ? parameters.CSMain.topic4.topic
-                : registerTopic == parameters.CSMain.topic5.registerTopic
-                ? parameters.CSMain.topic5.topic
-                : registerTopic == parameters.CSMain.topic6.registerTopic
-                ? parameters.CSMain.topic6.topic
-                : registerTopic == parameters.CSMain.topic7.registerTopic
-                ? parameters.CSMain.topic7.topic
-                : registerTopic == parameters.CSMain.topic8.registerTopic
-                ? parameters.CSMain.topic8.topic
-                : registerTopic == parameters.CSMain.topic9.registerTopic
-                ? parameters.CSMain.topic9.topic
-                : registerTopic == parameters.CSMain.topic10.registerTopic
-                ? parameters.CSMain.topic10.topic
-                : registerTopic == parameters.CSMain.topic11.registerTopic
-                ? parameters.CSMain.topic11.topic
-                : parameters.CSMain.topic12.topic}
+              {kcsyejercicio?.title}
             </Heading>
             &nbsp;&nbsp;&nbsp;
           </Center>
