@@ -106,6 +106,8 @@ function handleAnswer(
     if (oans.feedbackMsg != undefined) {
       output.alertmsg = oans.feedbackMsg;
       MQProxy.spaghettimsg = oans.feedbackMsg;
+    } else {
+      MQProxy.spaghettimsg = undefined;
     }
     if (oans.feedbackMsgExp != undefined) {
       MQProxy.spaghettimsgexp = oans.feedbackMsgExp;
