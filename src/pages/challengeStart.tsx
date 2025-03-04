@@ -3,30 +3,17 @@ import React, { useState, useEffect } from "react";
 import { Box, Flex, Text, Center, SimpleGrid } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { formatDate } from "../components/challenge/tools";
-import { useAuth, withAuth } from "../components/Auth";
-import ContentSelect from "../pages/";
+import { useAuth } from "../components/Auth";
 import { CardSelectionDynamic } from "../components/challenge/CardSelectionDynamic";
 import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
-import { useAction } from "../utils/action";
-import { CompleteTopic } from "../components/contentSelectComponents/CompleteTopic";
 import { CardLastExercise } from "../components/contentSelectComponents/CardLastExercise";
 import parameters from "../components/contentSelectComponents/parameters.json";
 import { useGQLQuery } from "rq-gql";
 import { gql } from "../graphql";
 import ShowContent from "../components/challenge/ShowContent";
 import ProgressBar from "../components/challenge/ProgressBar";
-import { selectionDataType, sessionState, sessionStateBD } from "../components/SessionState";
+import { sessionState } from "../components/SessionState";
 
-const topicDefined = {
-  // topic id: subtopic id
-  "44": [44, 45, 46, 47, 48, 49, 50, 51, 62], //productos notables
-  "4": [16, 4, 3, 5, 6, 7, 8], // factorización
-  "19": [19, 21, 22, 64], // potencias
-  "68": [68, 23, 67], // raíces
-  "69": [69, 20], // notación cientifica
-  "31": [16, 31, 17, 18, 63], // fracciones
-  "52": [52, 53, 54, 55, 56], // álgebra de polinomios
-};
 //----------------------------
 
 const queryGetChallenge = gql(/* GraphQL */ `

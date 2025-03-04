@@ -4,7 +4,6 @@ import {
   Box,
   Input,
   Textarea,
-  Select,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -21,8 +20,6 @@ import {
   FormControl,
   FormLabel,
   Text,
-  Divider,
-  Flex,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useGQLQuery } from "rq-gql";
@@ -31,8 +28,6 @@ import "katex/dist/katex.min.css";
 import MathDisplay from "../components/challenge/MathDisplay";
 import LatexPreview from "../components/challenge/LatexPreview";
 import { extractExercise, formatDate } from "../components/challenge/tools";
-import { useAuth } from "../components/Auth";
-import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const mutationUpdateChallenge = gql(`
   mutation UpdateChallenge($challengeId: IntID!, $challenge: ChallengeInput!) {

@@ -20,10 +20,8 @@ import {
 import { useRouter } from "next/router";
 import { useGQLQuery } from "rq-gql";
 import { gql } from "../../graphql";
-import TeX from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
 import MathDisplay from "./MathDisplay";
-import LatexPreview from "./LatexPreview";
 
 const queryTopics = gql(/* GraphQL */ `
   query GetTopics2 {

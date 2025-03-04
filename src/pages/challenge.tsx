@@ -11,7 +11,6 @@ import {
   Button,
   Flex,
   Stack,
-  ScrollView,
   VStack,
   Progress,
   HStack,
@@ -31,10 +30,7 @@ import {
 } from "react-icons/fa";
 import { gql } from "../graphql";
 import { formatDate, getColorScheme } from "../components/challenge/tools";
-import { sessionState } from "../components/SessionState";
 import LatexPreview from "../components/challenge/LatexPreview";
-import { AiOutlineConsoleSql } from "react-icons/ai";
-import { CORRECT_ANSWER_COLOR } from "../components/tutorEcuaciones/types";
 
 //----------------
 const queryGroupUsersWithModelStates = gql(/* GraphQL */ `
