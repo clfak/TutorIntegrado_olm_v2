@@ -76,15 +76,13 @@ export function Navigation() {
               Productos Notables
             </SidebarLink>
             <Stack fontWeight="black" pb="6">
-        <SidebarLink icon={<FaBookOpen />} href="challenge">
-          Desafío
-        </SidebarLink>
-      </Stack>
+              <SidebarLink icon={<FaBookOpen />} href="challenge">
+                Desafío
+              </SidebarLink>
+            </Stack>
           </>
         )}
       </Stack>
-
-
 
       <Stack fontWeight="black" pb="6">
         <SidebarLink icon={<FaQuestionCircle />} href="tutorial">

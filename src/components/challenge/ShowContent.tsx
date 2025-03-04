@@ -1,6 +1,6 @@
 //import { withAuth } from "../Auth";
 import { useState, useEffect } from "react";
-import { useSnapshot } from 'valtio'
+import { useSnapshot } from "valtio";
 import { sessionState } from "../SessionState";
 import dynamic from "next/dynamic";
 import type { ComponentProps } from "react";
@@ -38,7 +38,7 @@ export default function ShowContent() {
 
   //console.log("Content --------->", content);
   //console.log("topic --------->", topic);
-  const snap = useSnapshot(sessionState)
+  const snap = useSnapshot(sessionState);
   /*const [content, setContent] = useState(snap.currentContent)
   const [topic, setTopic] = useState(snap.topic)
   
@@ -48,17 +48,10 @@ export default function ShowContent() {
   }, [snap.currentContent, snap.topic]);*/
 
   useEffect(() => {
-    console.log("Component mounted");
-    return () => {
-      console.log("Component unmounted");
-    };
-  }, [snap]);
-
-  useEffect(() => {
     console.log("Current Content:", snap.currentContent?.json);
     console.log("Current Topic:", snap.topic);
   }, [snap.currentContent, snap.topic]);
-/*
+  /*
   useEffect(() => {
     console.log("Current Content:", content.json);
     console.log("Current Topic:", topic);
@@ -71,12 +64,28 @@ export default function ShowContent() {
       </Box>
 
       <div>
-        {snap.currentContent?.json && ["ftc5s", "fc1s", "fdc2s", "fdsc2", "fcc3s"].includes(snap.currentContent?.json?.type) ? (
-          <DynamicTutorFac key={`${snap.currentContent?.json?.type}-${snap.topic}`} exercise={snap.currentContent?.json} topicId={snap.topic}></DynamicTutorFac>
-        ) : snap.currentContent && snap.currentContent?.json?.type == "lvltutor" && !! snap.currentContent?.json ? (
-          <DynamicPlain key={`${snap.currentContent?.json?.type}-${snap.topic}`} steps={snap.currentContent?.json as ExType} topicId={snap.topic}></DynamicPlain>
-        ) : snap.currentContent && ["ecc5s", "secl5s", "ecl2s", "mo"].includes(snap.currentContent?.json?.type) ? (
-          <DynamicTutorEcu key={`${snap.currentContent?.json?.type}-${snap.topic}`} exercise={snap.currentContent?.json} topicId={snap.topic}></DynamicTutorEcu>
+        {snap.currentContent?.json &&
+        ["ftc5s", "fc1s", "fdc2s", "fdsc2", "fcc3s"].includes(snap.currentContent?.json?.type) ? (
+          <DynamicTutorFac
+            key={`${snap.currentContent?.json?.type}-${snap.topic}`}
+            exercise={snap.currentContent?.json}
+            topicId={snap.topic}
+          ></DynamicTutorFac>
+        ) : snap.currentContent &&
+          snap.currentContent?.json?.type == "lvltutor" &&
+          !!snap.currentContent?.json ? (
+          <DynamicPlain
+            key={`${snap.currentContent?.json?.type}-${snap.topic}`}
+            steps={snap.currentContent?.json as ExType}
+            topicId={snap.topic}
+          ></DynamicPlain>
+        ) : snap.currentContent &&
+          ["ecc5s", "secl5s", "ecl2s", "mo"].includes(snap.currentContent?.json?.type) ? (
+          <DynamicTutorEcu
+            key={`${snap.currentContent?.json?.type}-${snap.topic}`}
+            exercise={snap.currentContent?.json}
+            topicId={snap.topic}
+          ></DynamicTutorEcu>
         ) : snap.currentContent &&
           [
             "areaperimetro1",
@@ -86,15 +95,27 @@ export default function ShowContent() {
             "thales1",
             "thales2",
           ].includes(snap.currentContent?.json?.type) ? (
-          <DynamicTutorGeom key={`${snap.currentContent?.json?.type}-${snap.topic}`} exercise={snap.currentContent?.json} topicId={snap.topic}></DynamicTutorGeom>
+          <DynamicTutorGeom
+            key={`${snap.currentContent?.json?.type}-${snap.topic}`}
+            exercise={snap.currentContent?.json}
+            topicId={snap.topic}
+          ></DynamicTutorGeom>
         ) : snap.currentContent && snap.currentContent?.json.type == "wordProblem" ? (
-          <DynamicTutorWP key={`${snap.currentContent?.json?.type}-${snap.topic}`} exercise={snap.currentContent?.json} topicId={snap.topic}></DynamicTutorWP>
+          <DynamicTutorWP
+            key={`${snap.currentContent?.json?.type}-${snap.topic}`}
+            exercise={snap.currentContent?.json}
+            topicId={snap.topic}
+          ></DynamicTutorWP>
         ) : snap.currentContent && snap.currentContent?.json.type == "lvltutor2" ? (
-          <DynamicTutorLogic key={`${snap.currentContent?.json?.type}-${snap.topic}`} exc={snap.currentContent?.json as ExLog} topicId={snap.topic} />
+          <DynamicTutorLogic
+            key={`${snap.currentContent?.json?.type}-${snap.topic}`}
+            exc={snap.currentContent?.json as ExLog}
+            topicId={snap.topic}
+          />
         ) : (
           <Text>No existe el contenido que desea cargar</Text>
         )}
       </div>
     </>
   );
-};
+}

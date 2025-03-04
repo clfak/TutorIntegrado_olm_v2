@@ -59,11 +59,10 @@ function RatingQuestion({ useAlternateRoute = false }) {
       topicID: topic,
       extra: { selectionData },
     });
-    if(callbackType === "challenge") {
-      callback()
-    }
-    else {
-    //callback(ruta);
+    if (callbackType === "challenge") {
+      callback();
+    } else {
+      //callback(ruta);
     }
   };
   return (
@@ -93,19 +92,19 @@ function RatingQuestion({ useAlternateRoute = false }) {
         })}
       </div>
       {/*<Link href={ruta}>*/}
-        <Button
-          style={styles.button}
-          disabled={currentValue != 0 && !mutation.isLoading ? false : true}
-          onClick={handleClick2}
-        >
-          {!mutation.isLoading && !timeToUpdateModel && parameters.ratingQuestion.buttonMsg}
-          {(mutation.isLoading || timeToUpdateModel) && (
-            <>
-              {parameters.ratingQuestion.buttonWaitMsg} &nbsp;&nbsp;
-              <Spinner emptyColor="gray.200" color="blue.500" />
-            </>
-          )}
-        </Button>
+      <Button
+        style={styles.button}
+        disabled={currentValue != 0 && !mutation.isLoading ? false : true}
+        onClick={handleClick2}
+      >
+        {!mutation.isLoading && !timeToUpdateModel && parameters.ratingQuestion.buttonMsg}
+        {(mutation.isLoading || timeToUpdateModel) && (
+          <>
+            {parameters.ratingQuestion.buttonWaitMsg} &nbsp;&nbsp;
+            <Spinner emptyColor="gray.200" color="blue.500" />
+          </>
+        )}
+      </Button>
       {/*</Link>*/}
     </div>
   );

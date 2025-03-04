@@ -61,7 +61,7 @@ export const sessionState = proxy<{
   nextContentPath: "",
   learnerTraces: [],
   callback: null, // Initially, no logic is assigned (callback function),
-  callbackType: ""
+  callbackType: "",
 });
 
 export var sessionStateBD = localforage.createInstance({

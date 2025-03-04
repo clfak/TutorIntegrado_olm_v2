@@ -15,7 +15,7 @@ import {
   Text,
   Divider,
   HStack,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useGQLQuery } from "rq-gql";
@@ -229,8 +229,8 @@ const MathRecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selecte
             id = item.json.code;
             desc = item.json.text;
             mathExpr = item.json.initialExpression?.trim()
-            ? item.json.initialExpression
-            : item.json.steps[0].expression//item.json.steps[0].expression;
+              ? item.json.initialExpression
+              : item.json.steps[0].expression; //item.json.steps[0].expression;
             break;
           case "fc1s":
             id = item.json.code;
@@ -269,9 +269,8 @@ const MathRecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selecte
             mathExpression: mathExpr,
             image: img,
           });
-        }
-        else {
-            console.log("Caso no manejado:", item.json)
+        } else {
+          console.log("Caso no manejado:", item.json);
         }
       }
     });
@@ -333,7 +332,7 @@ const MathRecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selecte
                                 {exercise.exerciseId}
                               </Text>
                             </Box>
-  
+
                             {/* MathDisplay a la derecha */}
                             <Box flex="2">
                               <MathDisplay
@@ -344,10 +343,9 @@ const MathRecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selecte
                             </Box>
                           </HStack>
                           {/* Divider excepto en la última fila */}
-                          {index < exercises.length - 1 && <Divider my={4}
-                            borderColor="gray.300"
-                            borderWidth="2px"
-                            opacity={1} />}
+                          {index < exercises.length - 1 && (
+                            <Divider my={4} borderColor="gray.300" borderWidth="2px" opacity={1} />
+                          )}
                         </Box>
                       ))}
                     </VStack>

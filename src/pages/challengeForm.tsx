@@ -30,7 +30,7 @@ import { gql } from "../graphql";
 import "katex/dist/katex.min.css";
 import MathDisplay from "../components/challenge/MathDisplay";
 import LatexPreview from "../components/challenge/LatexPreview";
-import {extractExercise, formatDate} from "../components/challenge/tools";
+import { extractExercise, formatDate } from "../components/challenge/tools";
 import { useAuth } from "../components/Auth";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 
@@ -51,8 +51,7 @@ const mutationUpdateChallenge = gql(`
       topics{id},
       }
     }
-  }`
-)
+  }`);
 
 const mutationCreateChallenge = gql(`
   mutation CreateChallenge($challenge: ChallengeInput!) {
@@ -71,8 +70,7 @@ const mutationCreateChallenge = gql(`
       topics{id},
       }
     }
-  }`
-)
+  }`);
 
 const queryTopics = gql(/* GraphQL */ `
   query GetTopics {
@@ -129,45 +127,37 @@ const queryGroups = gql(/* GraphQL */ `
 
 const queryGetChallenge = gql(/* GraphQL */ `
   query GetChallenge($challengeId: IntID!) {
-      challenge(id: $challengeId) {
+    challenge(id: $challengeId) {
+      code
+      content {
         code
-        content {
-          code
-          id
-          json
-          kcs {
-            code
-            id
-          }
-        }
-        description
-        enabled
-        endDate
-        groups {
-          label
-          code
-          id
-          projectsIds
-          users {
-            email
-            id
-            name
-            role
-          }
-        }
-        id
-        startDate
-        tags
-        title
-        topics {
-           id
-          code
-          label
-          content {
         id
         json
+        kcs {
+          code
+          id
+        }
       }
-      childrens {
+      description
+      enabled
+      endDate
+      groups {
+        label
+        code
+        id
+        projectsIds
+        users {
+          email
+          id
+          name
+          role
+        }
+      }
+      id
+      startDate
+      tags
+      title
+      topics {
         id
         code
         label
@@ -191,13 +181,21 @@ const queryGetChallenge = gql(/* GraphQL */ `
               id
               json
             }
+            childrens {
+              id
+              code
+              label
+              content {
+                id
+                json
+              }
+            }
           }
         }
       }
-        } 
-      }
     }
-  `)
+  }
+`);
 //--------------------------------------------------
 
 const RecursiveAccordion = ({ data, onShowDetails, setSelectedTopics, selectedTopics = [] }) => {
@@ -217,7 +215,7 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedTopics, selectedTo
     }
     return descendants;
   };
-  
+
   const handleParentChange = item => {
     const isSelected = isItemSelected(item.id);
 
@@ -293,8 +291,8 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedTopics, selectedTo
               {item.childrens?.length > 0 && <AccordionIcon />}
             </AccordionButton>
           </h2>
-          {item.childrens?.length > 0 &&
-          <AccordionPanel pb={4}>
+          {item.childrens?.length > 0 && (
+            <AccordionPanel pb={4}>
               <Accordion allowMultiple>
                 <RecursiveAccordion
                   data={item.childrens.map(children => ({
@@ -306,16 +304,20 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedTopics, selectedTo
                   selectedTopics={selectedTopics}
                 />
               </Accordion>
-          </AccordionPanel>
-        }
+            </AccordionPanel>
+          )}
         </AccordionItem>
       ))}
     </>
   );
 };
 
-const MathRecursiveAccordion = ({ selectedTopics, onShowDetails, setSelectedExercises, selectedExercises = [] }) => {
-
+const MathRecursiveAccordion = ({
+  selectedTopics,
+  onShowDetails,
+  setSelectedExercises,
+  selectedExercises = [],
+}) => {
   // Verifica si un item está seleccionado
   const isItemSelected = exercise => {
     return selectedExercises.some(
@@ -375,43 +377,43 @@ const MathRecursiveAccordion = ({ selectedTopics, onShowDetails, setSelectedExer
             const exercises = extractExercise([topic]);
 
             return (
-              exercises.length > 0 &&(
-              <AccordionItem key={topic.id}>
-                <h2>
-                  <AccordionButton>
-                    <Box flex="1" textAlign="left">
-                      <Text fontWeight="bold" mb={2}>
-                        {topic.label}
+              exercises.length > 0 && (
+                <AccordionItem key={topic.id}>
+                  <h2>
+                    <AccordionButton>
+                      <Box flex="1" textAlign="left">
+                        <Text fontWeight="bold" mb={2}>
+                          {topic.label}
+                        </Text>
+                      </Box>
+                      {topic.content?.length > 0 && <AccordionIcon />}
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    {exercises.length > 0 ? (
+                      exercises.map(exercise => (
+                        <Checkbox
+                          key={`${exercise.exerciseId}-checkbox`}
+                          mb={2}
+                          isChecked={isItemSelected(exercise)}
+                          onChange={() => handleItemChange(exercise)}
+                        >
+                          <MathDisplay
+                            key={`${exercise.exerciseId}-math`}
+                            description={exercise.description}
+                            mathExpression={exercise.mathExpression}
+                            image={exercise.image}
+                          />
+                        </Checkbox>
+                      ))
+                    ) : (
+                      <Text fontSize="sm" color="gray.500">
+                        No hay ejercicios disponibles para este tópico
                       </Text>
-                    </Box>
-                    {topic.content?.length > 0 && <AccordionIcon />}
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                  {exercises.length > 0 ? (
-                    exercises.map((exercise) => (
-                      <Checkbox
-                        key={`${exercise.exerciseId}-checkbox`}
-                        mb={2}
-                        isChecked={isItemSelected(exercise)}
-                        onChange={() => handleItemChange(exercise)}
-                      >
-                        <MathDisplay
-                          key={`${exercise.exerciseId}-math`}
-                          description={exercise.description}
-                          mathExpression={exercise.mathExpression}
-                          image={exercise.image}
-                        />
-                      </Checkbox>
-                    ))
-                  ) : (
-                    <Text fontSize="sm" color="gray.500">
-                      No hay ejercicios disponibles para este tópico
-                    </Text>
-                  )}
-                </AccordionPanel>
-                
-              </AccordionItem>)
+                    )}
+                  </AccordionPanel>
+                </AccordionItem>
+              )
             );
           })}
         </Box>
@@ -447,8 +449,8 @@ function formatDateToRequiredFormat(dateString) {
 //-------------------------------
 
 function formatDateToUTC(dateString) {
-  const date = new Date(dateString);//+":00.000Z");
-  return date.toISOString()
+  const date = new Date(dateString); //+":00.000Z");
+  return date.toISOString();
 }
 
 //----------------------------------------
@@ -465,16 +467,16 @@ const ChallengeForm = () => {
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [selectedExercises, setSelectedExercises] = useState([]);
 
-  const[isUpdated, setIsUpdated] = useState(false)
-  const[isCreated, setIsCreated] = useState(false)
-  const[challenge, setChallenge] = useState({})
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+  const [challenge, setChallenge] = useState({});
 
   const router = useRouter();
   const { mode, challengeId: id } = router.query;
 
   const isEditMode = mode === "edit";
-  const challengeId = id? id : "default-id";
-//const { isLoading, user } = useAuth();
+  const challengeId = id ? id : "default-id";
+  //const { isLoading, user } = useAuth();
 
   const { data: TopicsData, isLoading: isTopicsLoading } = useGQLQuery(queryTopics);
   const { data: GroupsData, isLoading: isGroupsLoading } = useGQLQuery(queryGroups);
@@ -486,47 +488,52 @@ const ChallengeForm = () => {
     },
     {
       enabled: isEditMode && !!challengeId, // Solo ejecuta la consulta si isEditMode es true y challengeId existe
-    }
+    },
   );
 
-  const { data: dataUpdateChallenge, error: errorUpdateChallenge, isLoading: isUpdateChallengeLoading } = useGQLQuery(
+  const {
+    data: dataUpdateChallenge,
+    error: errorUpdateChallenge,
+    isLoading: isUpdateChallengeLoading,
+  } = useGQLQuery(
     mutationUpdateChallenge,
     {
       challengeId: challengeId,
-      challenge: challenge
+      challenge: challenge,
     },
-    {enabled: isEditMode && isUpdated}
+    { enabled: isEditMode && isUpdated },
   );
 
-  const {  data: dataCreateChallenge, error: errorCreateChallenge, isLoading: isCreateChallengeLoading } = useGQLQuery(
+  const {
+    data: dataCreateChallenge,
+    error: errorCreateChallenge,
+    isLoading: isCreateChallengeLoading,
+  } = useGQLQuery(
     mutationCreateChallenge,
     {
-      challenge: challenge
+      challenge: challenge,
     },
-    {enabled: !isEditMode && isCreated}
+    { enabled: !isEditMode && isCreated },
   );
 
+  useEffect(() => {
+    if (!isChallengeLoading && dataChallenge) {
+      const challenge = dataChallenge.challenge;
 
-    useEffect(() => {
-      
-      if (!isChallengeLoading && dataChallenge) {
-        const challenge = dataChallenge.challenge
+      setTitle(challenge.title || "");
+      setDescription(challenge.description || "");
+      setEndDate(formatDateToRequiredFormat(challenge.endDate));
+      setSelectedGroups(challenge.groups || []);
+      setSelectedTopics(challenge.topics || []);
+      setSelectedExercises(extractExercise([{ content: challenge.content }]) || []);
+      setStartDate(formatDateToRequiredFormat(challenge.startDate));
+    }
+  }, [dataChallenge, isChallengeLoading]);
 
-        setTitle(challenge.title || "");
-        setDescription(challenge.description || "");
-        setEndDate(formatDateToRequiredFormat(challenge.endDate))
-        setSelectedGroups(challenge.groups || []);
-        setSelectedTopics(challenge.topics || [])
-        setSelectedExercises(extractExercise([{content:challenge.content}]) || [])
-        setStartDate(formatDateToRequiredFormat(challenge.startDate))
-      }
-    }, [dataChallenge, isChallengeLoading]);
-
-    useEffect(()=> {
-      setIsCreated(false)
-      setIsUpdated(false)
-    }, [])
-    
+  useEffect(() => {
+    setIsCreated(false);
+    setIsUpdated(false);
+  }, []);
 
   const topics = TopicsData?.topics || [];
   const groups = GroupsData?.currentUser?.groups || [];
@@ -571,10 +578,9 @@ const ChallengeForm = () => {
     );
   };
 
-  useEffect(()=> {
-
-    console.log("selectedTopics", selectedTopics)
-  }, [selectedTopics])
+  useEffect(() => {
+    console.log("selectedTopics", selectedTopics);
+  }, [selectedTopics]);
 
   const handleShowDetails = item => {
     setDetailItem(item);
@@ -582,35 +588,61 @@ const ChallengeForm = () => {
   };
 
   const handleSave = () => {
-
     const challengeData = {
-      "code": `${title.slice(0, 25)}_${Date.now()}`,//_${user.id}`, //unique key
-      "contentIds": selectedExercises.map(exercise => exercise.exerciseId),
-      "description": description,
-      "enabled": true,
-      "endDate": formatDateToUTC(endDate),
-      "groupsIds": selectedGroups.map(group => group.id),
-      "projectId": 4, // 	NivPreAlg
-      "startDate": startDate ? formatDateToUTC(startDate) : null,
-      "tags": [],
-      "title": title,
-      "topicsIds": selectedTopics.map(topic => topic.id),
+      code: `${title.slice(0, 25)}_${Date.now()}`, //_${user.id}`, //unique key
+      contentIds: selectedExercises.map(exercise => exercise.exerciseId),
+      description: description,
+      enabled: true,
+      endDate: formatDateToUTC(endDate),
+      groupsIds: selectedGroups.map(group => group.id),
+      projectId: 4, // 	NivPreAlg
+      startDate: startDate ? formatDateToUTC(startDate) : null,
+      tags: [],
+      title: title,
+      topicsIds: selectedTopics.map(topic => topic.id),
+    };
 
-    }
-
-      // Validación de campos obligatorios
-  const requiredFields = [
-    { field: "code", value: challengeData.code, message: "El código del desafío es obligatorio." },
-    { field: "title", value: challengeData.title, message: "El título del desafío es obligatorio." },
-    { field: "description", value: challengeData.description, message: "La descripción del desafío es obligatoria." },
-    { field: "endDate", value: challengeData.endDate, message: "La fecha de finalización es obligatoria." },
-    { field: "groups", value: challengeData.groupsIds, message: "Debes seleccionar al menos un grupo." },
-    { field: "topics", value: challengeData.topicsIds, message: "Debes seleccionar al menos un tópico." },
-    { field: "content", value: challengeData.contentIds, message: "Debes seleccionar al menos un ejercicio." }
-  ];
+    // Validación de campos obligatorios
+    const requiredFields = [
+      {
+        field: "code",
+        value: challengeData.code,
+        message: "El código del desafío es obligatorio.",
+      },
+      {
+        field: "title",
+        value: challengeData.title,
+        message: "El título del desafío es obligatorio.",
+      },
+      {
+        field: "description",
+        value: challengeData.description,
+        message: "La descripción del desafío es obligatoria.",
+      },
+      {
+        field: "endDate",
+        value: challengeData.endDate,
+        message: "La fecha de finalización es obligatoria.",
+      },
+      {
+        field: "groups",
+        value: challengeData.groupsIds,
+        message: "Debes seleccionar al menos un grupo.",
+      },
+      {
+        field: "topics",
+        value: challengeData.topicsIds,
+        message: "Debes seleccionar al menos un tópico.",
+      },
+      {
+        field: "content",
+        value: challengeData.contentIds,
+        message: "Debes seleccionar al menos un ejercicio.",
+      },
+    ];
 
     // Verifica si falta algún campo obligatorio
-    const missingField = requiredFields.find((field) => {
+    const missingField = requiredFields.find(field => {
       // Si el valor es undefined, null, o una lista vacía, se considera faltante
       return (
         field.value === undefined ||
@@ -620,22 +652,21 @@ const ChallengeForm = () => {
       );
     });
 
-      // Si falta algún campo, muestra una alerta y se detiene el proceso
-  if (missingField) {
-    alert(`Error: ${missingField.message}`);
-    return; 
-  }
+    // Si falta algún campo, muestra una alerta y se detiene el proceso
+    if (missingField) {
+      alert(`Error: ${missingField.message}`);
+      return;
+    }
 
-  setChallenge(challengeData);
-  console.log("challengeData", challengeData)
-  if (isEditMode) {
-    setIsUpdated(true)
-    alert("Desafío actualizado exitosamente!")
-  }
-  else {
-    setIsCreated(true)
-   alert("Desafío guardado exitosamente")
-  }
+    setChallenge(challengeData);
+    console.log("challengeData", challengeData);
+    if (isEditMode) {
+      setIsUpdated(true);
+      alert("Desafío actualizado exitosamente!");
+    } else {
+      setIsCreated(true);
+      alert("Desafío guardado exitosamente");
+    }
   };
 
   const handleCancel = () => {
@@ -645,29 +676,29 @@ const ChallengeForm = () => {
     setEndDate("");
     setSelectedTopics([]);
     setSelectedExercises([]);
-    setIsUpdated(false)
-    setIsCreated(false)
+    setIsUpdated(false);
+    setIsCreated(false);
 
     router.push({
       pathname: "/challenge",
     });
   };
 
-
   const isLoading =
-  mode === "edit"
-    ? isTopicsLoading || isGroupsLoading || isChallengeLoading // En modo edición, carga todo
-    : isTopicsLoading || isGroupsLoading; // Fuera del modo edición, carga solo topics y groups
+    mode === "edit"
+      ? isTopicsLoading || isGroupsLoading || isChallengeLoading // En modo edición, carga todo
+      : isTopicsLoading || isGroupsLoading; // Fuera del modo edición, carga solo topics y groups
 
-// Si está cargando, muestra el mensaje de carga
-if (isLoading) {
-  return <Box p={5}>Cargando...</Box>;
-}
+  // Si está cargando, muestra el mensaje de carga
+  if (isLoading) {
+    return <Box p={5}>Cargando...</Box>;
+  }
 
   if (errorUpdateChallenge) {
     return (
       <p className="error-message">
-        Error: {errorUpdateChallenge.message}. Por favor, inténtalo de nuevo o contacta al equipo de desarrollo.
+        Error: {errorUpdateChallenge.message}. Por favor, inténtalo de nuevo o contacta al equipo de
+        desarrollo.
       </p>
     );
   }
@@ -675,13 +706,14 @@ if (isLoading) {
   if (errorCreateChallenge) {
     return (
       <p className="error-message">
-        Error: {errorCreateChallenge.message}. Por favor, inténtalo de nuevo o contacta al equipo de desarrollo.
+        Error: {errorCreateChallenge.message}. Por favor, inténtalo de nuevo o contacta al equipo de
+        desarrollo.
       </p>
     );
   }
 
-  const formBackgroundColor = "gray.300"
-  const summaryFormBackgroundColor = "gray.100"
+  const formBackgroundColor = "gray.300";
+  const summaryFormBackgroundColor = "gray.100";
 
   return (
     <ChakraProvider>
@@ -691,38 +723,43 @@ if (isLoading) {
         </Heading>
 
         <Box bg={formBackgroundColor}>
-        <FormControl mb={4} borderRadius="md" p={4}>
-          <FormLabel>Nombre del desafío</FormLabel>
-          <Input
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            placeholder="Nombre del desafío"
-          />
-        </FormControl>
+          <FormControl mb={4} borderRadius="md" p={4}>
+            <FormLabel>Nombre del desafío</FormLabel>
+            <Input
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              placeholder="Nombre del desafío"
+            />
+          </FormControl>
 
-        <FormControl mb={4} borderRadius="md" p={4}>
-          <FormLabel>Descripción</FormLabel>
-          <Textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="Descripción del desafío (opcional)"
-          />
-          <LatexPreview content={description} />
-        </FormControl>
+          <FormControl mb={4} borderRadius="md" p={4}>
+            <FormLabel>Descripción</FormLabel>
+            <Textarea
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="Descripción del desafío (opcional)"
+            />
+            <LatexPreview content={description} />
+          </FormControl>
 
-        <FormControl mb={4} borderRadius="md" p={4}>
-          <FormLabel>Fecha de término</FormLabel>
-          <Input type="datetime-local" value={endDate} onChange={e => setEndDate(e.target.value)} />
-        </FormControl>
+          <FormControl mb={4} borderRadius="md" p={4}>
+            <FormLabel>Fecha de término</FormLabel>
+            <Input
+              type="datetime-local"
+              value={endDate}
+              onChange={e => setEndDate(e.target.value)}
+            />
+          </FormControl>
         </Box>
 
         <ChakraProvider>
-        <Box bg={formBackgroundColor}>
+          <Box bg={formBackgroundColor}>
             <FormControl mb={4} borderRadius="md" p={4}>
-              <FormLabel>Grupos
-              <Text as="span" display="block" fontSize="sm" color="gray.500">
-    Selecciona los grupos que participarán en este desafío
-  </Text>
+              <FormLabel>
+                Grupos
+                <Text as="span" display="block" fontSize="sm" color="gray.500">
+                  Selecciona los grupos que participarán en este desafío
+                </Text>
               </FormLabel>
               <Box>
                 {groups.map(group => (
@@ -741,101 +778,101 @@ if (isLoading) {
         </ChakraProvider>
 
         <Box bg={formBackgroundColor}>
-        <FormControl mb={4} borderRadius="md" p={4}>
-          <FormLabel htmlFor="topicsAccordion">Tópicos y subtópicos
-
-          <Text as="span" display="block" fontSize="sm" color="gray.500">
-          Selecciona los tópicos para el desafío
-  </Text>
-          </FormLabel>
-          <Accordion id="topicsAccordion" allowMultiple>
-            <RecursiveAccordion
-              data={topics}
-              onShowDetails={handleShowDetails}
-              setSelectedTopics={setSelectedTopics}
-              selectedTopics={selectedTopics}
-            />
-          </Accordion>
-        </FormControl>
-        </Box>
-
-  <Box bg={formBackgroundColor}>
-        <FormControl mb={4} borderRadius="md" p={4}>
-          <FormLabel htmlFor="exercisesAccordion" mt={4}>
-            Ejercicios iniciales
-            <Text as="span" display="block" fontSize="sm" color="gray.500">
-            Selecciona los ejercicios con los que comenzará este desafío, considerando los tópicos seleccionados
-  </Text>
-          </FormLabel>
-          <Accordion id="exercisesAccordion" allowMultiple>
-            <MathRecursiveAccordion
-              selectedTopics={selectedTopics}
-              onShowDetails={[]}
-              setSelectedExercises={setSelectedExercises}
-              selectedExercises={selectedExercises}
-            />
-          </Accordion>
-        </FormControl>
-        </Box>
-
-<Box p={4} bg={summaryFormBackgroundColor}>
-<Box  mt={4}>
-          <Text as="strong" fontWeight="bold">
-            Nombre del desafío: {title}
-          </Text>
-        </Box>
-
-        <Box mt={4}>
-          <Text as="strong" fontWeight="bold">
-          Descripción del desafío:
-          <LatexPreview content={description}/>
-          </Text>
-        </Box>
-
-
-        <Box mt={4}>
-          <Text as="strong" fontWeight="bold">
-            Grupos Seleccionados:
-          </Text>
-          <ul style={{ paddingLeft: "20px" }}>
-            {selectedGroups.map(group => (
-              <li key={group.id}>{group.label}</li>
-            ))}
-          </ul>
-        </Box>
-
-        <Box mt={4}>
-          <Text as="strong" fontWeight="bold">
-            Fecha de término: {formatDate(endDate)}
-          </Text>
-        </Box>
-
-        <Box mt={4}>
-          <Text as="strong" fontWeight="bold">
-            Tópicos y subtópicos seleccionados:
-          </Text>
-          <ul style={{ paddingLeft: "20px" }}>
-            {selectedTopics.map((topic, index) => (
-              <li key={index-topic.id}>{topic.label}</li>
-            ))}
-          </ul>
-        </Box>
-
-        <Box mt={4}>
-          <Text as="strong" fontWeight="bold">
-            Ejercicios seleccionados:
-          </Text>
-          <Box>
-            {selectedExercises.map((exercise) => (
-              <MathDisplay
-                key={exercise.exerciseId}
-                description={exercise.description}
-                mathExpression={exercise.mathExpression}
-                image={exercise.image}
+          <FormControl mb={4} borderRadius="md" p={4}>
+            <FormLabel htmlFor="topicsAccordion">
+              Tópicos y subtópicos
+              <Text as="span" display="block" fontSize="sm" color="gray.500">
+                Selecciona los tópicos para el desafío
+              </Text>
+            </FormLabel>
+            <Accordion id="topicsAccordion" allowMultiple>
+              <RecursiveAccordion
+                data={topics}
+                onShowDetails={handleShowDetails}
+                setSelectedTopics={setSelectedTopics}
+                selectedTopics={selectedTopics}
               />
-            ))}
-          </Box>
+            </Accordion>
+          </FormControl>
         </Box>
+
+        <Box bg={formBackgroundColor}>
+          <FormControl mb={4} borderRadius="md" p={4}>
+            <FormLabel htmlFor="exercisesAccordion" mt={4}>
+              Ejercicios iniciales
+              <Text as="span" display="block" fontSize="sm" color="gray.500">
+                Selecciona los ejercicios con los que comenzará este desafío, considerando los
+                tópicos seleccionados
+              </Text>
+            </FormLabel>
+            <Accordion id="exercisesAccordion" allowMultiple>
+              <MathRecursiveAccordion
+                selectedTopics={selectedTopics}
+                onShowDetails={[]}
+                setSelectedExercises={setSelectedExercises}
+                selectedExercises={selectedExercises}
+              />
+            </Accordion>
+          </FormControl>
+        </Box>
+
+        <Box p={4} bg={summaryFormBackgroundColor}>
+          <Box mt={4}>
+            <Text as="strong" fontWeight="bold">
+              Nombre del desafío: {title}
+            </Text>
+          </Box>
+
+          <Box mt={4}>
+            <Text as="strong" fontWeight="bold">
+              Descripción del desafío:
+              <LatexPreview content={description} />
+            </Text>
+          </Box>
+
+          <Box mt={4}>
+            <Text as="strong" fontWeight="bold">
+              Grupos Seleccionados:
+            </Text>
+            <ul style={{ paddingLeft: "20px" }}>
+              {selectedGroups.map(group => (
+                <li key={group.id}>{group.label}</li>
+              ))}
+            </ul>
+          </Box>
+
+          <Box mt={4}>
+            <Text as="strong" fontWeight="bold">
+              Fecha de término: {formatDate(endDate)}
+            </Text>
+          </Box>
+
+          <Box mt={4}>
+            <Text as="strong" fontWeight="bold">
+              Tópicos y subtópicos seleccionados:
+            </Text>
+            <ul style={{ paddingLeft: "20px" }}>
+              {selectedTopics.map((topic, index) => (
+                <li key={index - topic.id}>{topic.label}</li>
+              ))}
+            </ul>
+          </Box>
+
+          <Box mt={4}>
+            <Text as="strong" fontWeight="bold">
+              Ejercicios seleccionados:
+            </Text>
+            <Box>
+              {selectedExercises.map(exercise => (
+                <MathDisplay
+                  key={exercise.exerciseId}
+                  description={exercise.description}
+                  mathExpression={exercise.mathExpression}
+                  image={exercise.image}
+                />
+              ))}
+            </Box>
+          </Box>
         </Box>
 
         <Box mt={6} display="flex" justifyContent="space-between">
@@ -857,7 +894,6 @@ if (isLoading) {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-     
     </ChakraProvider>
   );
 };

@@ -95,10 +95,10 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
 
   const action = useAction();
   const currentStep = useRef(0);
-  const [test, setTest] = useState<Array<potato>>([])//(potatoStates);
+  const [test, setTest] = useState<Array<potato>>([]); //(potatoStates);
   const [resumen, setResumen] = useState(true);
- // const[steps, setSteps] = useState(initialSteps)
-/*steps: initialSteps
+  // const[steps, setSteps] = useState(initialSteps)
+  /*steps: initialSteps
   useEffect(()=> {
     setSteps(initialSteps)
   },[initialSteps])*/
@@ -141,9 +141,9 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   }
 */
 
-useEffect(() => {
-  console.log("Solver2 mounted with:", { topicId, steps });
-}, [topicId, steps]);
+  useEffect(() => {
+    console.log("Solver2 mounted with:", { topicId, steps });
+  }, [topicId, steps]);
 
   useEffect(() => {
     reset();
@@ -158,7 +158,6 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-
     const cantidadDePasos = steps.steps.length;
 
     let potatoStates: Array<potato> = [
@@ -177,7 +176,7 @@ useEffect(() => {
         open: true,
       },
     ];
-  
+
     for (let i = 1; i < cantidadDePasos; i++) {
       potatoStates.push({
         disabled: true,
@@ -210,7 +209,7 @@ useEffect(() => {
     };
 
     initializeExercise();
-  }, [topicId, steps.code]); 
+  }, [topicId, steps.code]);
 
   useEffect(() => {
     if (mqSnap.submit) {
@@ -396,4 +395,4 @@ useEffect(() => {
   );
 };
 
-export default Solver2//memo(Solver2);
+export default Solver2; //memo(Solver2);

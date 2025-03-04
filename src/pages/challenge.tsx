@@ -38,7 +38,7 @@ import { CORRECT_ANSWER_COLOR } from "../components/tutorEcuaciones/types";
 
 //----------------
 const queryGroupUsersWithModelStates = gql(/* GraphQL */ `
-query GetGroupUsersWithModelStates {
+  query GetGroupUsersWithModelStates {
     currentUser {
       id
       groups {
@@ -62,7 +62,7 @@ query GetGroupUsersWithModelStates {
 `);
 
 //------------------------------------------------
-const queryGetKcsByTopics = gql( `
+const queryGetKcsByTopics = gql(`
   query GetKcsByTopics2($topicsCodes: [String!]!) {
     kcsByContentByTopics(projectCode: "NivPreAlg", topicsCodes: $topicsCodes) {
       topic {
@@ -96,50 +96,49 @@ const queryGetChallenges = gql(`
     }
   `);*/
 
-  const queryGetChallenges = gql(/* GraphQL */ `
-    query GetChallenges($challengesIds: [IntID!]!) {
-        challenges(ids: $challengesIds) {
+const queryGetChallenges = gql(/* GraphQL */ `
+  query GetChallenges($challengesIds: [IntID!]!) {
+    challenges(ids: $challengesIds) {
+      code
+      content {
+        code
+        id
+        json
+        kcs {
           code
-          content {
-            code
-            id
-            json
-            kcs {
-              code
-              id
-            }
-          }
-          description
-          enabled
-          endDate
-          groups {
-            code
-            id
-            projectsIds
-            users {
-              email
-              id
-              name
-              role
-            }
-          }
           id
-          projectId
-          startDate
-          tags
-          title
-          topics {
-            id
-            code
-            kcs {
-              id
-              code
-            }
-          }
         }
       }
-    `)
-
+      description
+      enabled
+      endDate
+      groups {
+        code
+        id
+        projectsIds
+        users {
+          email
+          id
+          name
+          role
+        }
+      }
+      id
+      projectId
+      startDate
+      tags
+      title
+      topics {
+        id
+        code
+        kcs {
+          id
+          code
+        }
+      }
+    }
+  }
+`);
 
 //---------------------------------------------------
 
@@ -160,11 +159,9 @@ const mutationUpdateChallenge = gql(`
       topics{id},
       }
     }
-  }`
-)
+  }`);
 //----------------------------------
-const getTopicsFromChallenges = (challengesOriginal) => {
-       
+const getTopicsFromChallenges = challengesOriginal => {
   if (!challengesOriginal || !Array.isArray(challengesOriginal)) {
     return [];
   }
@@ -218,54 +215,53 @@ const StudentCard = ({
   const handleStartChallenge = () => {
     router.push({
       pathname: "/challengeStart",
-      query: { "challengeId": id },
+      query: { challengeId: id },
     });
   };
- 
+
   function getCodes(array) {
     return array.map(item => item.code);
-}
-  const queryResult = useGQLQuery(queryGetKcsByTopics, { 
-    topicsCodes: getCodes(topics)
-  })
-
+  }
+  const queryResult = useGQLQuery(queryGetKcsByTopics, {
+    topicsCodes: getCodes(topics),
+  });
 
   function getUniqueKcs(kcsByContentByTopics) {
     if (!Array.isArray(kcsByContentByTopics)) {
       return []; // Return an empty array or handle the error as needed
-  }
+    }
 
     const uniqueKcs = new Set(); // Use a Set to avoid duplicates
 
     // Loop through each object in the main array
     kcsByContentByTopics.forEach(item => {
-        // Loop through the kcs of each object
-        item.kcs?.forEach(kc => {
-            uniqueKcs.add(kc.code); // Add the code to the Set
-        });
+      // Loop through the kcs of each object
+      item.kcs?.forEach(kc => {
+        uniqueKcs.add(kc.code); // Add the code to the Set
+      });
     });
 
     // Convert the Set back to an array
     return Array.from(uniqueKcs);
-}
-
-console.log("uniqueKcs", getUniqueKcs(queryResult?.data?.kcsByContentByTopics))
-const uniqueKcs = getUniqueKcs(queryResult?.data?.kcsByContentByTopics)
-
-const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading} = useGQLQuery(
-  queryGetKcsByTopics,
-  {
-    topicsCodes: uniqueKcs,
   }
-);
 
-console.log("kcsByTopics1", dataKcsByTopics)
+  console.log("uniqueKcs", getUniqueKcs(queryResult?.data?.kcsByContentByTopics));
+  const uniqueKcs = getUniqueKcs(queryResult?.data?.kcsByContentByTopics);
 
-useEffect(()=> {
-if(!isKcsByTopicsLoading) {
-  console.log("kcsByTopics", dataKcsByTopics) 
-}
-},[isKcsByTopicsLoading])
+  const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
+    queryGetKcsByTopics,
+    {
+      topicsCodes: uniqueKcs,
+    },
+  );
+
+  console.log("kcsByTopics1", dataKcsByTopics);
+
+  useEffect(() => {
+    if (!isKcsByTopicsLoading) {
+      console.log("kcsByTopics", dataKcsByTopics);
+    }
+  }, [isKcsByTopicsLoading]);
 
   //const groupProgress = calculateGroupProgress(group.students);
 
@@ -432,18 +428,15 @@ if(!isKcsByTopicsLoading) {
 
         {motivMsgEnabled && (
           <>
-            <Encouragement
-              message="¡Hola! Este es el mensaje que quiero mostrar"
-              maxWidth="90%"
-            />
+            <Encouragement message="¡Hola! Este es el mensaje que quiero mostrar" maxWidth="90%" />
           </>
         )}
         <Box display="flex" justifyContent="center" alignItems="center" w="100%">
-                      <Button colorScheme="green" onClick={handleStartChallenge}>
-        Comenzar desafío
-        {/*<FaRocket size={24} />*/}
-      </Button>
-      </Box>
+          <Button colorScheme="green" onClick={handleStartChallenge}>
+            Comenzar desafío
+            {/*<FaRocket size={24} />*/}
+          </Button>
+        </Box>
       </VStack>
     </Box>
   );
@@ -452,61 +445,72 @@ if(!isKcsByTopicsLoading) {
 //----------------------------
 
 //export default ChallengeCard;
-const ChallengeCard = ({ id, title, description, endDate, groups, status, challenges, setChallenges, setIsUpdated, setUpdateChallenge, setChallengeId, challengesOriginal}) => {
+const ChallengeCard = ({
+  id,
+  title,
+  description,
+  endDate,
+  groups,
+  status,
+  challenges,
+  setChallenges,
+  setIsUpdated,
+  setUpdateChallenge,
+  setChallengeId,
+  challengesOriginal,
+}) => {
   const router = useRouter();
-const challengeFilter = challengesOriginal.find(challenge => challenge.id === id)
+  const challengeFilter = challengesOriginal.find(challenge => challenge.id === id);
 
-const challengeData = {
-  "code": challengeFilter.code,
-  "contentIds": getIdsFromContent(challengeFilter.content),
-  "description": challengeFilter.description,
-  "enabled": challengeFilter.enabled,
-  "endDate": challengeFilter.endDate,
-  "groupsIds": getIdsFromContent(challengeFilter.groups),
-  "projectId": challengeFilter.projectId, // 	NivPreAlg
-  "startDate": challengeFilter.startDate,
-  "tags": challengeFilter.tags,
-  "title": challengeFilter.title,
-  "topicsIds": getIdsFromContent(challengeFilter.topics),
-}
+  const challengeData = {
+    code: challengeFilter.code,
+    contentIds: getIdsFromContent(challengeFilter.content),
+    description: challengeFilter.description,
+    enabled: challengeFilter.enabled,
+    endDate: challengeFilter.endDate,
+    groupsIds: getIdsFromContent(challengeFilter.groups),
+    projectId: challengeFilter.projectId, // 	NivPreAlg
+    startDate: challengeFilter.startDate,
+    tags: challengeFilter.tags,
+    title: challengeFilter.title,
+    topicsIds: getIdsFromContent(challengeFilter.topics),
+  };
 
-function getIdsFromContent(content) {
-  return content
-    .map(item => item.id); // Extrae los ids
-}
+  function getIdsFromContent(content) {
+    return content.map(item => item.id); // Extrae los ids
+  }
 
-function formatDateToUTC(dateString) {
-  const date = new Date(dateString);//+":00.000Z");
-  return date.toISOString()
-}
+  function formatDateToUTC(dateString) {
+    const date = new Date(dateString); //+":00.000Z");
+    return date.toISOString();
+  }
 
   const handlePublish = () => {
     const updatedChallengeData = {
       ...challengeData,
       startDate: formatDateToUTC(new Date()), // Sobrescribe startDate con la fecha actual en UTC
     };
-    setChallengeId(id)
-    setUpdateChallenge(updatedChallengeData)
-    setIsUpdated(true)
+    setChallengeId(id);
+    setUpdateChallenge(updatedChallengeData);
+    setIsUpdated(true);
     alert("Desafío publicado");
   };
 
   const handleDelete = () => {
-
     const updatedChallengeData = {
-      ...challengeData, 
+      ...challengeData,
       enabled: false,
     };
-    setChallengeId(id)
-    setUpdateChallenge(updatedChallengeData)
-    setIsUpdated(true)
+    setChallengeId(id);
+    setUpdateChallenge(updatedChallengeData);
+    setIsUpdated(true);
     alert("Desafío eliminado");
   };
 
-  const handleModify = (id) => {
+  const handleModify = id => {
     router.push({
       pathname: "/challengeForm",
-      query: { mode: "edit", challengeId: id},
+      query: { mode: "edit", challengeId: id },
     });
   };
 
@@ -529,7 +533,7 @@ function formatDateToUTC(dateString) {
     >
       <VStack align="start" spacing={4}>
         <HStack w="100%" justify="space-between" align="center">
-          <Stack 
+          <Stack
             w={{ lg: "95%", sm: "90%" }}
             spacing={4}
             direction={{ base: "column", md: "row" }}
@@ -563,7 +567,7 @@ function formatDateToUTC(dateString) {
           </HStack>
         </HStack>
         <Box w="100%" textAlign="center">
-        <LatexPreview content={description} />
+          <LatexPreview content={description} />
         </Box>
 
         {/* Accordion for groups */}
@@ -750,7 +754,7 @@ const StudentsList = ({ challenges, setChallenges }) => {
           </Select>
         </Flex>
       </Box>
-      {filteredChallenges.map((challenge) => (
+      {filteredChallenges.map(challenge => (
         <Box p={4} key={challenge.id}>
           {console.log("challengeStudent", challenge)}
           <StudentCard {...challenge} challenges={challenges} setChallenges={setChallenges} />
@@ -793,7 +797,7 @@ const student = [
     tags: ["joint-control", "oslm", "motiv-msg", "session-progress"],
     content: [419, 459], // 1 de fraccione, 1 potencia
     topics: [31, 19, 68], //fracciones, potencias, raices
-    id: 1
+    id: 1,
   },
   {
     title: "Desafío 2",
@@ -805,8 +809,8 @@ const student = [
     groupProgress: 70,
     status: "finalized",
     tags: ["joint-control", "motiv-msg", "session-progress"],
-    content:[],
-    topics:[]
+    content: [],
+    topics: [],
   },
   {
     title: "Desafío 3",
@@ -818,8 +822,8 @@ const student = [
     groupProgress: 70,
     status: "finalized",
     tags: ["joint-control", "session-progress"],
-    content:[],
-    topics:[]
+    content: [],
+    topics: [],
   },
   {
     title: "Desafío 4",
@@ -831,8 +835,8 @@ const student = [
     groupProgress: 70,
     status: "finalized",
     tags: ["joint-control", "oslm", "session-progress"],
-    content:[],
-    topics:[]
+    content: [],
+    topics: [],
   },
 ];
 
@@ -921,17 +925,18 @@ export const calculateProgress = (skillNames: string[], userProgresses: UserProg
   return Number(averageProgress.toPrecision(2));
 };
 
-const updateDataWithStatus = (dataArray: Challenge[]): Challenge[]  => {
+const updateDataWithStatus = (dataArray: Challenge[]): Challenge[] => {
   const currentTimestamp = Date.now();
 
   return dataArray?.map(item => {
-    let status = 'unpublished';
+    let status = "unpublished";
     if (item.startDate) {
-      status = 'published';
+      status = "published";
     }
 
-    if (new Date(item.endDate).getTime() < currentTimestamp) {//(item.endDate && new Date(item.endDate).getTime() >= currentTimestamp){
-      status = 'finalized';
+    if (new Date(item.endDate).getTime() < currentTimestamp) {
+      //(item.endDate && new Date(item.endDate).getTime() >= currentTimestamp){
+      status = "finalized";
     }
 
     return {
@@ -941,28 +946,28 @@ const updateDataWithStatus = (dataArray: Challenge[]): Challenge[]  => {
   });
 };
 
-type Challenge = { 
+type Challenge = {
   id: string;
-  title: string; 
-  description: string; 
+  title: string;
+  description: string;
   endDate: number;
   startDate: number;
-  status: string; 
-  enabled: boolean,
-  groups: { 
+  status: string;
+  enabled: boolean;
+  groups: {
     name: string;
     code: string;
     users: {
       name: string;
       email: string;
-      progress: number; 
+      progress: number;
     }[];
     students: {
       name: string;
       email: string;
-      progress: number; 
-    }[]; 
-  }[]; 
+      progress: number;
+    }[];
+  }[];
 };
 
 function filterUsersInChallenges(challenges) {
@@ -984,39 +989,39 @@ function filterUsersInChallenges(challenges) {
       // Retorna el grupo con los usuarios filtrados
       return {
         ...group,
-        users: filteredUsers
+        users: filteredUsers,
       };
     });
 
     // Retorna el desafío con los grupos filtrados
     return {
       ...challenge,
-      groups: filteredGroups
+      groups: filteredGroups,
     };
   });
 }
 
 function updateDataWithEndDate(input: Challenge[] = []): Challenge[] {
-
-  return Array.isArray(input) ? input.map((challenge) => ({
-    id: challenge?.id,
-    title: challenge?.title,
-    description: challenge?.description,
-    endDate: new Date(challenge?.endDate).getTime(),
-    status: challenge?.status,
-    enabled: challenge?.enabled,
-    topics: challenge?.topics,
-    groups: challenge?.groups.map((group, groupIndex) => ({
-      name: group.code,
-      students: group?.users?.map((user, userIndex) => ({
-        id: user.id,
-        name: user.email,
-        progress: Math.floor(Math.random() * 101),
-      })),
-    })),
-  })) : [];
+  return Array.isArray(input)
+    ? input.map(challenge => ({
+        id: challenge?.id,
+        title: challenge?.title,
+        description: challenge?.description,
+        endDate: new Date(challenge?.endDate).getTime(),
+        status: challenge?.status,
+        enabled: challenge?.enabled,
+        topics: challenge?.topics,
+        groups: challenge?.groups.map((group, groupIndex) => ({
+          name: group.code,
+          students: group?.users?.map((user, userIndex) => ({
+            id: user.id,
+            name: user.email,
+            progress: Math.floor(Math.random() * 101),
+          })),
+        })),
+      }))
+    : [];
 }
-
 
 //-------------------------------------------
 
@@ -1038,17 +1043,17 @@ function getStudentsInfo(currentUser) {
 
   // Recorrer cada grupo en el objeto currentUser
   currentUser?.groups.forEach(group => {
-      // Recorrer cada estudiante en el grupo
-      group.users.forEach(user => {
-          // Crear un objeto con la información requerida
-          const studentInfo = {
-              id: user.id,
-              email: user.email,
-              nodes: user.modelStates ? user.modelStates.nodes : []
-          };
-          // Agregar el objeto al array de resultados
-          result.push(studentInfo);
-      });
+    // Recorrer cada estudiante en el grupo
+    group.users.forEach(user => {
+      // Crear un objeto con la información requerida
+      const studentInfo = {
+        id: user.id,
+        email: user.email,
+        nodes: user.modelStates ? user.modelStates.nodes : [],
+      };
+      // Agregar el objeto al array de resultados
+      result.push(studentInfo);
+    });
   });
 
   return result;
@@ -1075,54 +1080,52 @@ function filterStudentsByTopics(students, topicsKcs) {
 //-------------------------------------
 
 const ChallengesPage = () => {
-  const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([])
+  const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("asc");
   const [updateChallenge, setUpdateChallenge] = useState<Challenge[]>([]);
-  const[challenges, setChallenges] = useState([])
-  const[challengesStudents, setChallengesStudents] = useState([])
+  const [challenges, setChallenges] = useState([]);
+  const [challengesStudents, setChallengesStudents] = useState([]);
 
-    const[isUpdated, setIsUpdated] = useState(false)
-    const[challenge, setChallenge] = useState({})
-    const[challengeId, setChallengeId] = useState()
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [challenge, setChallenge] = useState({});
+  const [challengeId, setChallengeId] = useState();
 
-    const[challengesOriginal, setChallengesOriginal] = useState([])
-    const [topicQueries, setTopicQueries] = useState([]);
+  const [challengesOriginal, setChallengesOriginal] = useState([]);
+  const [topicQueries, setTopicQueries] = useState([]);
 
-  const { data: GroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading} = useGQLQuery(queryGroupUsersWithModelStates);
+  const { data: GroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
+    useGQLQuery(queryGroupUsersWithModelStates);
 
+  const { data: dataChallenges, isLoading: isChallengesLoading } = useGQLQuery(queryGetChallenges, {
+    challengesIds: ["1", "3", "5", "6"],
+  });
 
-  const { data: dataChallenges, isLoading: isChallengesLoading} = useGQLQuery(
-    queryGetChallenges,
+  const {
+    data: dataUpdateChallenge,
+    error: errorUpdateChallenge,
+    isLoading: isUpdateChallengeLoading,
+  } = useGQLQuery(
+    mutationUpdateChallenge,
     {
-      challengesIds: ["1", "3", "5", "6"],
-    }
+      challengeId: challengeId,
+      challenge: updateChallenge,
+    },
+    { enabled: isUpdated },
   );
 
-    const { data: dataUpdateChallenge, error: errorUpdateChallenge, isLoading: isUpdateChallengeLoading } = useGQLQuery(
-      mutationUpdateChallenge,
-      {
-        challengeId: challengeId,
-        challenge: updateChallenge
-      },
-      {enabled: isUpdated}
-    );
-
-    useEffect(()=> {
-      if(!isChallengesLoading && dataChallenges) {
-      console.log("dataChallenges", dataChallenges)
-      setChallengesOriginal(dataChallenges.challenges)
-      }
-    }, [isChallengesLoading, dataChallenges])
-
-  
-  useEffect(()=> {
-        setIsUpdated(false)
-      }, [])
-
+  useEffect(() => {
+    if (!isChallengesLoading && dataChallenges) {
+      console.log("dataChallenges", dataChallenges);
+      setChallengesOriginal(dataChallenges.challenges);
+    }
+  }, [isChallengesLoading, dataChallenges]);
 
   useEffect(() => {
+    setIsUpdated(false);
+  }, []);
 
+  useEffect(() => {
     const sortStudentsByProgress = challenges => {
       return challenges.map(challenge => {
         const sortedGroups = challenge.groups?.map(group => {
@@ -1135,11 +1138,12 @@ const ChallengesPage = () => {
 
     const transformData = () => {
       if (!isChallengesLoading) {
-        const dataFilterUserByRole = filterUsersInChallenges(dataChallenges?.challenges)
-        const updatedData = updateDataWithStatus(dataFilterUserByRole)
+        const dataFilterUserByRole = filterUsersInChallenges(dataChallenges?.challenges);
+        const updatedData = updateDataWithStatus(dataFilterUserByRole);
         const data = updateDataWithEndDate(updatedData);
 
-        const transformedChallenge = data.map(challenge => ({ // solo agrega el progress, crear funcion auxiliar que lo haga
+        const transformedChallenge = data.map(challenge => ({
+          // solo agrega el progress, crear funcion auxiliar que lo haga
           id: challenge.id,
           title: challenge.title,
           description: challenge.description,
@@ -1158,15 +1162,14 @@ const ChallengesPage = () => {
         }));
 
         const sortedStudents = sortStudentsByProgress(transformedChallenge);
-        console.log("sortedStudents", sortedStudents)
-        setChallenges(sortedStudents)
-        setFilteredChallenges(sortedStudents)
+        console.log("sortedStudents", sortedStudents);
+        setChallenges(sortedStudents);
+        setFilteredChallenges(sortedStudents);
       }
     };
-    
+
     transformData();
   }, [isChallengesLoading]);
-
 
   const router = useRouter();
   const handleClick = () => {
@@ -1177,11 +1180,10 @@ const ChallengesPage = () => {
   const tags = user?.tags;
   const admin = (user?.role ?? "") == "ADMIN" ? true : false;
 
-  useEffect(()=>{
+  useEffect(() => {
     // "challneges witouth user"
-    setChallengesStudents(updateArray(challenges, user?.id))
-  }, [challenges])
-
+    setChallengesStudents(updateArray(challenges, user?.id));
+  }, [challenges]);
 
   const students = GroupUsersWithModelStates?.groups || [];
   const transformStudents = students =>
@@ -1190,7 +1192,7 @@ const ChallengesPage = () => {
       groupName: student.label,
     }));
 
-    const dynamicStudents = transformStudents(students);
+  const dynamicStudents = transformStudents(students);
 
   /*
      TAGS
@@ -1216,7 +1218,6 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
   };
 
   useEffect(() => {
-
     // evita que los ejercicios eliminados se muestren
     let filtered = challenges.filter(challenge => challenge.enabled === true);
 
@@ -1237,10 +1238,9 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
     setFilteredChallenges(filtered);
   }, [challenges, statusFilter, sortOrder]);
 
-
-    if (isLoading || isChallengesLoading || isGroupUsersWithModelStatesLoading) {
-      return <Box p={5}>Cargando...</Box>;
-    }
+  if (isLoading || isChallengesLoading || isGroupUsersWithModelStatesLoading) {
+    return <Box p={5}>Cargando...</Box>;
+  }
 
   return (
     <Box p={4}>
@@ -1279,17 +1279,28 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
           <Heading mb={6} textAlign="center">
             Desafíos
           </Heading>
-          {filteredChallenges.length > 0 ?(
-          <VStack spacing={6}>{console.log(filteredChallenges)}
-            {filteredChallenges.map((challenge, index) => (
-              <ChallengeCard key={index} {...challenge} challenges={challenges} setChallenges={setChallenges} setIsUpdated={setIsUpdated} setUpdateChallenge={setUpdateChallenge} setChallengeId={setChallengeId} challengesOriginal={challengesOriginal}/>
-            ))}
-          </VStack>      ) : (
-        <p>Cargando datos...</p>
-      )}
+          {filteredChallenges.length > 0 ? (
+            <VStack spacing={6}>
+              {console.log(filteredChallenges)}
+              {filteredChallenges.map((challenge, index) => (
+                <ChallengeCard
+                  key={index}
+                  {...challenge}
+                  challenges={challenges}
+                  setChallenges={setChallenges}
+                  setIsUpdated={setIsUpdated}
+                  setUpdateChallenge={setUpdateChallenge}
+                  setChallengeId={setChallengeId}
+                  challengesOriginal={challengesOriginal}
+                />
+              ))}
+            </VStack>
+          ) : (
+            <p>Cargando datos...</p>
+          )}
         </Box>
       ) : (
-        <StudentsList challenges={challengesStudents}/>
+        <StudentsList challenges={challengesStudents} />
       )}
     </Box>
   );

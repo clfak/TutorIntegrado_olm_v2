@@ -2,7 +2,6 @@ import { HStack, Text, Box, Progress } from "@chakra-ui/react";
 import { getColorScheme } from "./tools";
 
 const ProgressBar = ({ label, progress, color }) => {
-
   return (
     <HStack w="100%" justify="space-between">
       <HStack justify="space-between" w="100%">
@@ -31,13 +30,7 @@ const ProgressBar = ({ label, progress, color }) => {
           </Box>
           <Text
             fontWeight="bold"
-            color={
-              progress <= 50
-                ? "red.500"
-                : progress < 70
-                ? "orange.400"
-                : "green.300"
-            }
+            color={progress <= 50 ? "red.500" : progress < 70 ? "orange.400" : "green.300"}
           >
             {Math.round(progress) + " %"}
           </Text>
