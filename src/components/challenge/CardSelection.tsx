@@ -1,17 +1,6 @@
-import {
-  LinkBox,
-  LinkOverlay,
-  Heading,
-  Text,
-  useColorModeValue,
-  HStack,
-  Center,
-  Divider,
-  Box,
-} from "@chakra-ui/react";
+import { Heading, Text, useColorModeValue, HStack, Center, Divider, Box } from "@chakra-ui/react";
 
 //import Link from "next/link";
-import NextLink from "next/link";
 import { FaStar } from "react-icons/fa";
 import { selectionDataType, sessionState, sessionStateBD } from "../SessionState";
 import type { ExType } from "../../components/lvltutor/Tools/ExcerciseType";
