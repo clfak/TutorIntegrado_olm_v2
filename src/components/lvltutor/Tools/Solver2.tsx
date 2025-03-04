@@ -395,4 +395,4 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   );
 };
 
-export default Solver2; //memo(Solver2);
+export default memo(Solver2);

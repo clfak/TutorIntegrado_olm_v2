@@ -33,7 +33,8 @@ import { formatDate, getColorScheme } from "../components/challenge/tools";
 import LatexPreview from "../components/challenge/LatexPreview";
 
 //----------------
-const queryGroupUsersWithModelStates = gql(/* GraphQL */ `
+/*
+const queryGroupUsersWithModelStates = gql(`
   query GetGroupUsersWithModelStates {
     currentUser {
       id
@@ -56,7 +57,7 @@ const queryGroupUsersWithModelStates = gql(/* GraphQL */ `
     }
   }
 `);
-
+*/
 //------------------------------------------------
 const queryGetKcsByTopics = gql(`
   query GetKcsByTopics2($topicsCodes: [String!]!) {
@@ -172,6 +173,21 @@ const mutationUpdateChallenge = gql(`
 };*/
 
 //--------------------------
+type ChallengeInput = {
+  code: string;
+  contentIds: string[];
+  description?: string; // Opcional
+  enabled: boolean;
+  endDate: string; // O Date, dependiendo de tu uso
+  groupsIds: string[];
+  projectId: string;
+  startDate: string; // O Date
+  tags: string[];
+  title: string;
+  topicsIds: string[];
+};
+
+//-------------------------
 
 // component
 
@@ -221,12 +237,12 @@ const StudentCard = ({
     topicsCodes: getCodes(topics),
   });
 
-  function getUniqueKcs(kcsByContentByTopics) {
+  function getUniqueKcs(kcsByContentByTopics: any[]): string[] {
     if (!Array.isArray(kcsByContentByTopics)) {
       return []; // Return an empty array or handle the error as needed
     }
 
-    const uniqueKcs = new Set(); // Use a Set to avoid duplicates
+    const uniqueKcs = new Set<string>(); // Use a Set to avoid duplicates
 
     // Loop through each object in the main array
     kcsByContentByTopics.forEach(item => {
@@ -237,11 +253,11 @@ const StudentCard = ({
     });
 
     // Convert the Set back to an array
-    return Array.from(uniqueKcs);
+    return Array.from<string>(uniqueKcs);
   }
 
   console.log("uniqueKcs", getUniqueKcs(queryResult?.data?.kcsByContentByTopics));
-  const uniqueKcs = getUniqueKcs(queryResult?.data?.kcsByContentByTopics);
+  const uniqueKcs: string[] = getUniqueKcs(queryResult?.data?.kcsByContentByTopics || []);
 
   const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
     queryGetKcsByTopics,
@@ -455,7 +471,7 @@ const ChallengeCard = ({
   const router = useRouter();
   const challengeFilter = challengesOriginal.find(challenge => challenge.id === id);
 
-  const challengeData = {
+  const challengeData: ChallengeInput = {
     code: challengeFilter.code,
     contentIds: getIdsFromContent(challengeFilter.content),
     description: challengeFilter.description,
@@ -680,7 +696,7 @@ const ChallengeCard = ({
           )}
           {/* Botón para publicar el desafío */}
           {status == "unpublished" && (
-            <Button colorScheme="green" onClick={() => handlePublish(id)} flex="1" maxW="200px">
+            <Button colorScheme="green" onClick={() => handlePublish()} flex="1" maxW="200px">
               <FaPaperPlane size={16} />
             </Button>
           )}
@@ -941,16 +957,20 @@ const updateDataWithStatus = (dataArray: Challenge[]): Challenge[] => {
 
 type Challenge = {
   id: string;
+  code: string;
+  projectId: string;
   title: string;
   description: string;
   endDate: number;
   startDate: number;
   status: string;
   enabled: boolean;
+  topics: [string];
   groups: {
     name: string;
     code: string;
     users: {
+      id: number;
       name: string;
       email: string;
       progress: number;
@@ -994,19 +1014,21 @@ function filterUsersInChallenges(challenges) {
   });
 }
 
-function updateDataWithEndDate(input: Challenge[] = []): Challenge[] {
+function updateDataWithEndDate(input: Challenge[] = []) {
   return Array.isArray(input)
     ? input.map(challenge => ({
         id: challenge?.id,
+        code: challenge?.code,
+        projectId: challenge?.projectId,
         title: challenge?.title,
         description: challenge?.description,
         endDate: new Date(challenge?.endDate).getTime(),
         status: challenge?.status,
         enabled: challenge?.enabled,
         topics: challenge?.topics,
-        groups: challenge?.groups.map((group, groupIndex) => ({
+        groups: challenge?.groups.map(group => ({
           name: group.code,
-          students: group?.users?.map((user, userIndex) => ({
+          students: group?.users?.map(user => ({
             id: user.id,
             name: user.email,
             progress: Math.floor(Math.random() * 101),
@@ -1050,13 +1072,27 @@ function filterStudentsByTopics(students, topicsKcs) {
   return filteredStudents;
 }
 */
-//-------------------------------------
+
+//-----------------------------------
 
 const ChallengesPage = () => {
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("asc");
-  const [updateChallenge, setUpdateChallenge] = useState<Challenge[]>([]);
+  const [updateChallenge, setUpdateChallenge] = useState<ChallengeInput>(() => ({
+    code: "",
+    contentIds: [],
+    description: "",
+    enabled: false,
+    endDate: "",
+    groupsIds: [],
+    projectId: "",
+    startDate: "",
+    tags: [],
+    title: "",
+    topicsIds: [],
+  }));
+
   const [challenges, setChallenges] = useState([]);
   const [challengesStudents, setChallengesStudents] = useState([]);
 
@@ -1067,17 +1103,56 @@ const ChallengesPage = () => {
   const [challengesOriginal, setChallengesOriginal] = useState([]);
   //const [topicQueries, setTopicQueries] = useState([]);
 
-  const { data: GroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
+  /*const { data: GroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
     useGQLQuery(queryGroupUsersWithModelStates);
-
+*/
   const { data: dataChallenges, isLoading: isChallengesLoading } = useGQLQuery(queryGetChallenges, {
-    challengesIds: ["1", "3", "5", "6"],
+    challengesIds: [
+      "1",
+      "3",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+    ],
   });
 
   const {
-    data: dataUpdateChallenge,
+    /*data: dataUpdateChallenge,
     error: errorUpdateChallenge,
-    isLoading: isUpdateChallengeLoading,
+    isLoading: isUpdateChallengeLoading,*/
   } = useGQLQuery(
     mutationUpdateChallenge,
     {
@@ -1093,10 +1168,10 @@ const ChallengesPage = () => {
       setChallengesOriginal(dataChallenges.challenges);
     }
   }, [isChallengesLoading, dataChallenges]);
-
+  /*
   useEffect(() => {
     setIsUpdated(false);
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     const sortStudentsByProgress = challenges => {
@@ -1124,9 +1199,9 @@ const ChallengesPage = () => {
           status: challenge.status,
           enabled: challenge.enabled,
           topics: challenge.topics,
-          groups: challenge.groups.map((group, groupIndex) => ({
+          groups: challenge.groups.map(group => ({
             name: group.name,
-            students: group.students.map((user, studentIndex) => ({
+            students: group.students.map(user => ({
               id: user.id,
               name: user.name,
               progress: Math.floor(Math.random() * 101),
@@ -1158,14 +1233,14 @@ const ChallengesPage = () => {
     setChallengesStudents(updateArray(challenges, user?.id));
   }, [challenges]);
 
-  const students = GroupUsersWithModelStates?.groups || [];
+  /*const students = GroupUsersWithModelStates?.groups || [];
   const transformStudents = students =>
     students.map(student => ({
       id: student.id,
       groupName: student.label,
     }));
-
- // const dynamicStudents = transformStudents(students);
+*/
+  // const dynamicStudents = transformStudents(students);
 
   /*
      TAGS
@@ -1211,7 +1286,7 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
     setFilteredChallenges(filtered);
   }, [challenges, statusFilter, sortOrder]);
 
-  if (isLoading || isChallengesLoading || isGroupUsersWithModelStatesLoading) {
+  if (isLoading || isChallengesLoading) {
     return <Box p={5}>Cargando...</Box>;
   }
 

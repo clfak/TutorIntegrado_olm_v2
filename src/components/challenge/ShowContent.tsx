@@ -33,7 +33,6 @@ const DynamicTutorWP = dynamic<{ exercise?: Object; topicId?: string }>(() =>
 );
 
 export default function ShowContent() {
-
   const snap = useSnapshot(sessionState);
 
   useEffect(() => {

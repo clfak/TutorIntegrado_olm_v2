@@ -309,7 +309,7 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedTopics, selectedTo
 
 const MathRecursiveAccordion = ({
   selectedTopics,
-  onShowDetails,
+  //onShowDetails,
   setSelectedExercises,
   selectedExercises = [],
 }) => {
@@ -340,7 +340,7 @@ const MathRecursiveAccordion = ({
     }
   };
 
-  const filterNestedObjects = (nestedArray, selectedObjects) => {
+  /*const filterNestedObjects = (nestedArray, selectedObjects) => {
     // Extraemos los IDs de los objetos seleccionados
     const selectedIds = selectedObjects.map(obj => obj.id);
 
@@ -362,7 +362,7 @@ const MathRecursiveAccordion = ({
 
     // Aplicamos el filtro al arreglo principal
     return nestedArray.filter(filterRecursive);
-  };
+  };*/
 
   return (
     <>
@@ -469,6 +469,10 @@ const ChallengeForm = () => {
   const router = useRouter();
   const { mode, challengeId: id } = router.query;
 
+  if (Array.isArray(id)) {
+    throw new Error("challengeId no puede ser un array en este contexto");
+  }
+
   const isEditMode = mode === "edit";
   const challengeId = id ? id : "default-id";
   //const { isLoading, user } = useAuth();
@@ -487,9 +491,9 @@ const ChallengeForm = () => {
   );
 
   const {
-    data: dataUpdateChallenge,
+    //data: dataUpdateChallenge,
     error: errorUpdateChallenge,
-    isLoading: isUpdateChallengeLoading,
+    //isLoading: isUpdateChallengeLoading,
   } = useGQLQuery(
     mutationUpdateChallenge,
     {
@@ -500,9 +504,9 @@ const ChallengeForm = () => {
   );
 
   const {
-    data: dataCreateChallenge,
+    //data: dataCreateChallenge,
     error: errorCreateChallenge,
-    isLoading: isCreateChallengeLoading,
+    //isLoading: isCreateChallengeLoading,
   } = useGQLQuery(
     mutationCreateChallenge,
     {
@@ -534,7 +538,7 @@ const ChallengeForm = () => {
   const groups = GroupsData?.currentUser?.groups || [];
 
   // Función para obtener el ejercicio con más KCs para cada 'code'
-  function getMaxKCsForEachCode(topics) {
+  /*function getMaxKCsForEachCode(topics) {
     const results = {};
 
     // Función recursiva para explorar el JSON
@@ -566,7 +570,7 @@ const ChallengeForm = () => {
 
     return results;
   }
-
+*/
   const handleSelectGroup = group => {
     setSelectedGroups(prev =>
       prev.some(g => g.id === group.id) ? prev.filter(g => g.id !== group.id) : [...prev, group],
@@ -803,7 +807,7 @@ const ChallengeForm = () => {
             <Accordion id="exercisesAccordion" allowMultiple>
               <MathRecursiveAccordion
                 selectedTopics={selectedTopics}
-                onShowDetails={[]}
+                //onShowDetails={[]}
                 setSelectedExercises={setSelectedExercises}
                 selectedExercises={selectedExercises}
               />

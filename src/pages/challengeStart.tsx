@@ -110,12 +110,12 @@ const ChallengeStart = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const domainId = parameters.CSMain.domain;
   //const topicsString = topics.toString() || "";
-  const registerTopic = 4; //topics[0] + ""; //topics in array
+  const registerTopic = "4"; //topics[0] + ""; //topics in array
   const nextContentPath = "/challenge"; //contentSelect?topic=" + topicDefined[registerTopic] + "&registerTopic=" + registerTopic; //topics in array
 
   const [showContent, setShowContent] = useState(true);
   const [showDemo, setShowDemo] = useState(true);
-  const [hasMoreContent, setHasMoreContent] = useState(true);
+  //const [hasMoreContent, setHasMoreContent] = useState(true);
 
   //--------------------------------
 
@@ -135,7 +135,8 @@ const ChallengeStart = () => {
   }, [isChallengeLoading, dataChallenge]);
 
   //--------------------
-  const { data, isLoading, isError, isFetching } = useGQLQuery(
+  const { data, isLoading, isError } = useGQLQuery(
+    // isFetching
     gql(/* GraphQL */ `
       query ProjectData($input: ContentSelectionInput!) {
         contentSelection {
@@ -208,7 +209,7 @@ const ChallengeStart = () => {
       //enabled: !isChallengeLoading
     },
   );
-
+  /*
   const { data: dataContent, isLoading: isContentLoading } = useGQLQuery(
     gql(`
       query getContent {
@@ -218,15 +219,15 @@ const ChallengeStart = () => {
           json
         }
       }`),
-  );
-
+  );*/
+  /*
   const {
     data: dataDemo,
     isLoading: isLoadingDemo,
     isError: isErrorDemo,
     isFetched: isFetchingDemo,
   } = useGQLQuery(
-    gql(/* GraphQL */ `
+    gql( `
       query DataDemo($ids: [IntID!]!) {
         content(ids: $ids) {
           code
@@ -248,7 +249,7 @@ const ChallengeStart = () => {
       //refetchOnMount: false,
       refetchOnReconnect: false,
     },
-  );
+  );*/
 
   useEffect(() => {
     console.log("topics", topics);
@@ -360,8 +361,8 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     console.log("currentContent updated", sessionState.currentContent);
   }, [sessionState.currentContent]);
 
-  if (!isLoading && !isContentLoading && showDemo) {
-    const demoContent = dataContent.content.map(content => content.json);
+  if (!isLoading && showDemo) {
+    const demoContent = contents.map(content => content.json);
     const currentContent = demoContent[currentIndex]; //contentResult[bestExercise]?.P;
     //sessionState.currentContent.id = currentContent.id;
     sessionState.currentContent.code = currentContent.code;
@@ -377,7 +378,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
   }
 
-  if (isLoading || isContentLoading || isChallengeLoading) {
+  if (isLoading || isChallengeLoading) {
     return <Box p={5}>Cargando...</Box>;
   }
 
@@ -408,7 +409,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
 
             {/* Barra de Progreso */}
             <Box w="45%">
-              <ProgressBar label="" progress={studentProgress} />
+              <ProgressBar label="" progress={studentProgress} color="green" />
             </Box>
           </Flex>
         </Box>
@@ -485,6 +486,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                                 selectionData={selectionData}
                                 indexSelectionData={index}
                                 key={index}
+                                setShowContent={setShowContent}
                               ></CardSelectionDynamic>
                             ))
                           : contentResult?.map((content, index) => (
@@ -504,6 +506,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                                   selectionData={selectionData}
                                   indexSelectionData={index}
                                   key={index}
+                                  setShowContent={setShowContent}
                                 ></CardSelectionDynamic>
                               </Center>
                             ))}

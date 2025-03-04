@@ -60,7 +60,7 @@ const queryTopics = gql(/* GraphQL */ `
   }
 `);
 
-const RecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selectedItems = [] }) => {
+const RecursiveAccordion = ({ data, setSelectedItems, selectedItems = [] }) => {
   // Función auxiliar para verificar si un item está seleccionado
   const isItemSelected = itemId => {
     return selectedItems.some(item => item.id === itemId);
@@ -161,15 +161,12 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selectedIte
                     ...subtopic,
                     parent: item,
                   }))}
-                  onShowDetails={onShowDetails}
                   setSelectedItems={setSelectedItems}
                   selectedItems={selectedItems}
                 />
               </Accordion>
             ) : (
-              <Button size="sm" onClick={() => onShowDetails?.(item)}>
-                Ver descripción
-              </Button>
+              <Button size="sm">Ver descripción</Button>
             )}
           </AccordionPanel>
         </AccordionItem>
@@ -179,7 +176,6 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selectedIte
 };
 
 const MathRecursiveAccordion = ({ data }) => {
-
   const extractExercise = data => {
     const exercises = [];
 
@@ -314,8 +310,8 @@ const MathRecursiveAccordion = ({ data }) => {
 
 const GetInfoExercises = () => {
   const [selectedItems, setSelectedItems] = useState([]);
-  const [detailItem, setDetailItem] = useState(null);
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  //const [detailItem, setDetailItem] = useState(null);
+  //const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const { data: TopicsData, isLoading: isTopicsLoading } = useGQLQuery(queryTopics);
 
@@ -336,10 +332,10 @@ const GetInfoExercises = () => {
 
   const dynamicTopics = transformTopics(topics);
 
-  const handleShowDetails = item => {
-    setDetailItem(item);
-    setDrawerOpen(true);
-  };
+  //const handleShowDetails = item => {
+  //setDetailItem(item);
+  //setDrawerOpen(true);
+  //};
 
   if (isTopicsLoading) {
     return <Box p={5}>Cargando...</Box>;
@@ -357,7 +353,6 @@ const GetInfoExercises = () => {
           <Accordion id="topicsAccordion" allowMultiple>
             <RecursiveAccordion
               data={dynamicTopics}
-              onShowDetails={handleShowDetails}
               setSelectedItems={setSelectedItems}
               selectedItems={selectedItems}
             />
@@ -369,9 +364,7 @@ const GetInfoExercises = () => {
             Ejercicios de los tópicos y subtópicos seleccionados
           </FormLabel>
           <Accordion id="exercisesAccordion" allowMultiple>
-            <MathRecursiveAccordion
-              data={selectedItems}
-            />
+            <MathRecursiveAccordion data={selectedItems} />
           </Accordion>
         </FormControl>
       </Box>
