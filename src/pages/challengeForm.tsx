@@ -600,7 +600,7 @@ const ChallengeForm = () => {
       title: title,
       topicsIds: selectedTopics.map(topic => topic.id),
     };
-
+    console.log("startDate", startDate);
     // Validación de campos obligatorios
     const requiredFields = [
       {

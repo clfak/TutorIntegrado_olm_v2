@@ -206,7 +206,6 @@ const ChallengeStart = () => {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
-      //enabled: !isChallengeLoading
     },
   );
   /*
@@ -220,14 +219,14 @@ const ChallengeStart = () => {
         }
       }`),
   );*/
-  /*
+
   const {
     data: dataDemo,
     isLoading: isLoadingDemo,
-    isError: isErrorDemo,
-    isFetched: isFetchingDemo,
+    //isError: isErrorDemo,
+    //isFetched: isFetchingDemo,
   } = useGQLQuery(
-    gql( `
+    gql(`
       query DataDemo($ids: [IntID!]!) {
         content(ids: $ids) {
           code
@@ -248,8 +247,9 @@ const ChallengeStart = () => {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
+      enabled: !isChallengeLoading && !!contents,
     },
-  );*/
+  );
 
   useEffect(() => {
     console.log("topics", topics);
@@ -361,24 +361,38 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     console.log("currentContent updated", sessionState.currentContent);
   }, [sessionState.currentContent]);
 
-  if (!isLoading && showDemo) {
-    const demoContent = contents.map(content => content.json);
-    const currentContent = demoContent[currentIndex]; //contentResult[bestExercise]?.P;
-    //sessionState.currentContent.id = currentContent.id;
-    sessionState.currentContent.code = currentContent.code;
-    //sessionState.currentContent.description = currentContent.description;
-    //sessionState.currentContent.label = currentContent.label;
-    sessionState.currentContent.json = currentContent; //.json as unknown as ExType;
-    //sessionState.currentContent.kcs = currentContent.kcs;
-    //sessionState.selectionData = selectionData;
-    //sessionState.selectionData[0].optionSelected = true;
-    sessionState.nextContentPath = nextContentPath;
-    sessionState.topic = registerTopic;
-    sessionState.callbackType = "challenge";
-    sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
+  if (!isLoadingDemo && showDemo) {
+    console.log("contents", contents);
+    console.log("dataDemo", dataDemo);
+    //const demoContent = dataDemo?.content.map(content => content.json);
+
+    const demoContent = dataDemo ? dataDemo?.content.map(content => content.json) : [];
+
+    if (
+      demoContent &&
+      demoContent.length > 0 &&
+      currentIndex >= 0 &&
+      currentIndex < demoContent.length
+    ) {
+      console.log("demoContent", demoContent);
+      console.log("currentIndex", currentIndex);
+      const currentContent = demoContent[currentIndex]; //contentResult[bestExercise]?.P;
+      //sessionState.currentContent.id = currentContent.id;
+      sessionState.currentContent.code = currentContent.code;
+      //sessionState.currentContent.description = currentContent.description;
+      //sessionState.currentContent.label = currentContent.label;
+      sessionState.currentContent.json = currentContent; //.json as unknown as ExType;
+      //sessionState.currentContent.kcs = currentContent.kcs;
+      //sessionState.selectionData = selectionData;
+      //sessionState.selectionData[0].optionSelected = true;
+      sessionState.nextContentPath = nextContentPath;
+      sessionState.topic = registerTopic;
+      sessionState.callbackType = "challenge";
+      sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
+    }
   }
 
-  if (isLoading || isChallengeLoading) {
+  if (isLoading || isChallengeLoading || isLoadingDemo) {
     return <Box p={5}>Cargando...</Box>;
   }
 
