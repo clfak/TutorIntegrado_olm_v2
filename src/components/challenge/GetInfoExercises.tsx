@@ -178,33 +178,7 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selectedIte
   );
 };
 
-const MathRecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selectedItems = [] }) => {
-  // Verifica si un item está seleccionado
-  const isItemSelected = exercise => {
-    return selectedItems.some(
-      selected =>
-        selected.description === exercise.description &&
-        selected.mathExpression === exercise.mathExpression,
-    );
-  };
-
-  // Maneja el cambio en la selección de cualquier item
-  const handleItemChange = exercise => {
-    if (isItemSelected(exercise)) {
-      // Si ya está seleccionado, lo removemos
-      const newSelected = selectedItems.filter(
-        selected =>
-          !(
-            selected.description === exercise.description &&
-            selected.mathExpression === exercise.mathExpression
-          ),
-      );
-      setSelectedItems(newSelected);
-    } else {
-      // Si no está seleccionado, lo agregamos
-      setSelectedItems([...selectedItems, exercise]);
-    }
-  };
+const MathRecursiveAccordion = ({ data, selectedItems = [] }) => {
 
   const extractExercise = data => {
     const exercises = [];
@@ -276,30 +250,6 @@ const MathRecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selecte
     return exercises;
   };
 
-  const filterNestedObjects = (nestedArray, selectedObjects) => {
-    // Extraemos los IDs de los objetos seleccionados
-    const selectedIds = selectedObjects.map(obj => obj.id);
-
-    // Función recursiva para buscar coincidencias en objetos anidados
-    const filterRecursive = obj => {
-      // Si el objeto actual tiene un id que está en selectedIds, lo incluimos
-      if (selectedIds.includes(obj.id)) {
-        return true;
-      }
-
-      // Si tiene subtopics, buscamos recursivamente en ellos
-      if (obj.subtopics && obj.subtopics.length > 0) {
-        obj.subtopics = obj.subtopics.filter(filterRecursive);
-        return obj.subtopics.length > 0;
-      }
-
-      return false;
-    };
-
-    // Aplicamos el filtro al arreglo principal
-    return nestedArray.filter(filterRecursive);
-  };
-
   return (
     <>
       {data && data.length > 0 && (
@@ -367,17 +317,10 @@ const GetInfoExercises = () => {
   const [detailItem, setDetailItem] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-  const [challengeName, setChallengeName] = useState("");
-  const [description, setDescription] = useState("");
-  const [endDate, setEndDate] = useState("");
 
   const [selectedExercises, setSelectedExercises] = useState([]);
 
   const { data: TopicsData, isLoading: isTopicsLoading } = useGQLQuery(queryTopics);
-
-  const [selectedGroups, setSelectedGroups] = useState([]);
-  const [detailItemGroup, setDetailItemGroup] = useState(null);
-  const [isDrawerOpenGroup, setDrawerOpenGroup] = useState(false);
 
   const router = useRouter();
   const { mode } = router.query;
@@ -395,51 +338,6 @@ const GetInfoExercises = () => {
     }));
 
   const dynamicTopics = transformTopics(topics);
-
-  // Función para obtener el ejercicio con más KCs para cada 'code'
-  function getMaxKCsForEachCode(topics) {
-    const results = {};
-
-    // Función recursiva para explorar el JSON
-    function exploreTopic(topic) {
-      // Si el tema tiene subtemas, se recorren
-      if (topic.childrens && topic.childrens.length > 0) {
-        for (let child of topic.childrens) {
-          exploreTopic(child);
-        }
-      }
-
-      // Si el tema tiene ejercicios, se busca el que tiene más KCs
-      if (topic.content && topic.content.length > 0) {
-        // Si no existe una entrada en 'results' o el ejercicio tiene más KCs
-        if (!results[topic.code] || topic.content.length > results[topic.code].content.length) {
-          results[topic.code] = {
-            code: topic.code,
-            expression: topic.label,
-            description: `${topic.content.length} KCs`,
-          };
-        }
-      }
-    }
-
-    // Recorremos todos los temas principales
-    for (let topic of topics) {
-      exploreTopic(topic);
-    }
-
-    return results;
-  }
-
-  //console.log(dynamicTopics)
-  //console.log(getMaxKCsForEachCode(topics))
-
-  //console.log(extractExercise(dynamicTopics))
-
-  const handleSelect = item => {
-    setSelectedItems(prev =>
-      prev.some(i => i.id === item.id) ? prev.filter(i => i.id !== item.id) : [...prev, item],
-    );
-  };
 
   const handleShowDetails = item => {
     setDetailItem(item);
@@ -476,8 +374,6 @@ const GetInfoExercises = () => {
           <Accordion id="exercisesAccordion" allowMultiple>
             <MathRecursiveAccordion
               data={selectedItems}
-              onShowDetails={[]}
-              setSelectedItems={setSelectedExercises}
               selectedItems={selectedExercises}
             />
           </Accordion>
