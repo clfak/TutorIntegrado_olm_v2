@@ -60,6 +60,8 @@ export const sessionState = proxy<{
   selectionData: [],
   nextContentPath: "",
   learnerTraces: [],
+  callback: null, // Initially, no logic is assigned (callback function),
+  callbackType: ""
 });
 
 export var sessionStateBD = localforage.createInstance({
@@ -96,7 +98,6 @@ export const sessionStateInitial = (
 ) => {
   sessionState.currentUser = JSON.parse(JSON.stringify(user));
   sessionState.sessionId = `${auth0User?.updated_at}`;
-
   for (const key in sessionState) {
     sessionStateBD.getItem(key).then(function (value) {
       if (value == null) {

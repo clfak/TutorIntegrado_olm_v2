@@ -1,5 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
+import { FaBookOpen, FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
 import { useAuth } from "./Auth";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ScrollArea } from "./ScrollArea";
@@ -75,9 +75,16 @@ export function Navigation() {
             >
               Productos Notables
             </SidebarLink>
+            <Stack fontWeight="black" pb="6">
+        <SidebarLink icon={<FaBookOpen />} href="challenge">
+          Desafío
+        </SidebarLink>
+      </Stack>
           </>
         )}
       </Stack>
+
+
 
       <Stack fontWeight="black" pb="6">
         <SidebarLink icon={<FaQuestionCircle />} href="tutorial">

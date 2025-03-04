@@ -22,6 +22,8 @@ function RatingQuestion({ useAlternateRoute = false }) {
   const content = sessionState.currentContent.id;
   const topic = sessionState.topic;
   const selectionData = sessionState.selectionData;
+  const callback = sessionState.callback;
+  const callbackType = sessionState.callbackType;
 
   const [timeToUpdateModel, SetTimeToUpdateModel] = useState(true);
   const { updateModel, mutation } = useUpdateModel();
@@ -57,6 +59,12 @@ function RatingQuestion({ useAlternateRoute = false }) {
       topicID: topic,
       extra: { selectionData },
     });
+    if(callbackType === "challenge") {
+      callback()
+    }
+    else {
+    //callback(ruta);
+    }
   };
   return (
     <div style={styles.container}>
@@ -84,7 +92,7 @@ function RatingQuestion({ useAlternateRoute = false }) {
           );
         })}
       </div>
-      <Link href={ruta}>
+      {/*<Link href={ruta}>*/}
         <Button
           style={styles.button}
           disabled={currentValue != 0 && !mutation.isLoading ? false : true}
@@ -98,7 +106,7 @@ function RatingQuestion({ useAlternateRoute = false }) {
             </>
           )}
         </Button>
-      </Link>
+      {/*</Link>*/}
     </div>
   );
 }
