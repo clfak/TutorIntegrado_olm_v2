@@ -157,7 +157,7 @@ const mutationUpdateChallenge = gql(`
     }
   }`);
 //----------------------------------
-const getTopicsFromChallenges = challengesOriginal => {
+/*const getTopicsFromChallenges = challengesOriginal => {
   if (!challengesOriginal || !Array.isArray(challengesOriginal)) {
     return [];
   }
@@ -169,7 +169,7 @@ const getTopicsFromChallenges = challengesOriginal => {
   }));
 
   return challengeObjects;
-};
+};*/
 
 //--------------------------
 
@@ -191,7 +191,6 @@ const StudentCard = ({
   groupProgress,
   status,
   tags,
-  content,
   topics,
 }) => {
   const router = useRouter();
@@ -199,7 +198,7 @@ const StudentCard = ({
   //const jointControlEnabled = tags.includes("join-control"); // habilita selección conjunta de contenido
   const oslmEnabled = tags.includes("oslm"); // habilita barra de progreso del grupo (comparación social)
   const motivMsgEnabled = tags.includes("motiv-msg"); // habilita el mensaje motivacional asociado al progreso
-  const sessionProgressEnabled = tags.includes("session-progress"); // habilita mostrar el delta de progreso dentro de la sesión
+  //const sessionProgressEnabled = tags.includes("session-progress"); // habilita mostrar el delta de progreso dentro de la sesión
 
   /*
   const calculateGroupProgress = (students) => {
@@ -448,8 +447,6 @@ const ChallengeCard = ({
   endDate,
   groups,
   status,
-  challenges,
-  setChallenges,
   setIsUpdated,
   setUpdateChallenge,
   setChallengeId,
@@ -694,7 +691,7 @@ const ChallengeCard = ({
 };
 //--------------------------------------------
 
-const StudentsList = ({ challenges, setChallenges }) => {
+const StudentsList = ({ challenges }) => {
   const [filteredChallenges, setFilteredChallenges] = useState(challenges);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -753,7 +750,7 @@ const StudentsList = ({ challenges, setChallenges }) => {
       {filteredChallenges.map(challenge => (
         <Box p={4} key={challenge.id}>
           {console.log("challengeStudent", challenge)}
-          <StudentCard {...challenge} challenges={challenges} setChallenges={setChallenges} />
+          <StudentCard {...challenge} challenges={challenges} />
         </Box>
       ))}
     </Box>
@@ -779,7 +776,7 @@ progress: Un valor de progreso entre 0 y 100, representando el avance del estudi
 // https://timestamp.online/
 
 // title, description, endDate, student, groupProgress, status, tags
-
+/*
 const student = [
   {
     title: "Desafío 1",
@@ -835,7 +832,7 @@ const student = [
     topics: [],
   },
 ];
-
+*/
 //--------------------------
 
 function updateArray(array, userIdToRemove) {
@@ -1020,7 +1017,7 @@ function updateDataWithEndDate(input: Challenge[] = []): Challenge[] {
 }
 
 //-------------------------------------------
-
+/*
 const sortStudentsByProgress = challenges => {
   return challenges.map(challenge => {
     const sortedGroups = challenge.groups?.map(group => {
@@ -1030,31 +1027,11 @@ const sortStudentsByProgress = challenges => {
     return { ...challenge, groups: sortedGroups };
   });
 };
-
+*/
 //sortStudentsByProgress(challenges);
-//---------------------
 
-function getStudentsInfo(currentUser) {
-  const result = [];
-
-  // Recorrer cada grupo en el objeto currentUser
-  currentUser?.groups.forEach(group => {
-    // Recorrer cada estudiante en el grupo
-    group.users.forEach(user => {
-      // Crear un objeto con la información requerida
-      const studentInfo = {
-        id: user.id,
-        email: user.email,
-        nodes: user.modelStates ? user.modelStates.nodes : [],
-      };
-      // Agregar el objeto al array de resultados
-      result.push(studentInfo);
-    });
-  });
-
-  return result;
-}
 //--------------------------------------------
+/*
 function filterStudentsByTopics(students, topicsKcs) {
   // Extraer las claves de topics.kcs
   const topicKeys = Object.keys(topicsKcs);
@@ -1072,7 +1049,7 @@ function filterStudentsByTopics(students, topicsKcs) {
 
   return filteredStudents;
 }
-
+*/
 //-------------------------------------
 
 const ChallengesPage = () => {
@@ -1084,11 +1061,11 @@ const ChallengesPage = () => {
   const [challengesStudents, setChallengesStudents] = useState([]);
 
   const [isUpdated, setIsUpdated] = useState(false);
-  const [challenge, setChallenge] = useState({});
+  //const [challenge, setChallenge] = useState({});
   const [challengeId, setChallengeId] = useState();
 
   const [challengesOriginal, setChallengesOriginal] = useState([]);
-  const [topicQueries, setTopicQueries] = useState([]);
+  //const [topicQueries, setTopicQueries] = useState([]);
 
   const { data: GroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
     useGQLQuery(queryGroupUsersWithModelStates);
@@ -1173,7 +1150,7 @@ const ChallengesPage = () => {
   };
 
   const { isLoading, user } = useAuth();
-  const tags = user?.tags;
+  //const tags = user?.tags;
   const admin = (user?.role ?? "") == "ADMIN" ? true : false;
 
   useEffect(() => {
@@ -1188,7 +1165,7 @@ const ChallengesPage = () => {
       groupName: student.label,
     }));
 
-  const dynamicStudents = transformStudents(students);
+ // const dynamicStudents = transformStudents(students);
 
   /*
      TAGS
@@ -1282,8 +1259,6 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
                 <ChallengeCard
                   key={index}
                   {...challenge}
-                  challenges={challenges}
-                  setChallenges={setChallenges}
                   setIsUpdated={setIsUpdated}
                   setUpdateChallenge={setUpdateChallenge}
                   setChallengeId={setChallengeId}

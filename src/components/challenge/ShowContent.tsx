@@ -33,29 +33,13 @@ const DynamicTutorWP = dynamic<{ exercise?: Object; topicId?: string }>(() =>
 );
 
 export default function ShowContent() {
-  //const content = sessionState.currentContent;
-  //const topic = sessionState.topic;
 
-  //console.log("Content --------->", content);
-  //console.log("topic --------->", topic);
   const snap = useSnapshot(sessionState);
-  /*const [content, setContent] = useState(snap.currentContent)
-  const [topic, setTopic] = useState(snap.topic)
-  
-  useEffect(() => {
-    setContent(snap.currentContent);
-    setTopic(snap.topic);
-  }, [snap.currentContent, snap.topic]);*/
 
   useEffect(() => {
     console.log("Current Content:", snap.currentContent?.json);
     console.log("Current Topic:", snap.topic);
   }, [snap.currentContent, snap.topic]);
-  /*
-  useEffect(() => {
-    console.log("Current Content:", content.json);
-    console.log("Current Topic:", topic);
-  }, [content, topic]);*/
 
   return (
     <>

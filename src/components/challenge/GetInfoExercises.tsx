@@ -178,7 +178,7 @@ const RecursiveAccordion = ({ data, onShowDetails, setSelectedItems, selectedIte
   );
 };
 
-const MathRecursiveAccordion = ({ data, selectedItems = [] }) => {
+const MathRecursiveAccordion = ({ data }) => {
 
   const extractExercise = data => {
     const exercises = [];
@@ -317,9 +317,6 @@ const GetInfoExercises = () => {
   const [detailItem, setDetailItem] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-
-  const [selectedExercises, setSelectedExercises] = useState([]);
-
   const { data: TopicsData, isLoading: isTopicsLoading } = useGQLQuery(queryTopics);
 
   const router = useRouter();
@@ -374,7 +371,6 @@ const GetInfoExercises = () => {
           <Accordion id="exercisesAccordion" allowMultiple>
             <MathRecursiveAccordion
               data={selectedItems}
-              selectedItems={selectedExercises}
             />
           </Accordion>
         </FormControl>
