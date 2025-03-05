@@ -525,7 +525,10 @@ const ChallengeForm = () => {
       setSelectedGroups(challenge.groups || []);
       setSelectedTopics(challenge.topics || []);
       setSelectedExercises(extractExercise([{ content: challenge.content }]) || []);
-      setStartDate(formatDateToRequiredFormat(challenge.startDate));
+      setStartDate(
+        challenge.startDate !== null ? formatDateToRequiredFormat(challenge.startDate) : null,
+      );
+      console.log("challenge.startDate", challenge.startDate);
     }
   }, [dataChallenge, isChallengeLoading]);
 
@@ -587,6 +590,7 @@ const ChallengeForm = () => {
   };
 
   const handleSave = () => {
+    console.log("startDate1", startDate);
     const challengeData = {
       code: `${title.slice(0, 25)}_${Date.now()}`, //_${user.id}`, //unique key
       contentIds: selectedExercises.map(exercise => exercise.exerciseId),
@@ -658,7 +662,8 @@ const ChallengeForm = () => {
     }
 
     setChallenge(challengeData);
-    console.log("challengeData", challengeData);
+    console.log("startDate", startDate);
+    console.log("challengeData", challengeData.startDate);
     if (isEditMode) {
       setIsUpdated(true);
       alert("Desafío actualizado exitosamente!");
