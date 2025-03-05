@@ -13,6 +13,8 @@ import { gql } from "../graphql";
 import ShowContent from "../components/challenge/ShowContent";
 import ProgressBar from "../components/challenge/ProgressBar";
 import { sessionState } from "../components/SessionState";
+import type { ContentJson } from "../components/SessionState";
+import type { wpExercise } from "../components/tutorWordProblems/types";
 
 //----------------------------
 
@@ -376,11 +378,12 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     ) {
       console.log("demoContent", demoContent);
       console.log("currentIndex", currentIndex);
-      const currentContent = demoContent[currentIndex]; //contentResult[bestExercise]?.P;
+      const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise; //contentResult[bestExercise]?.P;
       //sessionState.currentContent.id = currentContent.id;
       sessionState.currentContent.code = currentContent.code;
       //sessionState.currentContent.description = currentContent.description;
       //sessionState.currentContent.label = currentContent.label;
+      console.log("json");
       sessionState.currentContent.json = currentContent; //.json as unknown as ExType;
       //sessionState.currentContent.kcs = currentContent.kcs;
       //sessionState.selectionData = selectionData;

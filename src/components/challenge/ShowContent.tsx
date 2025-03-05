@@ -83,13 +83,13 @@ export default function ShowContent() {
             exercise={snap.currentContent?.json}
             topicId={snap.topic}
           ></DynamicTutorGeom>
-        ) : snap.currentContent && snap.currentContent?.json.type == "wordProblem" ? (
+        ) : snap.currentContent && snap.currentContent?.json?.type == "wordProblem" ? (
           <DynamicTutorWP
             key={`${snap.currentContent?.json?.type}-${snap.topic}`}
             exercise={snap.currentContent?.json}
             topicId={snap.topic}
           ></DynamicTutorWP>
-        ) : snap.currentContent && snap.currentContent?.json.type == "lvltutor2" ? (
+        ) : snap.currentContent && snap.currentContent?.json?.type == "lvltutor2" ? (
           <DynamicTutorLogic
             key={`${snap.currentContent?.json?.type}-${snap.topic}`}
             exc={snap.currentContent?.json as ExLog}
