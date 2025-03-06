@@ -20,6 +20,7 @@ import type { option, Step } from "./ExcerciseType";
 import { useState, useEffect, useRef } from "react";
 import MQProxy from "./MQProxy";
 import { useAction } from "../../../utils/action";
+import Latex from "react-latex-next";
 
 const Enabledhint = ({
   disablehint,
@@ -163,7 +164,8 @@ function ChoiceContent(option: option) {
   return (
     <VStack alignItems={"center"} alignContent={"center"}>
       {text ? <Text>{text}</Text> : null}
-      {exp ? <MQStaticMathField exp={exp} currentExpIndex={true} /> : null}
+      {/*exp ? <MQStaticMathField exp={exp} currentExpIndex={true} /> : null*/}
+      {exp ? <Latex>{"$$" + exp + "$$"} </Latex> : null}
     </VStack>
   );
 }
