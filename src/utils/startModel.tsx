@@ -113,7 +113,7 @@ export function GetSubtopics(parentid: string) {
       parentIds: [parentid], // Convertir a número para la consulta
     },
     {
-      enabled: false,
+      //enabled: false,
       onSuccess(data) {
         Subtopic.data = data.topics as Array<Partial<Topic>>;
       },
