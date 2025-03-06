@@ -158,7 +158,7 @@ function RadioCard(props) {
   );
 }
 
-function ChoiceContent(option: option) {
+function ChoiceContent({ option }: { option: option }) {
   let text = option.text;
   let exp = option.expression;
   return (
@@ -216,7 +216,9 @@ function CChoice({
                   <Box borderRadius={"full"} bg="black" h={"2"} w={"2"} />
                 </GridItem>
                 <GridItem colSpan={16}>
-                  <Center>{ChoiceContent(v)}</Center>
+                  <Center>
+                    <ChoiceContent option={v} />
+                  </Center>
                 </GridItem>
               </Grid>
             </RadioCard>
