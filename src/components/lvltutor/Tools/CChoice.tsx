@@ -164,7 +164,6 @@ function ChoiceContent(option: option) {
   return (
     <VStack alignItems={"center"} alignContent={"center"}>
       {text ? <Text>{text}</Text> : null}
-      {/*exp ? <MQStaticMathField exp={exp} currentExpIndex={true} /> : null*/}
       {exp ? <Latex>{"$$" + exp + "$$"} </Latex> : null}
     </VStack>
   );
