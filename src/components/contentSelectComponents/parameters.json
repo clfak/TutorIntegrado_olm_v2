@@ -47,8 +47,8 @@
     "text": "Has completado este capítulo"
   },
   "ratingQuestion": {
-    "controlQuestion": "¿Qué tan bueno fue tu rendimiento en este ejercicio?",
-    "experimentalQuestion": "¿Qué tan bueno fue tu rendimiento en este ejercicio?",
+    "controlQuestion": "¿Qué tan útil fue este ejercicio?",
+    "experimentalQuestion": "¿Qué tan útil fue este ejercicio?",
     "buttonMsg": "Siguiente Ejercicio",
     "buttonWaitMsg": "Actualizando  "
   }

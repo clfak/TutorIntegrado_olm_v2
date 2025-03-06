@@ -1,6 +1,4 @@
 import { Box, Center, Heading, SimpleGrid, Text } from "@chakra-ui/react";
-import { useGQLQuery } from "rq-gql";
-import { gql } from "../graphql";
 import { withAuth, useAuth } from "../components/Auth";
 import { CardSelectionTopic } from "../components/contentSelectComponents/CardSelectionTopics";
 import { useRouter } from "next/router";
@@ -13,7 +11,7 @@ import StartModel, {
   uModel,
   UserModel,
   Subtopic,
-  getSubtopics,
+  GetSubtopics,
 } from "../utils/startModel";
 import { useSnapshot } from "valtio";
 import { gSelect } from "../components/GroupSelect";
@@ -34,7 +32,7 @@ export default withAuth(function TopicSelect() {
   SuerveyQ("4", ["poll-srl1", "poll-srl2", "motiv-msg"]);
   console.log("holaaaaaa");
 
-  getSubtopics(topic);
+  GetSubtopics(topic);
 
   // Acción para el registro
   const action = useAction();

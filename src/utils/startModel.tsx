@@ -95,7 +95,7 @@ export const Subtopic = proxy<{
   data: [],
 });
 
-export function getSubtopics(parentid: string) {
+export function GetSubtopics(parentid: string) {
   const { isLoading: subtopicLoading } = useGQLQuery(
     gql(/* GraphQL */ `
       query GetSubtopics($parentIds: [IntID!]!) {
