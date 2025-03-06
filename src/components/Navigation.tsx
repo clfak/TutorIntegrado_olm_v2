@@ -42,25 +42,19 @@ export function Navigation() {
             <SidebarLink key="4" href={"topicSelect?&registerTopic=68"}>
               Raíces
             </SidebarLink>
-            <SidebarLink key="5" href={"topicSelect?&registerTopic=69"}>
-              Notación Científica
-            </SidebarLink>
-            <SidebarLink key="6" href={"topicSelect?&registerTopic=31"}>
+            <SidebarLink key="5" href={"topicSelect?&registerTopic=31"}>
               Fracciones
             </SidebarLink>
-            <SidebarLink key="7" href={"topicSelect?&registerTopic=24"}>
-              Ecuaciones Lineales
+            <SidebarLink key="6" href={"topicSelect?&registerTopic=24"}>
+              Ecuaciones
             </SidebarLink>
-            <SidebarLink key="8" href={"topicSelect?&registerTopic=70"}>
-              Ecuaciones Cuadráticas
-            </SidebarLink>
-            <SidebarLink key="9" href={"topicSelect?&registerTopic=52"}>
+            <SidebarLink key="7" href={"topicSelect?&registerTopic=52"}>
               Álgebra de Polinomios
             </SidebarLink>
-            <SidebarLink key="10" href={"wpExercises?topic=34,35&registerTopic=34"}>
-              Ejercicios con contexto
+            <SidebarLink key="8" href={"wpExercises?topic=34,35&registerTopic=34"}>
+              Ejercicios en contexto
             </SidebarLink>
-            <SidebarLink key="11" href={"topicSelect?&registerTopic=37"}>
+            <SidebarLink key="9" href={"topicSelect?&registerTopic=37"}>
               Lógica y Teoría de Conjuntos
             </SidebarLink>
           </>

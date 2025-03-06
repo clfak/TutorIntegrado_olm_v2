@@ -1,4 +1,14 @@
-import { LinkBox, Heading, Center, HStack, LinkOverlay, Text, Box, Image } from "@chakra-ui/react";
+import {
+  LinkBox,
+  Heading,
+  Center,
+  HStack,
+  LinkOverlay,
+  Text,
+  Box,
+  Image,
+  Stack,
+} from "@chakra-ui/react";
 import NextLink from "next/link";
 import PBLoad from "../progressbar/pbload";
 import { progresscalc } from "../progressbar/progresscalc";
@@ -9,6 +19,7 @@ import { Surveys } from "../csurvey/Answers";
 import { useAction } from "../../utils/action";
 import type { ExType } from "../lvltutor/Tools/ExcerciseType";
 import { InitialModel } from "../../utils/startModel";
+import Latex from "react-latex-next";
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
@@ -46,14 +57,12 @@ function displayExp(e: ExType): string {
 export const CardSelectionTopic = ({
   id,
   label,
-  registerTopic,
   //nextContentPath,
   index,
   KCs,
 }: {
   id: string;
   label: string | undefined;
-  registerTopic: string;
   //nextContentPath: string | undefined;
   KCs: { code: string }[];
   index: number;
@@ -71,6 +80,10 @@ export const CardSelectionTopic = ({
 
   let pbValues: pbi = {
     uservalues: 0,
+    groupvalues: null,
+    msg: null,
+    deltau: null,
+    info: null,
   };
 
   if (!uModel.isLoading) {
@@ -81,7 +94,12 @@ export const CardSelectionTopic = ({
       pbValues["groupvalues"] = progresscalc(listakcs(KCs), gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
       let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
-      if (Math.abs(diff) > 0.1 && pbValues.uservalues < 1 && sample3 != undefined) {
+      if (
+        uModel.motivmsg &&
+        Math.abs(diff) > 0.1 &&
+        pbValues.uservalues < 1 &&
+        sample3 != undefined
+      ) {
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -126,7 +144,7 @@ export const CardSelectionTopic = ({
           }
           action({
             verbName: "selectSubtopic",
-            topicID: registerTopic,
+            topicID: id,
             extra: {
               shownExpression: displayExp(kcsyejercicio.ejercicio as ExType),
               progressMe: pbValues.uservalues ? pbValues.uservalues : -1,
@@ -145,31 +163,53 @@ export const CardSelectionTopic = ({
           </HStack>
         </Center>
         {selectedExcercise.ejercicio[index] ? (
-          <Center fontSize={"2xl"} paddingBottom={"3"} paddingTop={"1"} overflow="hidden">
-            {selectedExcercise.ejercicio[index].img ? (
+          selectedExcercise.ejercicio[index].type == "lvltutor2" ? (
+            selectedExcercise.ejercicio[index].img ? (
               <Image src={"img/" + selectedExcercise.ejercicio[index].img} />
-            ) : null}
-            {selectedExcercise.ejercicio[index].type == "ecc5s" ||
-            selectedExcercise.ejercicio[index].type == "secl5s" ||
-            selectedExcercise.ejercicio[index].type == "ecl2s" ? (
-              <MathComponent
-                tex={String.raw`${selectedExcercise.ejercicio[index].eqc}`}
-                display={false}
-              />
-            ) : selectedExcercise.ejercicio[index].type === "wordProblem" ? (
-              <MathComponent tex={String.raw`${""}`} display={false} />
             ) : selectedExcercise.ejercicio[index].initialExpression ? (
-              <MathComponent
-                tex={String.raw`${selectedExcercise.ejercicio[index].initialExpression}`}
-                display={false}
-              />
+              <Stack textAlign="center" fontSize="xs">
+                <Center>
+                  <Latex>
+                    {"$$" + selectedExcercise.ejercicio[index].initialExpression + "$$"}
+                  </Latex>
+                </Center>
+              </Stack>
             ) : (
-              <MathComponent
-                tex={String.raw`${selectedExcercise.ejercicio[index].steps[0].expression}`}
-                display={false}
-              />
-            )}
-          </Center>
+              <Stack textAlign="center" fontSize="xs">
+                <Center>
+                  <Latex>
+                    {"$$" + selectedExcercise.ejercicio[index].steps[0].expression + "$$"}
+                  </Latex>
+                </Center>
+              </Stack>
+            )
+          ) : (
+            <Center fontSize={"2xl"} paddingBottom={"3"} paddingTop={"1"} overflow="hidden">
+              {selectedExcercise.ejercicio[index].img ? (
+                <Image src={"img/" + selectedExcercise.ejercicio[index].img} />
+              ) : null}
+              {selectedExcercise.ejercicio[index].type == "ecc5s" ||
+              selectedExcercise.ejercicio[index].type == "secl5s" ||
+              selectedExcercise.ejercicio[index].type == "ecl2s" ? (
+                <MathComponent
+                  tex={String.raw`${selectedExcercise.ejercicio[index].eqc}`}
+                  display={false}
+                />
+              ) : selectedExcercise.ejercicio[index].type === "wordProblem" ? (
+                <MathComponent tex={String.raw`${""}`} display={false} />
+              ) : selectedExcercise.ejercicio[index].initialExpression ? (
+                <MathComponent
+                  tex={String.raw`${selectedExcercise.ejercicio[index].initialExpression}`}
+                  display={false}
+                />
+              ) : (
+                <MathComponent
+                  tex={String.raw`${selectedExcercise.ejercicio[index].steps[0].expression}`}
+                  display={false}
+                />
+              )}
+            </Center>
+          )
         ) : (
           <></>
         )}
@@ -187,7 +227,13 @@ export const CardSelectionTopic = ({
             <Text paddingTop={"2"} fontSize={"sm"}></Text>
           </LinkOverlay>
         </NextLink>
-        {PBLoad(pbValues)}
+        <PBLoad
+          uservalues={pbValues.uservalues}
+          groupvalues={pbValues.groupvalues}
+          msg={pbValues.msg}
+          deltau={pbValues.deltau}
+          info={pbValues.info}
+        />
       </LinkBox>
     </Box>
   );

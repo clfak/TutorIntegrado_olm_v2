@@ -175,6 +175,10 @@ export default withAuth(function ContentSelect() {
 
   let pbValues: pbi = {
     uservalues: 0,
+    groupvalues: null,
+    msg: null,
+    deltau: null,
+    info: null,
   };
 
   //!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading
@@ -186,7 +190,12 @@ export default withAuth(function ContentSelect() {
       pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
       let diff = pbValues.uservalues - pbValues.groupvalues;
       let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
-      if (Math.abs(diff) > 0.1 && pbValues.uservalues < 1 && sample3 != undefined) {
+      if (
+        uModel.motivmsg &&
+        Math.abs(diff) > 0.1 &&
+        pbValues.uservalues < 1 &&
+        sample3 != undefined
+      ) {
         if (diff >= 0) {
           let max = sample3.items[0].content.options.length;
           pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
@@ -216,13 +225,13 @@ export default withAuth(function ContentSelect() {
   return (
     <>
       {pageload ? (
-        SVP.topicselect ? (
+        SVP.topicselect && uModel.pol1 ? (
           <SurveyViewer
             data={Surveys.data[Surveys.tagXindex["poll-srl1"]]}
             topicId={registerTopic}
             iExp={kcsyejercicio.ejercicio as ExType}
           />
-        ) : SVP.count % 3 == 2 ? (
+        ) : SVP.count % 3 == 2 && uModel.pol2 ? (
           <SurveyViewer
             data={Surveys.data[Surveys.tagXindex["poll-srl2"]]}
             topicId={registerTopic}
@@ -236,7 +245,7 @@ export default withAuth(function ContentSelect() {
         parameters.CSMain.completeMsgService ? (
         <CompleteTopic />
       ) : !isLoading && !isFetching /*&& !queryLastExercise*/ ? (
-        <>
+        <Box maxW="90%" padding="1">
           <Center>
             <Heading>
               {parameters.CSMain.title}
@@ -260,7 +269,13 @@ export default withAuth(function ContentSelect() {
               }}
             >
               <Heading size="sm">Progreso</Heading>
-              {PBLoad(pbValues)}
+              <PBLoad
+                uservalues={pbValues.uservalues}
+                groupvalues={pbValues.groupvalues}
+                msg={pbValues.msg}
+                deltau={pbValues.deltau}
+                info={pbValues.info}
+              />
             </Box>
           </Center>
           <CardLastExercise
@@ -359,7 +374,7 @@ export default withAuth(function ContentSelect() {
               )
             }
           </SimpleGrid>
-        </>
+        </Box>
       ) : (
         <>
           <Center padding="5px 0px 10px 0px">
