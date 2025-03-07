@@ -332,16 +332,20 @@ function ShuffledLoad({
   topicId: string;
   disablehint: boolean;
 }) {
-  //deepcopy
-  var d = JSON.stringify(step);
-  var dd = JSON.parse(d);
+  //deepcopy --generates converting civular structure to json error?
+  //var d = JSON.stringify(step);
+  //var dd = JSON.parse(d);
+  let d: Partial<Step> = {};
+  for (const key in step) {
+    d[key] = step[key];
+  }
   return (
     <CChoice
       step={step}
       content={content}
       topicId={topicId}
       disablehint={disablehint}
-      options={fishyShuffle(dd.multipleChoice)}
+      options={fishyShuffle(d.multipleChoice)}
     />
   );
 }
