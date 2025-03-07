@@ -216,7 +216,9 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
                   if (handleAnswer()) {
                     let ak = [];
                     console.log(Answers.ans);
-                    for (var e in Answers.ans) ak.push(JSON.parse(JSON.stringify(Answers.ans[e])));
+                    for (var e in Answers.ans) {
+                      ak.push(Answers.ans[e]);
+                    }
                     action({
                       verbName: "pollResponse",
                       topicID: topicId,
