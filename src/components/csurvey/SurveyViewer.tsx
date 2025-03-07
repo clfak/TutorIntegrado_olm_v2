@@ -51,13 +51,17 @@ export function handleInitialexpresion(e: ExType, svd: SD) {
   else if (ejercicio.initialExpression != undefined) exp = ejercicio.initialExpression;
   else exp = ejercicio.steps[0].expression;
 
-  //deep copy needed
-  var d = JSON.stringify(svd);
-  var dd = JSON.parse(d);
-  dd.items.unshift({ id: -1, index: -1, content: { type: "expression", expression: exp } });
-  dd.items.unshift({ id: -1, index: -1, content: { type: "text", text: ejercicio.text } });
+  //deep copy needed --generates converting civular structure to json error?
+  //var d = JSON.stringify(svd);
+  //var dd = JSON.parse(d);
+  let d: Partial<SD> = {};
+  for (const key in svd) {
+    d[key] = svd[key];
+  }
+  d.items.unshift({ id: "-1", index: -1, content: { type: "expression", expression: exp } });
+  d.items.unshift({ id: "-1", index: -1, content: { type: "text", text: ejercicio.text } });
 
-  return dd;
+  return d;
 }
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
