@@ -256,7 +256,7 @@ export const SurveyViewer = ({
   const [d, setD] = useState<SD>();
   useEffect(() => {
     reset();
-    if (iExp != undefined) setD(handleInitialexpresion(iExp, data));
+    if (iExp != undefined) setD(handleInitialexpresion(iExp, data) as SD);
     else setD(data);
   }, []);
   return <>{d != undefined ? <BasicUsage data={d} topicId={topicId} /> : null}</>;
