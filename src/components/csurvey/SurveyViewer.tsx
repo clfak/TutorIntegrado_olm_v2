@@ -51,17 +51,13 @@ export function handleInitialexpresion(e: ExType, svd: SD) {
   else if (ejercicio.initialExpression != undefined) exp = ejercicio.initialExpression;
   else exp = ejercicio.steps[0].expression;
 
-  //deep copy needed --generates converting civular structure to json error?
-  //var d = JSON.stringify(svd);
-  //var dd = JSON.parse(d);
-  let d: Partial<SD> = {};
-  for (const key in svd) {
-    d[key] = svd[key];
-  }
-  d.items.unshift({ id: "-1", index: -1, content: { type: "expression", expression: exp } });
-  d.items.unshift({ id: "-1", index: -1, content: { type: "text", text: ejercicio.text } });
+  //deep copy needed
+  var d = JSON.stringify(svd);
+  var dd = JSON.parse(d);
+  dd.items.unshift({ id: -1, index: -1, content: { type: "expression", expression: exp } });
+  dd.items.unshift({ id: -1, index: -1, content: { type: "text", text: ejercicio.text } });
 
-  return d;
+  return dd;
 }
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
@@ -216,9 +212,7 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
                   if (handleAnswer()) {
                     let ak = [];
                     console.log(Answers.ans);
-                    for (var e in Answers.ans) {
-                      ak.push(Answers.ans[e]);
-                    }
+                    for (var e in Answers.ans) ak.push(JSON.parse(JSON.stringify(Answers.ans[e])));
                     action({
                       verbName: "pollResponse",
                       topicID: topicId,
@@ -258,7 +252,7 @@ export const SurveyViewer = ({
   const [d, setD] = useState<SD>();
   useEffect(() => {
     reset();
-    if (iExp != undefined) setD(handleInitialexpresion(iExp, data) as SD);
+    if (iExp != undefined) setD(handleInitialexpresion(iExp, data));
     else setD(data);
   }, []);
   return <>{d != undefined ? <BasicUsage data={d} topicId={topicId} /> : null}</>;

@@ -20,7 +20,6 @@ import type { option, Step } from "./ExcerciseType";
 import { useState, useEffect, useRef } from "react";
 import MQProxy from "./MQProxy";
 import { useAction } from "../../../utils/action";
-import Latex from "react-latex-next";
 
 const Enabledhint = ({
   disablehint,
@@ -164,7 +163,7 @@ function ChoiceContent({ option, id }: { option: option; id: number }) {
   return (
     <VStack key={"CCVS" + id} alignItems={"center"} alignContent={"center"}>
       {text ? <Text key={"CCT" + id}>{text}</Text> : null}
-      {exp ? <Latex key={"CCL" + id}>{"$$" + exp + "$$"} </Latex> : null}
+      {exp ? <MQStaticMathField key={"CCL" + id} exp={exp} currentExpIndex={true} /> : null}
     </VStack>
   );
 }
@@ -332,20 +331,16 @@ function ShuffledLoad({
   topicId: string;
   disablehint: boolean;
 }) {
-  //deepcopy --generates converting civular structure to json error?
-  //var d = JSON.stringify(step);
-  //var dd = JSON.parse(d);
-  let d: Partial<Step> = {};
-  for (const key in step) {
-    d[key] = step[key];
-  }
+  //deepcopy
+  var d = JSON.stringify(step);
+  var dd = JSON.parse(d);
   return (
     <CChoice
       step={step}
       content={content}
       topicId={topicId}
       disablehint={disablehint}
-      options={fishyShuffle(d.multipleChoice)}
+      options={fishyShuffle(dd.multipleChoice)}
     />
   );
 }
