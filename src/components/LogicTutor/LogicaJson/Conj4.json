@@ -1,0 +1,217 @@
+{
+  "code": "conj4",
+  "title": "Uso de Conjunciones",
+  "type": "lvltutor2",
+  "img": "",
+  "meta": {},
+<<<<<<< HEAD
+  "initialExpression": "\\text{P: El número -5 es positivo} \\\\ \\text{Q: Un tríangulo isósceles tiene todos sus lados iguales} \\\\ \\text{Determine el valor de verdad de la siguiente conjunción} \\\\ P\\vee Q",
+=======
+  "eqc": "\\text{P: El número -5 es positivo} \\\\ \\text{Q: Un tríangulo isósceles tiene todos sus lados iguales} \\\\ \\text{Determine el valor de verdad de la siguiente conjunción} \\\\ P\\vee Q",
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+  "text": "Dadas las siguientes proposiciones   ",
+  "steps": [
+    {
+      "stepId": "0",
+<<<<<<< HEAD
+      "expression": "\\text{P: El número -5 es positivo}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 1: Determine el valor de verdad de la proposicion P",
+      "displayResult": ["Falso"],
+      "KCs": ["RecProp"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Verdadero",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "Falso",
+          "correct": true
+=======
+      "expression": "",
+      "StepType": "Alternatives",
+      "stepTitle": "Paso 1: Determine el valor de verdad de la proposicion P",
+      "displayResult": ["\\text{P: El número -5 es positivo}"],
+      "KCs": ["RecProp"],
+      "values": [
+        {
+          "name": "a",
+          "value": "Verdadero"
+        },
+        {
+          "name": "a",
+          "value": "Falso"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Si ambas condiciones son ciertas el valor de verdad de la proposicion es verdadero"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+<<<<<<< HEAD
+          "answer": ["1"],
+=======
+          "answer": ["Falso"],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Existe una condicion asociada a la frase",
+<<<<<<< HEAD
+      "summary": "1) El valor de verdad de la proposición es"
+    },
+    {
+      "stepId": "1",
+      "expression": "\\text{Q: Un tríangulo isósceles tiene todos sus lados iguales}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 2: Determine el valor de verdad de la proposicion Q",
+      "displayResult": ["Falso"],
+      "KCs": ["RecProp"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Verdadero",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "Falso",
+          "correct": true
+=======
+      "summary": "1) Se determina el valor de verdad de la proposición"
+    },
+    {
+      "stepId": "1",
+      "expression": "",
+      "StepType": "Alternatives",
+      "stepTitle": "Paso 2: Determine el valor de verdad de la proposicion Q",
+      "displayResult": ["\\text{Q: Un tríangulo isósceles tiene todos sus lados iguales}"],
+      "KCs": ["RecProp"],
+      "values": [
+        {
+          "name": "a",
+          "value": "Verdadero"
+        },
+        {
+          "name": "a",
+          "value": "Falso"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Si ambas condiciones son ciertas el valor de verdad de la proposicion es verdadero"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+<<<<<<< HEAD
+          "answer": ["1"],
+=======
+          "answer": ["Falso"],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+          "nextStep": "2"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Existe una condicion asociada a la frase",
+<<<<<<< HEAD
+      "summary": "2) El valor de verdad de la proposición es"
+    },
+    {
+      "stepId": "2",
+      "expression": "P\\vee Q",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 3: Determine el valor de verdad de la disyunción",
+      "displayResult": ["\\text{Falso, ya que ambas proposiciones son falsas}"],
+      "KCs": ["RecProp"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Ya que una de las 2 proposiciones es falsa, la conjunción es falsa",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "Ambas proposiciones son falsas por lo que la conjunción es falsa",
+          "correct": true
+        },
+        {
+          "id": 2,
+          "text": "Ambas preposiciones son verdaderas por lo que la conjunción es verdadera",
+          "correct": false
+        },
+        {
+          "id": 3,
+          "text": "Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera",
+          "correct": false
+=======
+      "summary": "1) Se determina el valor de verdad de la proposición"
+    },
+    {
+      "stepId": "2",
+      "expression": "",
+      "StepType": "Alternatives",
+      "stepTitle": "Paso 3: Determine el valor de verdad de la conjunción",
+      "displayResult": ["P\\vee Q"],
+      "KCs": ["RecProp"],
+      "values": [
+        {
+          "name": "a",
+          "value": "Ya que una de las 2 proposiciones es falsa, la conjunción es falsa"
+        },
+        {
+          "name": "a",
+          "value": "Ambas proposiciones son falsas por lo que la conjunción es falsa"
+        },
+        {
+          "name": "a",
+          "value": "Ambas preposiciones son verdaderas por lo que la conjunción es verdadera"
+        },
+        {
+          "name": "a",
+          "value": "Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+<<<<<<< HEAD
+          "hint": "La disyunción es verdadera a menos que ambas proposiciones sean falsas "
+=======
+          "hint": "Para verificar si la conjuncion "
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+<<<<<<< HEAD
+          "answer": ["1"],
+=======
+          "answer": ["Ambas proposiciones son falsas por lo que la conjunción es falsa"],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Existe una condicion asociada a la frase",
+<<<<<<< HEAD
+      "summary": "3) El valor de verdad de la disyunción es:"
+=======
+      "summary": "1)Luego se determina el valor de verdad de la proposición"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+    }
+  ]
+}

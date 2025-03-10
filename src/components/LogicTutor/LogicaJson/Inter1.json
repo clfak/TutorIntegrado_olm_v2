@@ -1,0 +1,210 @@
+{
+  "code": "inter1",
+  "title": "Representacion Intervalos",
+  "type": "lvltutor2",
+  "img": "recta.png",
+  "meta": {},
+  "text": "Considere la siguiente representación gráfica de un intervalo.",
+<<<<<<< HEAD
+  "initialExpression": " ",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "\\text{Extremo Inferior} \\quad \\placeholder[a]{} \\quad  \\text{Extremo Superior} \\quad \\placeholder[b]{}",
+      "stepType": "MultiplePlaceholders",
+      "validation": "evaluate",
+      "stepTitle": "Paso 1: Reconozca los valores extremos del intervalo",
+      "displayResult": ["\\text{Extremo inferior -3, Extremo superior 7}"],
+=======
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "",
+      "StepType": "MultiplePlaceholders",
+      "validation": "evaluate",
+      "stepTitle": "Paso 1: Reconozca los valores extremos del intervalo",
+      "displayResult": [
+        "\\text{Extremo Inferior} \\quad \\placeholder[a]{} \\quad  \\text{Extremo Superior} \\quad \\placeholder[b]{}"
+      ],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+      "KCs": ["RecValExt"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Los valores extremos se representan a ambos lados del intervalo"
+        },
+        {
+          "hintId": 1,
+          "hint": "El extremo inferior se representa a la izquierda y el superior a la derecha"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["-3", "7"],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Los Extremos corresponden",
+<<<<<<< HEAD
+      "summary": "1)Se reconocen los extremos del intervalo"
+=======
+      "summary": "1)Luego se comprueban valores del conjunto"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+    },
+    {
+      "stepId": "1",
+      "expression": "\\text{El valor es:  }\\sqrt{3}",
+<<<<<<< HEAD
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 2: Reconozca si el valor siguiente pertenece al conjunto",
+      "displayResult": ["Verdadero"],
+      "KCs": ["RecExtCerr"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Verdadero",
+          "correct": true
+        },
+        {
+          "id": 1,
+          "text": "Falso",
+          "correct": false
+=======
+      "StepType": "TrueFalse",
+      "stepTitle": "Paso 2: Reconozca si el valor siguiente pertenece al conjunto",
+      "displayResult": [],
+      "KCs": ["RecExtCerr"],
+      "values": [
+        {
+          "name": "a",
+          "value": 3
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Un número pertenece al intervalo, si este es mayor que el extremo inferior y menos que el extremo superior"
+        },
+        {
+          "hintId": 1,
+          "hint": "El valor corresponde a 1.73"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+<<<<<<< HEAD
+          "answer": ["0"],
+=======
+          "answer": ["V"],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+          "nextStep": "2"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El valor pertenece al conjunto",
+<<<<<<< HEAD
+      "summary": "2) Se comprueba si el valor \\( \\sqrt{3} \\) pertenece al conjunto"
+=======
+      "summary": "2)Se comprueba si el valor pertenece al conjunto"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+    },
+    {
+      "stepId": "2",
+      "expression": "",
+<<<<<<< HEAD
+      "stepType": "Blank",
+      "stepTitle": "Paso 3: Escriba el intervalo representado en la recta",
+      "displayResult": ["[-3,7]"],
+=======
+      "StepType": "Blank",
+      "stepTitle": "Paso 3: Escriba el intervalo representado en la recta",
+      "displayResult": [],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+      "KCs": ["RepRecInt", "RepIntCerr"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "El un intervalo cerrado se representa como [a,b]. Siendo a y b los extremos inferior y superior, respectivamente."
+        },
+        {
+          "hintId": 1,
+          "hint": "Recuerda que los extremos de un intervalo cerrado se representan de esta forma [a,b]"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["[-3,7]"],
+          "nextStep": "3"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Intervalo correcto",
+<<<<<<< HEAD
+      "summary": "3)Se representa el conjunto como intervalo"
+    },
+    {
+      "stepId": "3",
+      "expression": "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}",
+      "stepType": "MultiplePlaceholders",
+      "stepTitle": "Paso 4: Represente el intervalo por comprensión ",
+      "displayResult": ["x\\inℝ:-3\\leq x\\leq7"],
+=======
+      "summary": "3)El intervalo esta correcto"
+    },
+    {
+      "stepId": "3",
+      "expression": "",
+      "StepType": "MultiplePlaceholders",
+      "stepTitle": "Paso 4: Represente el intervalo por comprensión ",
+      "displayResult": [
+        "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}"
+      ],
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+      "KCs": ["RepComp"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Atento a la notación"
+        },
+        {
+          "hintId": 1,
+          "hint": "Por ejemplo el intervalo [-1,1] representado por comprensión es: ",
+          "expression": "x \\in \\mathrm{R}:-1 \\leq x \\leq 1"
+        },
+        {
+          "hintId": 2,
+          "hint": "Por compresión un intervalo cerrado se representa como: ",
+          "expression": "x \\in \\mathrm{P}:a \\leq x \\leq b"
+        },
+        {
+          "hintId": 3,
+          "hint": "La respuesta es: ",
+          "expression": "x\\inℝ:-3\\leq x\\leq7"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["R", "-3", "\\le", "\\le", "7"],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+<<<<<<< HEAD
+      "correctMsg": "El conjunto por Comprensión está correcto",
+      "summary": "4)Se representa el conjunto por conprensión"
+=======
+      "correctMsg": "El conjunto por Comprension está correcto",
+      "summary": "4)Intervalo por extension correcto"
+>>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
+    }
+  ]
+}
