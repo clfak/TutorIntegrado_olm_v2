@@ -5,7 +5,6 @@
   "img": "",
   "meta": {},
   "text": "Dado el siguiente término general de una sucesión:",
-<<<<<<< HEAD
   "initialExpression": "B_n = \\frac{{(-1)^n \\cdot (n^2 - n)}}{{n^2 + 1}}",
   "steps": [
     {
@@ -14,18 +13,6 @@
       "expression": "B_1 = \\frac{{(-1)^\\placeholder[a]{n} \\cdot (\\placeholder[b]{n}^2 - \\placeholder[c]{n})}}{{\\placeholder[d]{n}^2 + 1}}",
       "stepTitle": "Paso 1: Represente el término indicado de la sucesión",
       "displayResult": ["B_1 = \\frac{{(-1)^1 \\cdot (1^2 - 1)}}{{1^2 + 1}}"],
-=======
-  "eqc": "B_n = \\frac{{(-1)^n \\cdot (n^2 - n)}}{{n^2 + 1}}",
-  "steps": [
-    {
-      "stepId": "0",
-      "StepType": "MultiplePlaceholders",
-      "expression": "",
-      "stepTitle": "Paso 1: Represente el término de la sucesión",
-      "displayResult": [
-        "B_1 = \\frac{{(-1)^\\placeholder[a]{n} \\cdot (\\placeholder[b]{n}^2 - \\placeholder[c]{n})}}{{\\placeholder[d]{n}^2 + 1}}"
-      ],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["RecNotSuc"],
       "values": [],
       "hints": [
@@ -51,7 +38,6 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "La representacion esta correcta",
-<<<<<<< HEAD
       "summary": "1) La representación del primer termino es"
     },
     {
@@ -61,16 +47,6 @@
       "validation": "evaluate",
       "stepTitle": "Paso 2: Encuentre el primer valor de la sucesión, si no es entero, represéntelo como fracción de la forma $\\frac{a}{b}$",
       "displayResult": ["0"],
-=======
-      "summary": "1)Luego se comprueban valores del conjunto"
-    },
-    {
-      "stepId": "1",
-      "expression": "",
-      "StepType": "SinglePlaceholder",
-      "stepTitle": "Paso 2: Resuelva el primer valor de la sucesión, si no es entero, represéntelo como fracción de la forma $\\frac{a}{b}$",
-      "displayResult": ["\\placeholder[a]{}"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": [],
       "values": [],
       "hints": [
@@ -89,22 +65,10 @@
         {
           "answer": ["0"],
           "nextStep": "2"
-<<<<<<< HEAD
-=======
-        },
-        {
-          "answer": ["-\\frac{1}{3}"],
-          "nextStep": "2"
-        },
-        {
-          "answer": ["\\frac{-1}{3}"],
-          "nextStep": "2"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "El valor de B1 es correcto",
-<<<<<<< HEAD
       "summary": "2) El primer valor de la sucesión es"
     },
     {
@@ -114,17 +78,6 @@
       "validation": "evaluate",
       "stepTitle": "Paso 3: Encuentre los primeros 4 términos de la sucesión",
       "displayResult": ["0, \\frac{2}{5}, -\\frac{3}{5}, \\frac{12}{17}"],
-=======
-      "summary": "1)Luego se comprueban valores del conjunto"
-    },
-    {
-      "stepId": "2",
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
-      "validation": "evaluate",
-      "stepTitle": "Paso 3: Encuentre los primeros 4 términos de la sucesión",
-      "displayResult": ["0,\\; \\frac{2}{5}  ,\\;   \\placeholder[a]{},\\; \\placeholder[b]{}"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["CalcValSuc"],
       "values": [],
       "hints": [
@@ -134,11 +87,7 @@
         },
         {
           "hintId": 1,
-<<<<<<< HEAD
           "hint": "Expresa los valores como fracción"
-=======
-          "hint": "Expresa los valores como fraccion"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         },
         {
           "hintId": 0,
@@ -155,11 +104,7 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "La sucesion corresponde",
-<<<<<<< HEAD
       "summary": "3) Los cuatro primeros valores de la sucesión son"
-=======
-      "summary": "1)Luego se comprueban valores del conjunto"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     }
   ]
 }

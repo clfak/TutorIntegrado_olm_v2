@@ -5,7 +5,6 @@
   "img": "rectaEj4.png",
   "meta": {},
   "text": "Considere la siguiente representación gráfica de un intervalo.",
-<<<<<<< HEAD
   "initialExpression": " ",
   "steps": [
     {
@@ -15,18 +14,6 @@
       "validation": "evaluate",
       "stepTitle": "Paso 1: Reconozca los valores extremos del intervalo",
       "displayResult": ["\\text{Extremo inferior -1.5, Extremo superior 4}"],
-=======
-  "steps": [
-    {
-      "stepId": "0",
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
-      "validation": "evaluate",
-      "stepTitle": "Paso 1: Reconozca los valores extremos del intervalo",
-      "displayResult": [
-        "Extremo\\; Inferior \\quad \\placeholder[a]{} \\quad  Extremo\\; Superior \\quad \\placeholder[b]{}"
-      ],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["RecValExt"],
       "values": [],
       "hints": [
@@ -48,7 +35,6 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Los Extremos corresponden",
-<<<<<<< HEAD
       "summary": "1)Se reconocen los extremos del intervalo"
     },
     {
@@ -68,21 +54,6 @@
           "id": 1,
           "text": "Falso",
           "correct": true
-=======
-      "summary": "1)Luego se comprueban valores del conjunto"
-    },
-    {
-      "stepId": "1",
-      "expression": "El valor es:  2^{2}",
-      "StepType": "TrueFalse",
-      "stepTitle": "Paso 2: Reconozca si el valor siguiente pertenece al conjunto",
-      "displayResult": [],
-      "KCs": ["RecExtCerr"],
-      "values": [
-        {
-          "name": "a",
-          "value": 3
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "hints": [
@@ -98,36 +69,21 @@
       "matchingError": [],
       "answers": [
         {
-<<<<<<< HEAD
           "answer": ["1"],
-=======
-          "answer": ["F"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
           "nextStep": "2"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "El valor no pertenece al conjunto",
-<<<<<<< HEAD
       "summary": "2) Se comprueba si el valor \\( 2^{2} \\) pertenece al conjunto"
-=======
-      "summary": "2)Se comprueba si el valor pertenece al conjunto"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     },
     {
       "stepId": "2",
       "expression": "",
-<<<<<<< HEAD
       "stepType": "Blank",
       "stepTitle": "Paso 3: Escriba el intervalo representado en la recta",
       "displayResult": ["]-1.5,4["],
       "KCs": ["RepRecInt", "RepIntAb"],
-=======
-      "StepType": "Blank",
-      "stepTitle": "Paso 3: Escriba el intervalo representado en la recta",
-      "displayResult": [],
-      "KCs": ["RepRecInt", "RepIntCerr"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "values": [],
       "hints": [
         {
@@ -148,7 +104,6 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Intervalo correcto",
-<<<<<<< HEAD
       "summary": "3)Se representa el conjunto como intervalo"
     },
     {
@@ -157,18 +112,6 @@
       "stepType": "MultiplePlaceholders",
       "stepTitle": "Paso 4: Represente el intervalo por comprensión ",
       "displayResult": ["x\\inℝ:-1.5\\lt x\\lt4"],
-=======
-      "summary": "3)El intervalo esta correcto"
-    },
-    {
-      "stepId": "3",
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
-      "stepTitle": "Paso 4: Represente el intervalo por comprensión ",
-      "displayResult": [
-        "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}"
-      ],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["RepComp"],
       "values": [],
       "hints": [
@@ -201,11 +144,7 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "El conjunto por Comprension está correcto",
-<<<<<<< HEAD
       "summary": "4)Se representa el conjunto por conprensión"
-=======
-      "summary": "4)Intervalo por extension correcto"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     }
   ]
 }

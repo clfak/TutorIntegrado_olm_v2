@@ -4,16 +4,11 @@
   "type": "lvltutor2",
   "img": "",
   "meta": {},
-<<<<<<< HEAD
   "initialExpression": "P:\\sqrt{3^{2}+4^{2}}=3+4\\\\ Q:\\sqrt{3^{2}\\cdot 4^{2}}=3\\cdot 4 \\\\ \\text{Determine el valor de verdad de la siguiente conjunción} \\\\ P\\vee Q",
-=======
-  "eqc": "P:\\sqrt{3^{2}+4^{2}}=3+4\\\\ Q:\\sqrt{3^{2}\\cdot 4^{2}}=3\\cdot 4 \\\\ \\text{Determine el valor de verdad de la siguiente conjunción} \\\\ P\\vee Q",
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
   "text": "Dadas las siguientes proposiciones ",
   "steps": [
     {
       "stepId": "0",
-<<<<<<< HEAD
       "expression": "P:\\sqrt{3^{2}+4^{2}}=\\placeholder[a]{} \\; 3+4=\\placeholder[b]{}",
       "stepType": "MultiplePlaceholders",
       "stepTitle": "Paso 1: Resuelva ambos lados de la proposición",
@@ -23,18 +18,6 @@
         {
           "hintId": 0,
           "hint": "La respuesta es 5 y 7"
-=======
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
-      "stepTitle": "Paso 1: Resuelva ambos lados de la proposición",
-      "displayResult": ["P:\\sqrt{3^{2}+4^{2}}=\\placeholder[a]{} \\; 3+4=\\placeholder[b]{}"],
-      "KCs": ["EvProp"],
-      "values": [],
-      "hints": [
-        {
-          "hintId": 0,
-          "hint": "Una proposición es una afirmación o declaración que puede ser considerada verdadera o falsa."
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "matchingError": [],
@@ -46,7 +29,6 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-<<<<<<< HEAD
       "summary": "1)Los valores correspondientes a ambos lados de la proposición son: "
     },
     {
@@ -71,29 +53,6 @@
           "text": "Verdadero, pues ambas condiciones son falsas",
           "id": 2,
           "correct": false
-=======
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
-    },
-    {
-      "stepId": "1",
-      "expression": "",
-      "StepType": "Alternatives",
-      "stepTitle": "Paso 2: Determine el valor de verdad de la proposicion",
-      "displayResult": ["P:\\sqrt{3^{2}+4^{2}}=3+4"],
-      "KCs": ["RecProp"],
-      "values": [
-        {
-          "name": "a",
-          "value": "Verdadero, ya que ambas condiciones son ciertas"
-        },
-        {
-          "name": "a",
-          "value": "Falso, pues 5 es distinto de 7"
-        },
-        {
-          "name": "a",
-          "value": "Verdadero, pues ambas condiciones son falsas"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "hints": [
@@ -105,17 +64,12 @@
       "matchingError": [],
       "answers": [
         {
-<<<<<<< HEAD
           "answer": ["1"],
-=======
-          "answer": ["Falso, pues 5 es distinto de 7"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
           "nextStep": "2"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-<<<<<<< HEAD
       "summary": "2)El valor de verdad de la proposición es: "
     },
     {
@@ -125,20 +79,6 @@
       "stepTitle": "Paso 3: Resuelva ambos lados de la proposición",
       "displayResult": ["\\text{12 y 12}"],
       "KCs": ["EvProp"],
-=======
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
-    },
-    {
-      "stepId": "2",
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
-      "stepTitle": "Paso 3: Resuelva ambos lados de la proposición",
-      "displayResult": [
-        "Q:\\sqrt{3^{2}\\cdot 4^{2}}=\\placeholder[a]{}\\;3\\cdot 4=\\placeholder[b]{}"
-      ],
-      "KCs": ["EvProp"],
-      "values": [],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "hints": [
         {
           "hintId": 0,
@@ -154,7 +94,6 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-<<<<<<< HEAD
       "summary": "3)Los valores correspondientes a ambos lados de la proposición son:  "
     },
     {
@@ -179,29 +118,6 @@
           "text": "Verdadero, pues ambas condiciones son falsas",
           "id": 2,
           "correct": false
-=======
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
-    },
-    {
-      "stepId": "3",
-      "expression": "",
-      "StepType": "Alternatives",
-      "stepTitle": "Paso 4: Determine el valor de verdad de la proposicion",
-      "displayResult": ["Q:\\sqrt{3^{2}\\cdot 4^{2}}=3\\cdot 4"],
-      "KCs": ["RecProp"],
-      "values": [
-        {
-          "name": "a",
-          "value": "Verdadero, ya que ambas condiciones son ciertas"
-        },
-        {
-          "name": "a",
-          "value": "Falso, pues 5 es distinto de 7"
-        },
-        {
-          "name": "a",
-          "value": "Verdadero, pues ambas condiciones son falsas"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "hints": [
@@ -213,17 +129,12 @@
       "matchingError": [],
       "answers": [
         {
-<<<<<<< HEAD
           "answer": ["0"],
-=======
-          "answer": ["Verdadero, ya que ambas condiciones son ciertas"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
           "nextStep": "4"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-<<<<<<< HEAD
       "summary": "4) El valor de verdad de la proposición es: "
     },
     {
@@ -255,64 +166,24 @@
           "text": "Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera",
           "id": 3,
           "correct": true
-=======
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
-    },
-    {
-      "stepId": "4",
-      "expression": "",
-      "StepType": "Alternatives",
-      "stepTitle": "Paso 5: Determine el valor de verdad de la conjunción",
-      "displayResult": ["P\\vee Q"],
-      "KCs": ["RecProp"],
-      "values": [
-        {
-          "name": "a",
-          "value": "Ya que una de las 2 proposiciones es falsa, la conjunción es falsa"
-        },
-        {
-          "name": "a",
-          "value": "Ambas proposiciones son falsas por lo que la conjunción es falsa"
-        },
-        {
-          "name": "a",
-          "value": "Ambas preposiciones son verdaderas por lo que la conjunción es verdadera"
-        },
-        {
-          "name": "a",
-          "value": "Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "hints": [
         {
           "hintId": 0,
-<<<<<<< HEAD
           "hint": "Para verificar si la conjuncion es verdadera almenos una de las proposiciones debe ser verdadera"
-=======
-          "hint": "Para verificar si la conjuncion "
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "matchingError": [],
       "answers": [
         {
-<<<<<<< HEAD
           "answer": ["3"],
-=======
-          "answer": ["Ya que una de las 2 proposiciones es verdadera, la conjunción es verdadera"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
           "nextStep": "-1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-<<<<<<< HEAD
       "correctMsg": "La conjunción es verdadera",
       "summary": "5) El valor de verdad de la conjuncion es"
-=======
-      "correctMsg": "La conjuncioon es verdadera",
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     }
   ]
 }

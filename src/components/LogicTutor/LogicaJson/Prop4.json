@@ -5,7 +5,6 @@
   "img": "",
   "meta": {},
   "text": "Reconoce si la siguiente frase representa una proposición. En caso de serlo, dé su valor de verdad.",
-<<<<<<< HEAD
   "initialExpression": " ",
   "steps": [
     {
@@ -35,32 +34,6 @@
           "id": 3,
           "text": "Si, pues se puede obtener valor numérico a partir de la frase",
           "correct": false
-=======
-  "steps": [
-    {
-      "stepId": "0",
-      "expression": "",
-      "StepType": "Alternatives",
-      "stepTitle": "Paso 1: Reconozca si la frase es una proposición",
-      "displayResult": ["\\text{El cuadrado es una figura geométrica de 4 lados}"],
-      "KCs": ["RecProp"],
-      "values": [
-        {
-          "name": "a",
-          "value": "Si, pues es verdadera"
-        },
-        {
-          "name": "a",
-          "value": "No, pues no posee una condicion asociada y es una oración aseverativa"
-        },
-        {
-          "name": "a",
-          "value": "No, pues la proposición no está bien definida"
-        },
-        {
-          "name": "a",
-          "value": "Si, pues se puede obtener valor numérico a partir de la frase"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
         }
       ],
       "hints": [
@@ -72,21 +45,13 @@
       "matchingError": [],
       "answers": [
         {
-<<<<<<< HEAD
           "answer": ["1"],
-=======
-          "answer": ["No, pues no posee una condicion asociada y es una oración aseverativa"],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
           "nextStep": "-1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "Existe una condicion asociada a la frase",
-<<<<<<< HEAD
       "summary": "1) Se reconoce si es una proposición y por qué "
-=======
-      "summary": "1)Luego se determina el valor de verdad de la proposición"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     }
   ]
 }

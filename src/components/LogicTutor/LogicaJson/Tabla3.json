@@ -3,25 +3,15 @@
   "title": "Tablas de Verdad",
   "type": "lvltutor2",
   "meta": {},
-<<<<<<< HEAD
   "initialExpression": "[(p\\Rightarrow q)\\wedge \\overline{q}]\\Rightarrow \\overline{q}",
-=======
-  "eqc": "[(p\\Rightarrow q)\\wedge \\overline{q}]\\Rightarrow \\overline{q}",
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
   "text": "Utilizando una tabla de verdad compruebe que se satisface la siguiente equivalencia lógica: ",
   "steps": [
     {
       "stepId": "0",
       "expression": "{p\\Rightarrow q}",
-<<<<<<< HEAD
       "stepType": "TableStep",
       "stepTitle": "Paso 1: Complete la tabla de verdad para la siguiente expresión ",
       "displayResult": ["V, F, V, V"],
-=======
-      "StepType": "TableStep",
-      "stepTitle": "Paso 1: Complete la tabla de verdad para la siguiente expresión ",
-      "displayResult": [],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["IdConLog", "UtRec"],
       "table": {
         "header": [
@@ -80,26 +70,15 @@
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-<<<<<<< HEAD
       "correctMsg": "Uso correcto del recíproco",
       "summary": "1) \\(p\\Rightarrow q\\) es "
-=======
-      "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     },
     {
       "stepId": "1",
       "expression": "(p\\Rightarrow q)\\wedge \\overline{q}",
-<<<<<<< HEAD
       "stepType": "TableStep",
       "stepTitle": "Paso 2: Complete la tabla de verdad para la siguiente expresión ",
       "displayResult": ["F, F, F, V"],
-=======
-      "StepType": "TableStep",
-      "stepTitle": "Paso 2: Complete la tabla de verdad para la siguiente expresión ",
-      "displayResult": [],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["IdConLog", "UtNeg"],
       "table": {
         "header": [
@@ -162,26 +141,15 @@
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-<<<<<<< HEAD
       "correctMsg": "Uso correcto de la negación",
       "summary": "2) \\((p\\Rightarrow q)\\wedge \\overline{q}\\) es"
-=======
-      "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     },
     {
       "stepId": "2",
       "expression": "[(p\\Rightarrow q)\\wedge \\overline{q}]\\Rightarrow \\overline{q}",
-<<<<<<< HEAD
       "stepType": "TableStep",
       "stepTitle": "Paso 3: Complete la tabla de verdad para la siguiente expresión  ",
       "displayResult": ["V, V, V, V"],
-=======
-      "StepType": "TableStep",
-      "stepTitle": "Paso 3: Complete la tabla de verdad para la siguiente expresión  ",
-      "displayResult": [],
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
       "KCs": ["IdConLog", "UtNeg"],
       "table": {
         "header": [
@@ -244,7 +212,6 @@
       "answers": [
         {
           "answer": ["V", "V", "V", "V"],
-<<<<<<< HEAD
           "nextStep": "3"
         }
       ],
@@ -286,19 +253,12 @@
       "answers": [
         {
           "answer": ["0"],
-=======
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
           "nextStep": "-1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-<<<<<<< HEAD
       "correctMsg": "Se cumple la equivalencia lógica",
       "summary": "4)La equivalencia lógica corresponde a: "
-=======
-      "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
->>>>>>> 4e0b45aa2a3b7b90d613c011853ea71ca80edfc2
     }
   ]
 }
