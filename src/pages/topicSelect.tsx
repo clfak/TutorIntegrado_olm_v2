@@ -12,6 +12,7 @@ import StartModel, {
   UserModel,
   Subtopic,
   GetSubtopics,
+  gModel,
 } from "../utils/startModel";
 import { useSnapshot } from "valtio";
 import { gSelect } from "../components/GroupSelect";
@@ -98,6 +99,10 @@ export default withAuth(function TopicSelect() {
   else uModel.pol1 = false;
   if (pol2 > 0) uModel.pol2 = true;
   else uModel.pol2 = false;
+
+  if (Subtopic.isLoading || selectedExcercise.isLoading || uModel.isLoading || gModel.isLoading) {
+    return <Box p={5}> Cargando...</Box>;
+  }
 
   return (
     <>

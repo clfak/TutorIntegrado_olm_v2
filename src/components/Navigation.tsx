@@ -54,9 +54,9 @@ export function Navigation() {
             <SidebarLink key="8" href={"wpExercises?topic=34,35&registerTopic=34"}>
               Ejercicios en contexto
             </SidebarLink>
-            <SidebarLink key="9" href={"topicSelect?&registerTopic=37"}>
+            {/*<SidebarLink key="9" href={"topicSelect?&registerTopic=37"}>
               Lógica y Teoría de Conjuntos
-            </SidebarLink>
+            </SidebarLink>*/}
           </>
         )}
       </Stack>
