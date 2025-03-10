@@ -16,11 +16,12 @@
     "topic4": { "topic": "raíces", "registerTopic": "68" },
     "topic5": { "topic": "notación cientifica", "registerTopic": "69" },
     "topic6": { "topic": "fracciones", "registerTopic": "31" },
-    "topic7": { "topic": "ecuaciones lineales", "registerTopic": "33" },
-    "topic8": { "topic": "ecuaciones cuadráticas", "registerTopic": "24" },
+    "topic7": { "topic": "ecuaciones", "registerTopic": "24" },
+    "topic8": { "topic": "ecuaciones cuadráticas", "registerTopic": "70" },
     "topic9": { "topic": "álgebra de polinomios", "registerTopic": "52" },
-    "topic10": { "topic": "ejercicios con contexto", "registerTopic": "34" },
-    "topic11": { "topic": "otro tópico", "registerTopic": "" }
+    "topic10": { "topic": "ejercicios en contexto", "registerTopic": "34" },
+    "topic11": { "topic": "lógica y teoría de conjuntos", "registerTopic": "37" },
+    "topic12": { "topic": "otro tópico", "registerTopic": "" }
   },
   "card": {
     "text": "Ejercicio de "
@@ -46,8 +47,8 @@
     "text": "Has completado este capítulo"
   },
   "ratingQuestion": {
-    "controlQuestion": "¿Cómo fue tu experiencia con este ejercicio que el sistema eligio para tí?",
-    "experimentalQuestion": "¿Cómo fue tu experiencia con este ejercicio escogido?",
+    "controlQuestion": "¿Qué tan útil fue este ejercicio?",
+    "experimentalQuestion": "¿Qué tan útil fue este ejercicio?",
     "buttonMsg": "Siguiente Ejercicio",
     "buttonWaitMsg": "Actualizando  "
   }

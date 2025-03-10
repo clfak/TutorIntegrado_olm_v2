@@ -31,6 +31,7 @@ import type { ExType, Step } from "./ExcerciseType";
 import { useSnapshot } from "valtio";
 import MQProxy, { reset } from "./MQProxy";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
+import ShuffledLoad from "./CChoice";
 
 const Mq2 = dynamic(
   () => {
@@ -76,14 +77,31 @@ const Steporans = ({
           <MQStaticMathField key={"respuesta" + i} exp={answer} currentExpIndex={true} />
           <Alert key={"Alert" + topicId + "i"} status={"success"} mt={2}>
             <AlertIcon key={"AlertIcon" + topicId + "i"} />
-            {step.correctMsg}
+            {MQProxy.spaghettimsg ? MQProxy.spaghettimsg : step.correctMsg}
           </Alert>
         </>,
       );
     } else {
-      setCC(
-        <Mq2 key={"Mq2" + i} step={step} content={content} topicId={topicId} disablehint={false} />,
-      );
+      if (step.multipleChoice != undefined)
+        setCC(
+          <ShuffledLoad
+            key={"Mq2" + i}
+            step={step}
+            content={content}
+            topicId={topicId}
+            disablehint={false}
+          />,
+        );
+      else
+        setCC(
+          <Mq2
+            key={"Mq2" + i}
+            step={step}
+            content={content}
+            topicId={topicId}
+            disablehint={false}
+          />,
+        );
     }
   }, [answer, step, content, topicId, i]);
 
@@ -97,6 +115,8 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   const currentStep = useRef(0);
   const [test, setTest] = useState<Array<potato>>([]); //(potatoStates);
   const [resumen, setResumen] = useState(true);
+  const [stepsCount, setStepsCount] = useState(0);
+
   // const[steps, setSteps] = useState(initialSteps)
   /*steps: initialSteps
   useEffect(()=> {
@@ -159,7 +179,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
 
   useEffect(() => {
     const cantidadDePasos = steps.steps.length;
-
+    setStepsCount(cantidadDePasos)
     let potatoStates: Array<potato> = [
       {
         disabled: false,
@@ -214,21 +234,21 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   useEffect(() => {
     if (mqSnap.submit) {
       if (!mqSnap.submitValues.fail) {
-        currentStep.current = mqSnap.defaultIndex[0]!;
-        let currentStepValue = [...test];
+        currentStep.current = mqSnap.defaultIndex[1]!;
+        let currentStepValue = test;
         let duration = (MQProxy.endDate - MQProxy.startDate) / 1000;
         let sv = MQProxy.submitValues;
         sv.duration = duration;
         MQProxy.startDate = Date.now();
-        currentStepValue[mqSnap.defaultIndex[0]! - 1] = {
+        currentStepValue[mqSnap.defaultIndex[0]] = {
           disabled: false,
           hidden: false,
           answer: true,
           value: sv,
           open: false,
         };
-        if (mqSnap.defaultIndex[0]! < steps.steps.length) {
-          currentStepValue[mqSnap.defaultIndex[0]!] = {
+        if (mqSnap.defaultIndex[1]! < stepsCount) {
+          currentStepValue[mqSnap.defaultIndex[1]] = {
             disabled: false,
             hidden: false,
             answer: false,
@@ -265,7 +285,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
       }
       MQProxy.submit = false;
     }
-  }, [mqSnap.submit]);
+  }, [mqSnap.submit, stepsCount]);
 
   let initialExp = steps.initialExpression ? steps.initialExpression : steps.steps[0]?.expression;
 
@@ -273,7 +293,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
     <Flex key={steps.code} alignItems="center" justifyContent="center" margin={"auto"}>
       <Flex
         direction="column"
-        p={12}
+        p={1}
         rounded={6}
         w="100%"
         maxW="3xl"

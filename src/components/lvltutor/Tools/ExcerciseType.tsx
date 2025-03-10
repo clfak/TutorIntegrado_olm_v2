@@ -16,6 +16,16 @@ export interface answer {
   nextStep: string;
 }
 
+export interface option {
+  id: number;
+  text?: string;
+  expression?: string;
+  correct: boolean;
+  type?: string;
+  feedbackMsg?: string;
+  feedbackMsgExp?: string;
+}
+
 export interface Step {
   stepId: string;
   KCs: Array<string>;
@@ -25,6 +35,7 @@ export interface Step {
   values?: Array<value>;
   hints: Array<hint>;
   matchingError?: Array<matchingError>;
+  multipleChoice?: Array<option>;
   validation?: "stringComparison" | "evaluate" | "countElements" | "evaluateAndCount";
   answers: Array<answer>;
   incorrectMsg: string;
@@ -32,7 +43,7 @@ export interface Step {
   summary: string;
 }
 
-export interface ExType {
+export interface ExType extends Record<string, string | object | Array<Step>> {
   code: string;
   meta: {};
   title: string;
@@ -46,4 +57,5 @@ export interface ExType {
   steps: Array<Step>;
   img?: string;
   initialExpression?: string;
+  finalAnswer?: Step;
 }

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { SimpleGrid, Center, Text, Heading, Spinner } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { SimpleGrid, Center, Text, Heading, Spinner, Box } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth, withAuth } from "../components/Auth";
 import { useGQLQuery } from "rq-gql";
 import { gql } from "../graphql";
@@ -10,14 +10,27 @@ import { useAction } from "../utils/action";
 import { CompleteTopic } from "../components/contentSelectComponents/CompleteTopic";
 import { CardLastExercise } from "../components/contentSelectComponents/CardLastExercise";
 import parameters from "../components/contentSelectComponents/parameters.json";
+import PBLoad from "../components/progressbar/pbload";
+import {
+  kcsyejercicio,
+  uModel,
+  gModel,
+  UserModel,
+  GroupModel,
+  InitialModel,
+} from "../utils/startModel";
+import { gSelect } from "../components/GroupSelect";
+import { progresscalc } from "../components/progressbar/progresscalc";
+import { reset, Surveys, SVP } from "../components/csurvey/Answers";
+import { SurveyViewer } from "../components/csurvey/SurveyViewer";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();
   const router = useRouter();
   const topics = router.query.topic?.toString() || ""; //topics in array
-  console.log(topics);
+  //console.log(topics);
   const registerTopic = router.query.registerTopic + ""; //topics in array
-  console.log(registerTopic);
+  //console.log(registerTopic);
   const nextContentPath = router.asPath + ""; //topics in array
   const domainId = parameters.CSMain.domain;
 
@@ -99,6 +112,7 @@ export default withAuth(function ContentSelect() {
   //console.log(data?.contentSelection?.contentSelected);
 
   const lastExercise = data?.contentSelection?.contentSelected?.PU[0];
+  //console.log("ejercicio ", lastExercise);
   //const [queryLastExercise, setQueryLastExercise] = useState(false);
 
   const bestExercise =
@@ -145,39 +159,125 @@ export default withAuth(function ContentSelect() {
         extra: { selectionData },
       });
   }, [data]);
+  UserModel(user.id);
+
+  const gs = useRef(gSelect);
+
+  GroupModel(gs.current.group ? gs.current.group.id : "-1", user.projects[0].code);
+
+  interface pbi {
+    uservalues: number;
+    groupvalues?: number;
+    msg?: string;
+    deltau?: string;
+    info?: string;
+  }
+
+  let pbValues: pbi = {
+    uservalues: 0,
+    groupvalues: null,
+    msg: null,
+    deltau: null,
+    info: null,
+  };
+
+  //!uModel.isLoading && !gModel.isLoading && !InitialModel.isLoading
+  if (!uModel.isLoading) {
+    pbValues.uservalues = progresscalc(kcsyejercicio.lista, uModel.data);
+    if (uModel.osml) {
+      pbValues["info"] =
+        "La barra de progreso muestra tu avance en las habilidades del tópico. Cada vez que respondes correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes incorrectamente, Mateo puede disminuir la barra. La barra del grupo promedia el progreso de todos los estudiantes del grupo que han usado el sistema.";
+      pbValues["groupvalues"] = progresscalc(kcsyejercicio.lista, gModel.data);
+      let diff = pbValues.uservalues - pbValues.groupvalues;
+      let sample3 = Surveys.data[Surveys.tagXindex["motiv-msg"]];
+      if (
+        uModel.motivmsg &&
+        Math.abs(diff) > 0.1 &&
+        pbValues.uservalues < 1 &&
+        sample3 != undefined
+      ) {
+        if (diff >= 0) {
+          let max = sample3.items[0].content.options.length;
+          pbValues["msg"] = sample3.items[0].content.options[Math.floor(Math.random() * max)];
+        } else {
+          let max = sample3.items[0].content.options.length;
+          pbValues["msg"] = sample3.items[1].content.options[Math.floor(Math.random() * max)];
+        }
+      } else pbValues["msg"] = null;
+    } else
+      pbValues["info"] =
+        "La barra de progreso muestra tu avance en habilidades del tópico. Cada vez que respondes un paso de un ejercicio correctamente, Mateo incrementa la barra. Si usas pistas (hints) o respondes incorrectamente, Mateo puede disminuir la barra.";
+    if (uModel.sprog) {
+      let ouval = progresscalc(kcsyejercicio.lista, InitialModel.data);
+      let diff = pbValues.uservalues - ouval;
+      pbValues["deltau"] = (diff * 100).toFixed(0);
+    }
+  }
+
+  const [pageload, setPL] = useState(false);
+
+  useEffect(() => {
+    reset();
+    if (!SVP.topicselect) SVP.count++;
+    setPL(true);
+  }, []);
+
   return (
     <>
+      {pageload ? (
+        SVP.topicselect && uModel.pol1 ? (
+          <SurveyViewer
+            data={Surveys.data[Surveys.tagXindex["poll-srl1"]]}
+            topicId={registerTopic}
+            iExp={kcsyejercicio.ejercicio as ExType}
+          />
+        ) : SVP.count % 3 == 2 && uModel.pol2 ? (
+          <SurveyViewer
+            data={Surveys.data[Surveys.tagXindex["poll-srl2"]]}
+            topicId={registerTopic}
+            iExp={kcsyejercicio.ejercicio as ExType}
+          />
+        ) : null
+      ) : null}
       {isError ? (
         <p>{parameters.CSMain.noData}</p>
       ) : data?.contentSelection?.contentSelected?.topicCompletedMsg?.label ==
         parameters.CSMain.completeMsgService ? (
         <CompleteTopic />
       ) : !isLoading && !isFetching /*&& !queryLastExercise*/ ? (
-        <>
+        <Box maxW="90%" padding="1">
           <Center>
             <Heading>
               {parameters.CSMain.title}
-              {registerTopic == parameters.CSMain.topic1.registerTopic
-                ? parameters.CSMain.topic1.topic
-                : registerTopic == parameters.CSMain.topic2.registerTopic
-                ? parameters.CSMain.topic2.topic
-                : registerTopic == parameters.CSMain.topic3.registerTopic
-                ? parameters.CSMain.topic3.topic
-                : registerTopic == parameters.CSMain.topic4.registerTopic
-                ? parameters.CSMain.topic4.topic
-                : registerTopic == parameters.CSMain.topic5.registerTopic
-                ? parameters.CSMain.topic5.topic
-                : registerTopic == parameters.CSMain.topic6.registerTopic
-                ? parameters.CSMain.topic6.topic
-                : registerTopic == parameters.CSMain.topic7.registerTopic
-                ? parameters.CSMain.topic7.topic
-                : registerTopic == parameters.CSMain.topic8.registerTopic
-                ? parameters.CSMain.topic8.topic
-                : parameters.CSMain.topic9.topic}
+              {kcsyejercicio?.title}
             </Heading>
             &nbsp;&nbsp;&nbsp;
           </Center>
+
           <br></br>
+          <Center paddingTop={"4"}>
+            <Box
+              w={["100%", "100%", "100%", "md"]}
+              p="4"
+              borderRadius="md"
+              textAlign="center"
+              color="white"
+              bg="blue.700"
+              _hover={{
+                color: "white",
+                bg: "blue.900",
+              }}
+            >
+              <Heading size="sm">Progreso</Heading>
+              <PBLoad
+                uservalues={pbValues.uservalues}
+                groupvalues={pbValues.groupvalues}
+                msg={pbValues.msg}
+                deltau={pbValues.deltau}
+                info={pbValues.info}
+              />
+            </Box>
+          </Center>
           <CardLastExercise
             lastExercise={lastExercise}
             //setQueryLastExercise={setQueryLastExercise}
@@ -274,7 +374,7 @@ export default withAuth(function ContentSelect() {
               )
             }
           </SimpleGrid>
-        </>
+        </Box>
       ) : (
         <>
           <Center padding="5px 0px 10px 0px">

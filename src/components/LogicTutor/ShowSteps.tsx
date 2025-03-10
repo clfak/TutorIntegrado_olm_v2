@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import RatingQuestion from "../RatingQuestion";
 import {
   Box,
   AccordionButton,
@@ -13,6 +14,8 @@ import Latex from "react-latex-next";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import { FaHandPointRight } from "react-icons/fa";
 import { useAction } from "../../utils/action";
+import Summary from "./Summary";
+
 const TrueFalse = dynamic(() => import("./TrueFalse"), { ssr: false });
 const Blank = dynamic(() => import("./Blank"), { ssr: false });
 const InputButtons = dynamic(() => import("./InputButtons"), { ssr: false });
@@ -20,7 +23,9 @@ const Alternatives = dynamic(() => import("./Alternatives"), { ssr: false });
 const MultiplePlaceholders = dynamic(() => import("./MultiplePlaceholders"), { ssr: false });
 const TableStep = dynamic(() => import("./TableStep"), { ssr: false });
 const SinglePlaceholder = dynamic(() => import("./SinglePlaceholder"), { ssr: false });
+const SingleAnswer = dynamic(() => import("./SingleAnswer"), { ssr: false });
 const extras = { steps: {} };
+
 const ShowSteps = ({
   exc,
   nStep,
@@ -39,8 +44,11 @@ const ShowSteps = ({
   const [changed, setChanged] = useState(false);
   const action = useAction();
   const [report, setReport] = useState(true);
-  //console.log("valor Step: " ,Step)
   const [color, setColor] = useState("#bee3f8");
+
+  const stepType = exc.steps[nStep]?.stepType;
+  console.log("hola" + exc.steps[nStep].stepType);
+
   return (
     <AccordionItem>
       <h2>
@@ -54,9 +62,10 @@ const ShowSteps = ({
             as="span"
             flex="1"
             textAlign="center"
-            fontSize={{ base: "12px", sm: "15px", lg: "20px" }}
+            fontSize={{ base: "1rem" }}
+            maxW={{ base: "80%" }}
           >
-            <Box mr={1}>
+            <Box display="flex" alignItems="center" mr={1}>
               <FaHandPointRight />
               <Latex>{exc.steps[nStep].stepTitle}</Latex>
             </Box>
@@ -64,37 +73,42 @@ const ShowSteps = ({
           <AccordionIcon />
         </AccordionButton>
       </h2>
-      <AccordionPanel pb={8} zIndex={nStep}>
-        {exc.steps[nStep].StepType === "TrueFalse" && (
+      <AccordionPanel pb={8} index={nStep}>
+        {/* Renderiza componentes según stepType */}
+        {stepType === "TrueFalse" && (
           <TrueFalse exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "Blank" && (
+        {stepType === "Blank" && (
           <Blank exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "Alternatives" && (
+        {stepType === "Alternatives" && (
           <Alternatives exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "InputButtons" && (
+        {stepType === "InputButtons" && (
           <InputButtons exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "MultiplePlaceholders" && (
+        {stepType === "MultiplePlaceholders" && (
           <MultiplePlaceholders exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "SinglePlaceholder" && (
+        {stepType === "SinglePlaceholder" && (
           <SinglePlaceholder exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "TableStep" && (
+        {stepType === "TableStep" && (
           <TableStep exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
+        {stepType === undefined && (
+          <SingleAnswer exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
+        )}
       </AccordionPanel>
+      {/* Si está completado y el nextStep es -1, muestra un mensaje de éxito */}
       {completed && next === -1 ? (
         <>
           <Alert status="success">
             <AlertIcon />
             Ejercicio Terminado
           </Alert>
-          {!changed ? (setColor("#C6F6D5"), setChanged(true)) : null}
-          {report ? (
+          {!changed && (setColor("#C6F6D5"), setChanged(true))}
+          {report && (
             <>
               {action({
                 verbName: "completeContent",
@@ -105,12 +119,14 @@ const ShowSteps = ({
               })}
               {setReport(false)}
             </>
-          ) : null}
+          )}
+          <Summary exc={exc} />
+          <RatingQuestion />
         </>
       ) : completed && next !== -1 ? (
         <>
           <ShowSteps exc={exc} nStep={next} Step={Step} setStep={setStep} topic={topic} />
-          {!changed ? (setColor("#C6F6D5"), setStep(next), setChanged(true)) : null}
+          {!changed && (setColor("#C6F6D5"), setStep(next), setChanged(true))}
         </>
       ) : null}
     </AccordionItem>

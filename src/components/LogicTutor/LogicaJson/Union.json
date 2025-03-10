@@ -5,36 +5,40 @@
   "img": "Union1.png",
   "meta": {},
   "text": "Dada la siguiente representación de intervalos ",
+  "initialExpression": " ",
   "steps": [
     {
       "stepId": "0",
-      "expression": "",
-      "StepType": "Alternatives",
-      "stepTitle": "Paso 1: Reconozca la Unión",
-      "displayResult": [
-        "\\text{¿Cuál de los siguientes tramos en la gráfica representa la intersección de los 2 intervalos}"
-      ],
+      "expression": "\\text{¿Cuál de los siguientes tramos en la gráfica} \\\\ \\text{representa la unión de los 2 intervalos}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 1: Reconozca la Unión de los intervalos",
+      "displayResult": ["]-3,8]"],
       "KCs": ["RecUnGraf"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": "[3,5["
+          "id": 0,
+          "text": "[3,5[",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "]5,8]"
+          "id": 1,
+          "text": "]5,8]",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "]-3,8]"
+          "id": 2,
+          "text": "]-3,8]",
+          "correct": true
         },
         {
-          "name": "a",
-          "value": "[-3,8]"
+          "id": 3,
+          "text": "[-3,8]",
+          "correct": false
         },
         {
-          "name": "a",
-          "value": "[3,8]"
+          "id": 4,
+          "text": "[3,8]",
+          "correct": false
         }
       ],
       "hints": [
@@ -54,25 +58,31 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["]-3,8]"],
+          "answer": ["2"],
           "nextStep": "1"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
+      "summary": "1) El tramo que corresponde a la Unión es: "
     },
     {
       "stepId": "1",
       "expression": "\\text{El valor es -3}",
-      "StepType": "TrueFalse",
+      "stepType": "Alternatives",
       "stepTitle": "Paso 2: Reconozca si el valor siguiente pertenece a la Unión",
-      "displayResult": ["El valor -3 pertenece a la Unión"],
+      "displayResult": ["Falso"],
       "KCs": ["RecValMedio"],
-      "values": [
+      "multipleChoice": [
         {
-          "name": "a",
-          "value": -3
+          "id": 0,
+          "text": "Verdadero",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "Falso",
+          "correct": true
         }
       ],
       "hints": [
@@ -84,32 +94,41 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["F"],
+          "answer": ["1"],
           "nextStep": "2"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "El Valor no pertenece a la Unión",
-      "summary": "2)Luego se debe representar el intervalo"
+      "summary": "2) Se comprueba si el valor -3 pertenece al conjunto"
     },
     {
       "stepId": "2",
-      "expression": "",
-      "StepType": "MultiplePlaceholders",
+      "expression": "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}",
+      "stepType": "MultiplePlaceholders",
       "stepTitle": "Paso 3: Escriba por comprensión el intervalo que representa la Unión:",
-      "displayResult": [
-        "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}"
-      ],
+      "displayResult": ["x\\inℝ:-3< x\\le8"],
       "KCs": ["RecInter", "RepIntCerr", "RepIntAb"],
-      "values": [],
+      "texts": [],
       "hints": [
         {
           "hintId": 0,
-          "hint": "La Unión esta representada por el conjunto que reune los elementos de ambos conjuntos"
+          "hint": "Atento a la notación"
         },
         {
           "hintId": 1,
-          "hint": "La Unión corresponde a  ]-3,8]"
+          "hint": "Por ejemplo el intervalo [-1,1] representado por comprensión es: ",
+          "expression": "x \\in \\mathrm{R}:-1 \\leq x \\leq 1"
+        },
+        {
+          "hintId": 2,
+          "hint": "Por compresión un intervalo cerrado se representa como: ",
+          "expression": "x \\in \\mathrm{P}:a \\leq x \\leq b"
+        },
+        {
+          "hintId": 3,
+          "hint": "La respuesta es: ",
+          "expression": "x\\inℝ:-3< x\\le8"
         }
       ],
       "matchingError": [],
@@ -121,7 +140,7 @@
       ],
       "incorrectMsg": "Compruebe su respuesta",
       "correctMsg": "El intervalo corresponde a la Unión",
-      "summary": "3)Ejercicio terminado"
+      "summary": "3)Se representa el conjunto por conprensión"
     }
   ]
 }

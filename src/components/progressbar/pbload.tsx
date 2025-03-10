@@ -14,6 +14,8 @@ export const PBLoad = ({
   dMaxW,
   uLabel,
   gLabel,
+  deltau,
+  info,
 }: {
   uservalues: number;
   groupvalues?: number;
@@ -21,6 +23,8 @@ export const PBLoad = ({
   dMaxW?: string;
   uLabel?: string;
   gLabel?: string;
+  deltau?: string;
+  info?: string;
 }) => {
   return uservalues ? (
     <Progressbar
@@ -30,6 +34,8 @@ export const PBLoad = ({
       dMaxW={dMaxW}
       uLabel={uLabel}
       gLabel={gLabel}
+      deltau={deltau}
+      info={info}
     />
   ) : (
     <>potato fail:values not provided</>

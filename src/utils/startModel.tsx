@@ -1,8 +1,9 @@
 import { useGQLQuery } from "rq-gql";
-import { gql } from "../graphql";
+import { gql, Topic } from "../graphql";
 import { proxy } from "valtio";
 import { useEffect } from "react";
-
+import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
+import { gSelect } from "../components/GroupSelect";
 export interface model {
   mth: number;
   level: number;
@@ -49,6 +50,9 @@ export default function StartModel(uid: string) {
       onSettled() {
         InitialModel.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
@@ -59,12 +63,22 @@ export default function StartModel(uid: string) {
 
 export const uModel = proxy<{
   isLoading: boolean;
+  osml: boolean;
+  motivmsg: boolean;
+  sprog: boolean;
+  pol1: boolean;
+  pol2: boolean;
   data: Array<{
     id: string;
     json: Record<string, model>;
   }>;
 }>({
   isLoading: true,
+  osml: false,
+  motivmsg: false,
+  sprog: false,
+  pol1: false,
+  pol2: false,
   data: [
     {
       id: "-2",
@@ -72,6 +86,50 @@ export const uModel = proxy<{
     },
   ],
 });
+
+export const Subtopic = proxy<{
+  isLoading: boolean;
+  data: Array<Partial<Topic>>;
+}>({
+  isLoading: true,
+  data: [],
+});
+
+export function GetSubtopics(parentid: string) {
+  const { isLoading: subtopicLoading } = useGQLQuery(
+    gql(/* GraphQL */ `
+      query GetSubtopics($parentIds: [IntID!]!) {
+        topics(ids: $parentIds) {
+          childrens {
+            id
+            code
+            label
+            sortIndex
+          }
+        }
+      }
+    `),
+    {
+      parentIds: [parentid], // Convertir a número para la consulta
+    },
+    {
+      //enabled: false,
+      onSuccess(data) {
+        Subtopic.data = data.topics as Array<Partial<Topic>>;
+      },
+      onSettled() {
+        Subtopic.isLoading = false;
+      },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  );
+
+  useEffect(() => {
+    Subtopic.isLoading = subtopicLoading;
+  }, [subtopicLoading]);
+}
 
 export function UserModel(uid: string) {
   const { isLoading: userModelData } = useGQLQuery(
@@ -98,6 +156,9 @@ export function UserModel(uid: string) {
       onSettled() {
         uModel.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
@@ -134,17 +195,102 @@ export function GroupModel(gid: string, pid: string) {
     `),
     { groupId: gid, projectCode: pid },
     {
-      //enabled: false,
+      enabled: gSelect.group ? true : false && uModel.osml,
       onSuccess(data) {
         gModel.data = data.groupModelStates;
       },
       onSettled() {
         gModel.isLoading = false;
       },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
     },
   );
 
   useEffect(() => {
     gModel.isLoading = userModelData;
+  }, [userModelData]);
+}
+
+export const kcsyejercicio = proxy<{
+  lista: Array<string>;
+  ejercicio: Object;
+  title: string;
+}>({
+  lista: [],
+  ejercicio: {},
+  title: "",
+});
+
+export const selectedExcercise = proxy<{
+  isLoading: boolean;
+  ejercicio: Array<ExType>;
+  kcXtopic: Array<Record<string, Array<{ code: string }>>>;
+}>({
+  isLoading: true,
+  ejercicio: [],
+  kcXtopic: [],
+});
+
+export function SelectExcercise(topicCodes: Array<string>) {
+  const { isLoading: userModelData } = useGQLQuery(
+    gql(`
+     query GetKcsByTopics($topicsCodes: [String!]!) {
+        kcsByContentByTopics(projectCode: "NivPreAlg", topicsCodes: $topicsCodes) {
+          topic {
+            id
+            content {
+              code
+              kcs {
+                id
+                code
+              }
+              json
+            }
+          }
+          kcs {
+            code
+          }
+        }
+      }
+    `),
+    { topicsCodes: topicCodes },
+    {
+      //enabled: false,
+      onSuccess(data) {
+        let jl: Array<ExType> = [];
+        for (var e of data.kcsByContentByTopics) {
+          let max = 0;
+          let json;
+          //let code = e.topic.code;
+          for (var f of e.topic.content) {
+            if (max < f.kcs.length) {
+              max = f.kcs.length;
+              json = f.json;
+            }
+          }
+          if (json) jl.push(json);
+        }
+        selectedExcercise.ejercicio = jl;
+
+        let kcsByTopic = [];
+        data.kcsByContentByTopics.forEach(({ topic, kcs }) => {
+          kcsByTopic[topic.id] = kcs.map(kc => kc); // Guarda el objeto completo de KCs
+        });
+
+        selectedExcercise.kcXtopic = kcsByTopic;
+      },
+      onSettled() {
+        selectedExcercise.isLoading = false;
+      },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  );
+
+  useEffect(() => {
+    selectedExcercise.isLoading = false;
   }, [userModelData]);
 }
