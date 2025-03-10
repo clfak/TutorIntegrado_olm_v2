@@ -65,25 +65,25 @@ const ShowSteps = ({
         </AccordionButton>
       </h2>
       <AccordionPanel pb={8} zIndex={nStep}>
-        {exc.steps[nStep].StepType === "TrueFalse" && (
+        {exc.steps[nStep].stepType === "TrueFalse" && (
           <TrueFalse exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "Blank" && (
+        {exc.steps[nStep].stepType === "Blank" && (
           <Blank exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "Alternatives" && (
+        {exc.steps[nStep].stepType === "Alternatives" && (
           <Alternatives exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "InputButtons" && (
+        {exc.steps[nStep].stepType === "InputButtons" && (
           <InputButtons exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "MultiplePlaceholders" && (
+        {exc.steps[nStep].stepType === "MultiplePlaceholders" && (
           <MultiplePlaceholders exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "SinglePlaceholder" && (
+        {exc.steps[nStep].stepType === "SinglePlaceholder" && (
           <SinglePlaceholder exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
-        {exc.steps[nStep].StepType === "TableStep" && (
+        {exc.steps[nStep].stepType === "TableStep" && (
           <TableStep exc={exc} nStep={nStep} setCompleted={setCompleted} topic={topic} />
         )}
       </AccordionPanel>
