@@ -1,9 +1,8 @@
-// pages/challengeStart.js
 import React, { useState, useEffect } from "react";
 import { Box, Flex, Text, Center, SimpleGrid } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { formatDate } from "../components/challenge/tools";
-import { useAuth } from "../components/Auth";
+import { useAuth,  withAuth } from "../components/Auth";
 import { CardSelectionDynamic } from "../components/challenge/CardSelectionDynamic";
 import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
 import { CardLastExercise } from "../components/contentSelectComponents/CardLastExercise";
@@ -89,6 +88,54 @@ const queryGetChallenge = gql(/* GraphQL */ `
     }
   }
 `);
+
+
+const queryGroupUsersWithModelStates = gql(`
+  query GetGroupUsersWithModelStates {
+    currentUser {
+      id
+      groups {
+        id
+        label
+        users {
+          id
+          email
+          name
+          role
+          modelStates(
+            input: { filters: { type: ["BKT"] }, orderBy: { id: DESC }, pagination: { first: 1 } }
+          ) {
+            nodes {
+              json
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+const queryGetKcsByTopics = gql(`
+  query GetKcsByTopics2($topicsCodes: [String!]!) {
+    kcsByContentByTopics(projectCode: "NivPreAlg", topicsCodes: $topicsCodes) {
+      topic {
+        id
+        content {
+          code
+          kcs {
+            id
+            code
+          }
+          json
+        }
+      }
+      kcs {
+        code
+      }
+    }
+  }
+`);
+
 //-------------------------
 
 function extractIds(data) {
@@ -97,27 +144,189 @@ function extractIds(data) {
 
 //----------------------------
 
-const ChallengeStart = () => {
+
+function removeAdminUsers(data) {
+  const filteredGroups = data?.groups?.map(group => {
+    const filteredUsers = group.users.filter(user => user.role === "USER");
+
+    return {
+      ...group,
+      users: filteredUsers,
+    };
+  });
+
+  return {
+    ...data, // Copia todas las propiedades del objeto original
+    groups: filteredGroups, // Sobrescribe la propiedad `groups` con los grupos filtrados
+  };
+}
+
+function getUserJsonById(currentUser: any, userId: string): any | null {
+  // Verifica si currentUser y sus propiedades existen
+  if (!currentUser || !currentUser.groups || !Array.isArray(currentUser.groups)) {
+    return null; // Si no hay datos válidos, retorna null
+  }
+
+  // Itera sobre cada grupo en el array `groups`
+  for (const group of currentUser.groups) {
+    // Verifica si el grupo tiene usuarios y si es un array
+    if (group.users && Array.isArray(group.users)) {
+      // Busca el usuario con el `id` especificado
+      const user = group.users.find(user => user.id === userId);
+      if (user) {
+        // Si el usuario tiene `modelStates` y `nodes`, busca el `json`
+        if (user.modelStates && Array.isArray(user.modelStates.nodes)) {
+          const node = user.modelStates.nodes[0]; // Asume que el `json` está en el primer nodo
+          if (node && node.json) {
+            return node.json; // Retorna el `json` del usuario
+          }
+        }
+      }
+    }
+  }
+
+  return null; // Si no se encuentra el usuario o el `json`, retorna null
+}
+
+function getUsersExcludingId(currentUser, userId) {
+  // Verifica si currentUser y sus propiedades existen
+  if (!currentUser || !currentUser.groups || !Array.isArray(currentUser.groups)) {
+    return []; // Si no hay datos válidos, retorna un arreglo vacío
+  }
+
+  const usersExcludingId: any[] = [];
+
+  // Itera sobre cada grupo en el array `groups`
+  for (const group of currentUser.groups) {
+    // Verifica si el grupo tiene usuarios y si es un array
+    if (group.users && Array.isArray(group.users)) {
+      // Filtra los usuarios cuyo `id` no coincida con `userId`
+      const filteredUsers = group.users.filter(user => user.id !== userId).map(user => ({ ...user })); // Copia profunda del usuario
+      usersExcludingId.push(...filteredUsers); // Agrega los usuarios filtrados al arreglo
+    }
+  }
+
+  return usersExcludingId; // Retorna el arreglo de usuarios excluyendo el `id` especificado
+}
+
+function getAllUsersJson(users) {
+  // Verifica si el arreglo de usuarios es válido
+  if (!users || !Array.isArray(users)) {
+    return []; // Si no hay datos válidos, retorna un arreglo vacío
+  }
+
+  const allJsons = [];
+
+  // Itera sobre cada usuario en el arreglo
+  for (const user of users) {
+    // Verifica si el usuario tiene `modelStates` y `nodes`
+    if (user.modelStates && Array.isArray(user.modelStates.nodes)) {
+      const node = user.modelStates.nodes[0]; // Asume que el `json` está en el primer nodo
+      if (node && node.json) {
+        allJsons.push(node.json); // Agrega el `json` al arreglo
+      }
+    }
+  }
+
+  return allJsons; // Retorna el arreglo con todos los `json` encontrados
+}
+
+function calculateAverageLevel(data, keysToSearch) {
+
+  // Filtra los datos que están en la lista `keysToSearch`
+  const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
+
+  // Obtiene los valores de `level` de los datos filtrados
+  const levels = filteredData.map(item => item.level);
+
+    // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
+    if (levels.length === 0) {
+      console.log("Datos recibidos:", { data, keysToSearch });
+      return 0; // O cualquier valor por defecto
+    }
+
+  // Calcula el promedio de los valores de `level`
+  const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
+
+  return averageLevel;
+}
+
+
+function calculateAverageLevelGroup(
+  students, uniqueKcs
+) {
+
+  // Calcular el nivel promedio para cada usuario
+  const averageLevels = students?.map(user =>
+    calculateAverageLevel(user, uniqueKcs) * 100
+  );
+
+  // Calcular el promedio de todos los niveles
+  const total = averageLevels?.reduce((sum, level) => sum + level, 0);
+  const average = total / averageLevels?.length;
+
+  return average;
+}
+
+
+function getCodes(array) {
+  return array.map(item => item.code);
+}
+
+function getUniqueKcs(kcsByContentByTopics: any[]): string[] {
+  if (!Array.isArray(kcsByContentByTopics)) {
+    return []; // Return an empty array or handle the error as needed
+  }
+
+  const uniqueKcs = new Set<string>(); // Use a Set to avoid duplicates
+
+  // Loop through each object in the main array
+  kcsByContentByTopics.forEach(item => {
+    // Loop through the kcs of each object
+    item.kcs?.forEach(kc => {
+      uniqueKcs.add(kc.code); // Add the code to the Set
+    });
+  });
+
+  // Convert the Set back to an array
+  return Array.from<string>(uniqueKcs);
+}
+
+//------------------------------------
+
+export default withAuth(function ChallengesStart () {
+
   const router = useRouter();
+
   const { user, project } = useAuth();
-  //const { title, endDate, studentProgress, content, topics } = router.query;
+  const userId = user?.id
+
   const { challengeId } = router.query;
-  //const challengeId = 1
+
   const [title, setTitle] = useState("");
   const [endDate, setEndDate] = useState("");
   const [studentProgress, setStudentProgress] = useState(0);
   const [contents, setContents] = useState([]);
   const [topics, setTopics] = useState([]);
+  const [topicsCode, setTopicsCode] = useState([])
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const domainId = parameters.CSMain.domain;
   //const topicsString = topics.toString() || "";
   const registerTopic = "4"; //topics[0] + ""; //topics in array
-  const nextContentPath = "/challenge"; //contentSelect?topic=" + topicDefined[registerTopic] + "&registerTopic=" + registerTopic; //topics in array
+  const nextContentPath = `/challengeStart?challengeId=${challengeId}`//"/challenge";
 
   const [showContent, setShowContent] = useState(true);
   const [showDemo, setShowDemo] = useState(true);
-  //const [hasMoreContent, setHasMoreContent] = useState(true);
+  const [showTutor, setShowTutor] = useState(false);
+
+  const [processedContentResult, setProcessedContentResult] = useState(null);
+  const [processedBestExercise, setProcessedBestExercise] = useState(null);
+  const [processedSelectionData, setProcessedSelectionData] = useState(null);
+  const [processedLastExercise, setProcessedLastExercise] = useState(null);
+  const [processedExperimentGroup, setProcessedExperimentGroup] = useState(null);
+
+  //const [groupProgress, setGroupProgress] = useState(0)
 
   //--------------------------------
 
@@ -125,19 +334,86 @@ const ChallengeStart = () => {
     challengeId: challengeId,
   });
 
+  const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } = useGQLQuery(
+    queryGroupUsersWithModelStates,
+  );
+
+  const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
+    queryGetKcsByTopics,
+    {
+      topicsCodes: topicsCode,
+    },
+    {enabled: !!topicsCode}
+  );
+
+  const[userByJsonById, setUserByJsonById] = useState([])
+  const[allUsersJson, setAllUsersJson] = useState([])
+  const[usersWithModelStates, setUsersWithModelStates] = useState({}) 
+
+
+  useEffect(()=> {
+    if(!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
+
+      const GroupUsersWithModelStates = dataGroupUsersWithModelStates.currentUser || [];
+      
+      const removeAdmin = removeAdminUsers(GroupUsersWithModelStates)
+
+      setUsersWithModelStates(removeAdmin)
+      setUserByJsonById(getUserJsonById(removeAdmin, userId))
+
+      const usersExcludingId = getUsersExcludingId(removeAdmin, userId)
+      setAllUsersJson(getAllUsersJson(usersExcludingId))
+    }
+  }, [isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates])
+
+  useEffect(()=> {
+    if(!isKcsByTopicsLoading && dataKcsByTopics) {
+  
+      const kcsByContentByTopics = dataKcsByTopics?.kcsByContentByTopics || [];
+      const uniqueKcs = getUniqueKcs(kcsByContentByTopics)
+  
+      const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs)*100
+      //const averageLevelGroup = calculateAverageLevelGroup(allUsersJson, uniqueKcs)
+  
+      setStudentProgress(averageLevelUser)
+      //setGroupProgress(averageLevelGroup)
+    }
+  
+  }, [isKcsByTopicsLoading, dataKcsByTopics])
+
   useEffect(() => {
     if (!isChallengeLoading && dataChallenge) {
       const challenge = dataChallenge?.challenge;
       setTitle(challenge.title);
       setEndDate(challenge?.endDate);
-      setStudentProgress(60);
       setContents(extractIds(challenge.content));
       setTopics(extractIds(challenge.topics));
+      setTopicsCode(getCodes(challenge.topics))
     }
   }, [isChallengeLoading, dataChallenge]);
 
+  useEffect(()=> {
+    console.log("getCodes(topics)", topicsCode)
+  }, [topicsCode])
+
+//-------------------------------------------
+
+// Add this state variable to track previous showContent value
+const [prevShowContent, setPrevShowContent] = useState(showContent);
+
+// Add this useEffect to track changes in showContent
+useEffect(() => {
+  // Check if showContent changed from false to true
+  if (!prevShowContent && showContent) {
+    console.log("showContent changed from false to true");
+    // You could trigger additional logic here if needed
+  }
+  // Update the previous value
+  setPrevShowContent(showContent);
+}, [showContent]);
+
   //--------------------
-  const { data, isLoading, isError } = useGQLQuery(
+  const { data, isLoading, isError, refetch } = useGQLQuery(
     // isFetching
     gql(/* GraphQL */ `
       query ProjectData($input: ContentSelectionInput!) {
@@ -200,7 +476,7 @@ const ChallengeStart = () => {
         domainId,
         projectId: project?.id,
         userId: user?.id,
-        topicId: topics, //topicDefined[registerTopic].toString().split(","),//topicsString.split(","),
+        topicId: topics,
         discardLast: 2,
       },
     },
@@ -208,6 +484,7 @@ const ChallengeStart = () => {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
+      enabled: !showDemo //&& showContent //&& !prevShowContent,
     },
   );
   /*
@@ -249,7 +526,7 @@ const ChallengeStart = () => {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
-      enabled: !isChallengeLoading && !!contents,
+      //enabled: !isChallengeLoading && !!contents,
     },
   );
 
@@ -257,6 +534,124 @@ const ChallengeStart = () => {
     console.log("topics", topics);
   }, [topics]);
 
+  //----------------------------------------------
+/*
+  useEffect(()=> {
+    const demoContent = dataDemo ? dataDemo.content.map((content) => content.json) : [];
+    if(currentIndex >= demoContent.length) {
+      setShowContent(false)
+    }
+  }, [showContent, currentIndex, dataDemo])*/
+  //--------------------
+  
+    useEffect(() => {
+      console.log("useEffect ejecutado"); // Depuración
+      console.log("isLoadingDemo:", isLoadingDemo); // Depuración
+      console.log("showDemo:", showDemo); // Depuración
+    
+      if (!isLoadingDemo && showDemo) {
+        const demoContent = dataDemo ? dataDemo.content.map((content) => content.json) : [];
+        console.log("demoContent:", demoContent); // Depuración
+    
+        if (demoContent && demoContent.length > 0) {
+          if (currentIndex >= 0 && currentIndex < demoContent.length) {
+            console.log("Accediendo a demoContent[currentIndex]"); // Depuración
+            const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
+    
+            // Actualizar sessionState con el contenido actual
+            sessionState.currentContent.code = currentContent.code;
+            sessionState.currentContent.json = currentContent;
+            sessionState.nextContentPath = nextContentPath;
+            sessionState.topic = registerTopic;
+            sessionState.callbackType = "challenge";
+            sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
+          } else {
+            console.log("currentIndex fuera de límites"); // Depuración
+            if (showContent || showDemo) {
+              console.log("Desactivando showContent y showDemo"); // Depuración
+              sessionState.callbackType = ""
+              //sessionState.callback = () => setShowContent(true);
+              setShowContent(false);
+              setShowDemo(false);
+              //setShowTutor(false);
+              
+            }
+          }
+        } else {
+          console.log("demoContent está vacío"); // Depuración
+          // No desactivar showDemo y showContent si demoContent está vacío
+        }
+      }
+    }, [dataDemo, isLoadingDemo, showDemo, currentIndex, showContent]);
+
+  //----------------------------------------
+  useEffect(() => {//data?.contentSelection?.contentSelected?.PU[0]
+    //if(!isChallengeLoading && !!contents) {
+    // Procesar lastExercise
+    if (data?.contentSelection?.contentSelected?.PU && data.contentSelection.contentSelected.PU[0]) {
+      setProcessedLastExercise(data.contentSelection.contentSelected.PU[0]);
+      console.log("data.contentSelection.contentSelected.PU[0]", data.contentSelection.contentSelected.PU[0])
+    //}
+  
+    // Procesar experimentGroup
+    if (!isError && user) {
+      const expGroup = user.tags && user.tags.indexOf(parameters.CSMain.experimentalTag) >= 0
+        ? parameters.CSMain.experimentalTag
+        : parameters.CSMain.controlTag;
+      setProcessedExperimentGroup(expGroup);
+    }
+  
+    // Procesar contentResult
+    if (!isLoading && !isError && data?.contentSelection?.contentSelected?.contentResult) {
+      const sortedContent = [...data.contentSelection.contentSelected.contentResult].sort((a, b) => {
+        return parseInt(a.Order) - parseInt(b.Order);
+      });
+      setProcessedContentResult(sortedContent);
+    }
+  }
+  }, [isLoading, isError, data, user])//, parameters.CSMain.experimentalTag, parameters.CSMain.controlTag]);
+  
+  useEffect(() => {
+    if (processedContentResult && processedContentResult.length > 0) {
+      try {
+        const bestIdx = processedContentResult
+          .map(x => x.Preferred)
+          .reduce((out, bool, index) => (bool ? out.concat(index) : out), [])[0] ?? 0;
+        setProcessedBestExercise(bestIdx);
+      } catch (error) {
+        console.error("Error al calcular bestExercise:", error);
+        setProcessedBestExercise(0); // Valor predeterminado si hay un error
+      }
+    }
+  }, [processedContentResult]);
+  
+  useEffect(() => {
+    if (processedContentResult && processedBestExercise !== null && !isLoading && !isError && processedExperimentGroup) {
+      if (processedExperimentGroup === parameters.CSMain.controlTag) {
+        if (processedContentResult[processedBestExercise]) {
+          setProcessedSelectionData([{
+            optionCode: processedContentResult[processedBestExercise]?.P?.code ?? "",
+            optionTitle: processedContentResult[processedBestExercise]?.Msg?.label ?? parameters.CSMain.completeTopic,
+            optionBest: true,
+            optionSelected: false,
+          }]);
+        } else {
+          setProcessedSelectionData([]);
+        }
+      } else {
+        setProcessedSelectionData(processedContentResult.map((content, index) => ({
+          optionCode: content?.P?.code ?? "",
+          optionTitle: content?.Msg?.label ?? parameters.CSMain.completeTopic,
+          optionBest: index === processedBestExercise,
+          optionSelected: false,
+        })));
+      }
+    }
+  }, [processedContentResult, processedBestExercise, processedExperimentGroup, isLoading, isError, parameters.CSMain.completeTopic, parameters.CSMain.controlTag]);
+  
+  //----------------------------
+
+  /*
   const contentResult = data?.contentSelection?.contentSelected?.contentResult?.sort((a, b) => {
     return parseInt(a.Order) - parseInt(b.Order);
   });
@@ -299,22 +694,28 @@ const ChallengeStart = () => {
           };
         }));
 
-  console.log(selectionData);
+  console.log(selectionData);*/
   // Construir la URL dinámica para ContentSelect
   // const topicsList = "16,31,17,18,63";
   //const registerTopic = "31"; // O cualquier valor que necesites
   //const contentSelectUrl = `/contentSelect?topic=${topicsList}&registerTopic=${registerTopic}`;
 
+
+  
   const createNextExerciseCallback = (exercises: any[], index: number) => {
     if (index >= exercises.length) {
-      setShowContent(false);
-      setShowDemo(false);
-      return null;
+      sessionState.callbackType = "challenge"
+
+      return () => {
+        setShowDemo(false);
+        setShowContent(false);
+        console.log("No hay más ejercicios disponibles");
+      };
     }
 
     return () => {
       const nextContent = exercises[index];
-      //sessionState.nextContentPath = `/challengeStart?title=Desafío+${currentIndex}&endDate=1734280712000&content=${419 + currentIndex}&content=${459 + currentIndex}&topics=31&topics=19&topics=68`;
+      sessionState.nextContentPath = nextContentPath;
       sessionState.currentContent.json = nextContent;
       sessionState.currentContent.code = nextContent.code;
       setCurrentIndex(index + 1);
@@ -327,6 +728,26 @@ const ChallengeStart = () => {
                       );*/
     };
   };
+
+  const handleRefreshData = async () => {
+    try {
+      await refetch(); // Volver a ejecutar la consulta
+      console.log("Datos actualizados correctamente");
+    } catch (error) {
+      console.error("Error al actualizar los datos:", error);
+    }
+  };
+
+  /* permite volver a cardSelection desde showCode al presionar RatingQuestion */
+  useEffect(()=> {
+    if(showContent && !showDemo) {
+      sessionState.callback = () => {
+        handleRefreshData()
+        setShowContent(false)
+      }
+      sessionState.callbackType = "tutor"
+    }
+  }, [showContent, showDemo])
 
   useEffect(() => {
     console.log("currentIndex", currentIndex);
@@ -344,8 +765,8 @@ de las páginas en Nextjs y eso hace que los datos cambie a los que había al mo
 de montar el componente por primera vez reiniciando el contador a 0*/
 
   useEffect(() => {
-    // agregar el challengeId para evitar errores en el identificador
-    sessionStorage.setItem("currentIndex", JSON.stringify(currentIndex));
+    // El challengeId para evitar colisiones entre los challenges
+    sessionStorage.setItem("currentIndex" + challengeId, JSON.stringify(currentIndex));
   }, [currentIndex]);
 
   useEffect(() => {
@@ -362,11 +783,8 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     // Se ejecutará cuando el contenido cambie
     console.log("currentContent updated", sessionState.currentContent);
   }, [sessionState.currentContent]);
-
+/*
   if (!isLoadingDemo && showDemo) {
-    console.log("contents", contents);
-    console.log("dataDemo", dataDemo);
-    //const demoContent = dataDemo?.content.map(content => content.json);
 
     const demoContent = dataDemo ? dataDemo?.content.map(content => content.json) : [];
 
@@ -376,14 +794,12 @@ de montar el componente por primera vez reiniciando el contador a 0*/
       currentIndex >= 0 &&
       currentIndex < demoContent.length
     ) {
-      console.log("demoContent", demoContent);
-      console.log("currentIndex", currentIndex);
+      console.log("demoContent", demoContent)
       const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise; //contentResult[bestExercise]?.P;
       //sessionState.currentContent.id = currentContent.id;
       sessionState.currentContent.code = currentContent.code;
       //sessionState.currentContent.description = currentContent.description;
       //sessionState.currentContent.label = currentContent.label;
-      console.log("json");
       sessionState.currentContent.json = currentContent; //.json as unknown as ExType;
       //sessionState.currentContent.kcs = currentContent.kcs;
       //sessionState.selectionData = selectionData;
@@ -393,7 +809,27 @@ de montar el componente por primera vez reiniciando el contador a 0*/
       sessionState.callbackType = "challenge";
       sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
     }
+  } */
+
+
+    useEffect(()=> {
+      console.log("showContent", showContent)
+    }, [showContent])
+/*
+  useEffect(()=> {
+    if(showTutor) {
+    sessionState.callbackType = "tutor";
+    sessionState.callback = () => setShowContent(true);
+    }
+  }, [showTutor])*/
+
+// You can then call this function to manually refetch
+// For example, in a button click handler or some other event
+const handleManualRefetch = () => {
+  if (!showDemo && showContent) {
+    refetch();
   }
+};
 
   if (isLoading || isChallengeLoading || isLoadingDemo) {
     return <Box p={5}>Cargando...</Box>;
@@ -441,7 +877,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
               {/* Card Selection, seleccion de contenido */}
 
               <CardLastExercise
-                lastExercise={lastExercise}
+                lastExercise={processedLastExercise}
                 //setQueryLastExercise={setQueryLastExercise}
               />
               <br></br>
@@ -452,9 +888,9 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                 columns={{
                   lg: 1,
                   xl:
-                    experimentGroup != parameters.CSMain.experimentalTag
+                  processedExperimentGroup != parameters.CSMain.experimentalTag
                       ? 1
-                      : (contentResult ?? []).length,
+                      : (processedContentResult ?? []).length,
                 }}
                 spacing="8"
                 p="10"
@@ -464,30 +900,58 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                 {
                   //agregar componente de tópico completado
                   !isLoading ? (
-                    experimentGroup == parameters.CSMain.controlTag ? (
+                    processedExperimentGroup == parameters.CSMain.controlTag ? (
                       <Center>
+                      {processedContentResult && 
+                       processedBestExercise !== null && 
+                       processedContentResult[processedBestExercise] ? (
                         <CardSelectionDynamic
-                          id={contentResult[bestExercise]?.P?.id}
-                          code={contentResult[bestExercise]?.P?.code}
-                          json={contentResult[bestExercise]?.P?.json as unknown as ExType}
-                          description={contentResult[bestExercise]?.P?.description}
-                          label={contentResult[bestExercise]?.P?.label}
-                          kcs={contentResult[bestExercise]?.P?.kcs}
-                          selectionTitle={contentResult[bestExercise]?.Msg?.label}
-                          selectionText={contentResult[bestExercise]?.Msg?.text}
+                          id={processedContentResult[processedBestExercise]?.P?.id}
+                          code={processedContentResult[processedBestExercise]?.P?.code}
+                          json={processedContentResult[processedBestExercise]?.P?.json as unknown as ExType}
+                          description={processedContentResult[processedBestExercise]?.P?.description}
+                          label={processedContentResult[processedBestExercise]?.P?.label}
+                          kcs={processedContentResult[processedBestExercise]?.P?.kcs}
+                          selectionTitle={processedContentResult[processedBestExercise]?.Msg?.label}
+                          selectionText={processedContentResult[processedBestExercise]?.Msg?.text}
                           selectionBest={false}
                           registerTopic={registerTopic}
                           nextContentPath={nextContentPath}
-                          selectionData={selectionData}
+                          selectionData={processedSelectionData}
                           indexSelectionData={0}
                           key={0}
                           setShowContent={setShowContent}
                         ></CardSelectionDynamic>
-                      </Center>
-                    ) : (
-                      <>
-                        {contentResult.length > 1
-                          ? contentResult?.map((content, index) => (
+                      ) : (
+                        <Text>No se encontró contenido disponible</Text>
+                      )}
+                    </Center>
+                  ) : (
+                    <>
+                      {processedContentResult && processedContentResult.length > 0 ? (
+                        processedContentResult.length > 1 ? (
+                          processedContentResult.map((content, index) => (
+                            <CardSelectionDynamic
+                              id={content?.P?.id}
+                              code={content?.P?.code}
+                              json={content?.P?.json as unknown as ExType}
+                              description={content?.P?.description}
+                              label={content?.P?.label}
+                              kcs={content?.P?.kcs}
+                              selectionTitle={content?.Msg?.label}
+                              selectionText={content?.Msg?.text}
+                              selectionBest={index === processedBestExercise}
+                              registerTopic={registerTopic}
+                              nextContentPath={nextContentPath}
+                              selectionData={processedSelectionData}
+                              indexSelectionData={index}
+                              key={index}
+                              setShowContent={setShowContent}
+                            ></CardSelectionDynamic>
+                          ))
+                        ) : (
+                          processedContentResult.map((content, index) => (
+                            <Center key={index + "center"}>
                               <CardSelectionDynamic
                                 id={content?.P?.id}
                                 code={content?.P?.code}
@@ -497,53 +961,39 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                                 kcs={content?.P?.kcs}
                                 selectionTitle={content?.Msg?.label}
                                 selectionText={content?.Msg?.text}
-                                selectionBest={index == bestExercise}
+                                selectionBest={index === processedBestExercise}
                                 registerTopic={registerTopic}
                                 nextContentPath={nextContentPath}
-                                selectionData={selectionData}
+                                selectionData={processedSelectionData}
                                 indexSelectionData={index}
                                 key={index}
                                 setShowContent={setShowContent}
                               ></CardSelectionDynamic>
-                            ))
-                          : contentResult?.map((content, index) => (
-                              <Center key={index + "center"}>
-                                <CardSelectionDynamic
-                                  id={content?.P?.id}
-                                  code={content?.P?.code}
-                                  json={content?.P?.json as unknown as ExType}
-                                  description={content?.P?.description}
-                                  label={content?.P?.label}
-                                  kcs={content?.P?.kcs}
-                                  selectionTitle={content?.Msg?.label}
-                                  selectionText={content?.Msg?.text}
-                                  selectionBest={index == bestExercise}
-                                  registerTopic={registerTopic}
-                                  nextContentPath={nextContentPath}
-                                  selectionData={selectionData}
-                                  indexSelectionData={index}
-                                  key={index}
-                                  setShowContent={setShowContent}
-                                ></CardSelectionDynamic>
-                              </Center>
-                            ))}
-                      </>
-                    )
-                  ) : (
-                    <Text>
-                      {experimentGroup == parameters.CSMain.controlTag
-                        ? parameters.CSMain.waitMsgControl
-                        : parameters.CSMain.waitMsgExperimental}
-                    </Text>
+                            </Center>
+                          ))
+                        )
+                      ) : (
+                        <Text>No se encontró contenido disponible</Text>
+                      )}
+                    </>
                   )
-                }
-              </SimpleGrid>
-            </>
-          )}
-        </Box>
+                ) : (
+                  <Text>
+                    {processedExperimentGroup == parameters.CSMain.controlTag
+                      ? parameters.CSMain.waitMsgControl
+                      : parameters.CSMain.waitMsgExperimental}
+                  </Text>
+                )
+              }
+            </SimpleGrid>
+          </>
+        )}
       </Box>
     </Box>
-  );
-};
+  </Box>
+);
 
-export default ChallengeStart;
+})
+//};
+
+//export default ChallengeStart;

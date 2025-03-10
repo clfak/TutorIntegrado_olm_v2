@@ -18,7 +18,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useAuth } from "../components/Auth";
+import { useAuth, withAuth } from "../components/Auth";
 import { useGQLQuery } from "rq-gql";
 import {
   FaTrashAlt,
@@ -33,7 +33,7 @@ import { formatDate, getColorScheme } from "../components/challenge/tools";
 import LatexPreview from "../components/challenge/LatexPreview";
 
 //----------------
-/*
+
 const queryGroupUsersWithModelStates = gql(`
   query GetGroupUsersWithModelStates {
     currentUser {
@@ -45,6 +45,7 @@ const queryGroupUsersWithModelStates = gql(`
           id
           email
           name
+          role
           modelStates(
             input: { filters: { type: ["BKT"] }, orderBy: { id: DESC }, pagination: { first: 1 } }
           ) {
@@ -57,7 +58,7 @@ const queryGroupUsersWithModelStates = gql(`
     }
   }
 `);
-*/
+
 //------------------------------------------------
 const queryGetKcsByTopics = gql(`
   query GetKcsByTopics2($topicsCodes: [String!]!) {
@@ -157,22 +158,7 @@ const mutationUpdateChallenge = gql(`
       }
     }
   }`);
-//----------------------------------
-/*const getTopicsFromChallenges = challengesOriginal => {
-  if (!challengesOriginal || !Array.isArray(challengesOriginal)) {
-    return [];
-  }
-
-  // Creamos el arreglo de objetos
-  const challengeObjects = challengesOriginal.map(challenge => ({
-    id: challenge.id,
-    topicCodes: challenge.topics?.map(topic => topic.code) || [],
-  }));
-
-  return challengeObjects;
-};*/
-
-//--------------------------
+/*
 type ChallengeInput = {
   code: string;
   contentIds: string[];
@@ -185,7 +171,7 @@ type ChallengeInput = {
   tags: string[];
   title: string;
   topicsIds: string[];
-};
+};*/
 
 //-------------------------
 
@@ -203,11 +189,11 @@ const StudentCard = ({
   title,
   description,
   endDate,
-  studentProgress,
-  groupProgress,
   status,
   tags,
   topics,
+  userByJsonById,
+  allUsersJson,
 }) => {
   const router = useRouter();
 
@@ -216,12 +202,8 @@ const StudentCard = ({
   const motivMsgEnabled = tags.includes("motiv-msg"); // habilita el mensaje motivacional asociado al progreso
   //const sessionProgressEnabled = tags.includes("session-progress"); // habilita mostrar el delta de progreso dentro de la sesión
 
-  /*
-  const calculateGroupProgress = (students) => {
-    if (students.length === 0) return 0; // Avoid division by zero
-    const totalProgress = students.reduce((sum, student) => sum + student.progress, 0);
-    return totalProgress / students.length;
-  };*/
+  const [studentProgress, setStudentProgress] = useState(0)
+  const [groupProgress, setGroupProgress] = useState(0)
 
   const handleStartChallenge = () => {
     router.push({
@@ -230,12 +212,11 @@ const StudentCard = ({
     });
   };
 
+  //-------------------------------------------------------
+
   function getCodes(array) {
     return array.map(item => item.code);
   }
-  const queryResult = useGQLQuery(queryGetKcsByTopics, {
-    topicsCodes: getCodes(topics),
-  });
 
   function getUniqueKcs(kcsByContentByTopics: any[]): string[] {
     if (!Array.isArray(kcsByContentByTopics)) {
@@ -256,23 +237,52 @@ const StudentCard = ({
     return Array.from<string>(uniqueKcs);
   }
 
-  console.log("uniqueKcs", getUniqueKcs(queryResult?.data?.kcsByContentByTopics));
-  const uniqueKcs: string[] = getUniqueKcs(queryResult?.data?.kcsByContentByTopics || []);
-
   const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
     queryGetKcsByTopics,
     {
-      topicsCodes: uniqueKcs,
+      topicsCodes: getCodes(topics),
     },
   );
+//---------------------
 
-  console.log("kcsByTopics1", dataKcsByTopics);
 
-  useEffect(() => {
-    if (!isKcsByTopicsLoading) {
-      console.log("kcsByTopics", dataKcsByTopics);
+
+function calculateAverageLevel(data, keysToSearch) {
+
+  // Filtra los datos que están en la lista `keysToSearch`
+  const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
+
+  // Obtiene los valores de `level` de los datos filtrados
+  const levels = filteredData.map(item => item.level);
+
+    // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
+    if (levels.length === 0) {
+      console.log("Datos recibidos:", { data, keysToSearch });
+      return 0; // O cualquier valor por defecto
     }
-  }, [isKcsByTopicsLoading]);
+
+  // Calcula el promedio de los valores de `level`
+  const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
+
+  return averageLevel;
+}
+
+useEffect(()=> {
+  if(!isKcsByTopicsLoading) {
+
+    const kcsByContentByTopics = dataKcsByTopics.kcsByContentByTopics || [];
+    const uniqueKcs = getUniqueKcs(kcsByContentByTopics)
+
+    const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs)*100
+    const averageLevelGroup = calculateAverageLevelGroup(allUsersJson, uniqueKcs)
+
+    setStudentProgress(averageLevelUser)
+    setGroupProgress(averageLevelGroup)
+  }
+
+}, [isKcsByTopicsLoading])
+ 
+//--------------------------------
 
   //const groupProgress = calculateGroupProgress(group.students);
 
@@ -421,12 +431,7 @@ const StudentCard = ({
                   </Box>
                   <Text
                     fontWeight="bold"
-                    color={
-                      groupProgress <= 50
-                        ? "red.500"
-                        : groupProgress < 70
-                        ? "orange.400"
-                        : "orange.300"
+                    color={getColorScheme(groupProgress)
                     }
                   >
                     {Math.round(groupProgress) + " %"}
@@ -463,13 +468,34 @@ const ChallengeCard = ({
   endDate,
   groups,
   status,
+  topics,
   setIsUpdated,
   setUpdateChallenge,
   setChallengeId,
   challengesOriginal,
+  usersWithModelStates,
+  allUsersJson
 }) => {
   const router = useRouter();
+  const [uniqueKcs, setUniqueKcs] = useState([])
+  const [groupAverages, setGroupAverages] = useState({});
+
+  console.log("usersWithModelStates", usersWithModelStates)
   const challengeFilter = challengesOriginal.find(challenge => challenge.id === id);
+
+  type ChallengeInput = {
+    code: string;
+    contentIds: string[];
+    description: string[];
+    enabled: boolean;
+    endDate: Date;
+    groupsIds: Number[];
+    projectId: Number;
+    startDate: Date;
+    tags: string[];
+    title: string;
+    topicsIds: string[];
+  };
 
   const challengeData: ChallengeInput = {
     code: challengeFilter.code,
@@ -529,6 +555,60 @@ const ChallengeCard = ({
     return totalProgress / students.length;
   };
 
+  //------------------------------------------
+
+
+  function getCodes(array) {
+    return array.map(item => item.code);
+  }
+
+  function getUniqueKcs(kcsByContentByTopics: any[]): string[] {
+    if (!Array.isArray(kcsByContentByTopics)) {
+      return []; // Return an empty array or handle the error as needed
+    }
+
+    const uniqueKcs = new Set<string>(); // Use a Set to avoid duplicates
+
+    // Loop through each object in the main array
+    kcsByContentByTopics.forEach(item => {
+      // Loop through the kcs of each object
+      item.kcs?.forEach(kc => {
+        uniqueKcs.add(kc.code); // Add the code to the Set
+      });
+    });
+
+    // Convert the Set back to an array
+    return Array.from<string>(uniqueKcs);
+  }
+
+  const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
+    queryGetKcsByTopics,
+    {
+      topicsCodes: getCodes(topics),
+    },
+  );
+
+
+  //---------------------------------------
+  
+  useEffect(()=> {
+    if(!isKcsByTopicsLoading) {
+      const kcsByContentByTopics = dataKcsByTopics.kcsByContentByTopics || [];
+      setUniqueKcs(getUniqueKcs(kcsByContentByTopics))
+      console.log("kcsByContentByTopics", kcsByContentByTopics)
+      console.log("getUniqueKcs", getUniqueKcs)
+
+      //const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs)*100
+      //const averageLevelGroup = calculateAverageLevelGroup(allUsersJson, uniqueKcs)
+  
+      //setStudentProgress(averageLevelUser)
+      //setGroupProgress(averageLevelGroup)
+    }
+  
+  }, [isKcsByTopicsLoading])
+  
+  //------------------------------
+
   return (
     <Box
       borderWidth={status === "finalized" ? "4px" : "1px"}
@@ -582,8 +662,21 @@ const ChallengeCard = ({
         {/* Accordion for groups */}
         <Accordion allowToggle w="100%">
           {groups.map((group, index) => {
-            // Calculate group progress
-            const groupProgress = calculateGroupProgress(group.students);
+            const groupsWithModelStates = usersWithModelStates.groups.find(item => item.id === group.id);
+            
+              // Calcular el promedio del grupo
+          const groupAverage = group.students.reduce((sum, student) => {
+            const studentsWithModelStates = groupsWithModelStates?.users?.find(
+              (item) => item.id === student.id
+            );
+            const averageLevelStudent =
+              calculateAverageLevel(
+                studentsWithModelStates?.modelStates?.nodes[0]?.json,
+                uniqueKcs
+              ) * 100;
+            return sum + averageLevelStudent;
+          }, 0) / group.students.length;
+
             return (
               <AccordionItem key={index} w="100%">
                 <AccordionButton>
@@ -598,7 +691,7 @@ const ChallengeCard = ({
                         borderColor="gray.300"
                       >
                         <Progress
-                          value={groupProgress}
+                          value={groupAverage}
                           size="lg"
                           colorScheme="gray"
                           sx={{
@@ -607,7 +700,7 @@ const ChallengeCard = ({
                             },
                             "& > div": {
                               /*https://v2.chakra-ui.com/docs/styled-system/theme#red */
-                              background: getColorScheme(groupProgress),
+                              background: getColorScheme(groupAverage),
                               //background: "linear-gradient(to right, #E53E3E, #F6AD55)"//red.500 = #E53E3E, orange.300 = #F6AD55
                             },
                           }}
@@ -615,15 +708,10 @@ const ChallengeCard = ({
                       </Box>
                       <Text
                         fontWeight="bold"
-                        color={
-                          groupProgress <= 35
-                            ? "red.500"
-                            : groupProgress < 70
-                            ? "orange.400"
-                            : "orange.300"
+                        color={getColorScheme(groupAverage)
                         }
                       >
-                        {Math.round(groupProgress) + " %"}
+                        {Math.round(groupAverage) + " %"}
                       </Text>
                     </HStack>
                   </HStack>
@@ -631,7 +719,11 @@ const ChallengeCard = ({
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                   {/* List of students */}
-                  {group.students.map((student, idx) => (
+                  {group.students.map((student, idx) => {
+                    
+                    const studentsWithModelStates = groupsWithModelStates?.users?.find(item => item.id === student.id);
+                      const averageLevelStudent = calculateAverageLevel(studentsWithModelStates?.modelStates?.nodes[0]?.json, uniqueKcs)*100
+                      return(
                     <HStack key={idx} justify="space-between" w="100%">
                       <Text>{student.name}</Text>
                       <HStack w="70%" justify="space-between">
@@ -650,7 +742,7 @@ const ChallengeCard = ({
   https://stackoverflow.com/questions/65590038/how-to-add-the-gradient-to-chakra-ui-progress
   //  */}
                           <Progress
-                            value={student.progress}
+                            value={averageLevelStudent}
                             size="sm"
                             colorScheme="gray"
                             sx={{
@@ -658,26 +750,21 @@ const ChallengeCard = ({
                                 backgroundColor: "white", // Set the progress track color to white
                               },
                               "& > div": {
-                                background: getColorScheme(student.progress), // Set the progress color
+                                background: getColorScheme(averageLevelStudent), // Set the progress color
                               },
                             }}
                           />
                         </Box>
                         <Text
                           fontWeight="bold"
-                          color={
-                            student.progress <= 35
-                              ? "red.500"
-                              : student.progress < 70
-                              ? "orange.400"
-                              : "orange.300"
+                          color={getColorScheme(averageLevelStudent)
                           }
                         >
-                          {Math.round(student.progress) + " %"}
+                          {Math.round(averageLevelStudent) + " %"}
                         </Text>
                       </HStack>
-                    </HStack>
-                  ))}
+                    </HStack>)
+          })}
                 </AccordionPanel>
               </AccordionItem>
             );
@@ -707,7 +794,7 @@ const ChallengeCard = ({
 };
 //--------------------------------------------
 
-const StudentsList = ({ challenges }) => {
+const StudentsList = ({ challenges, userByJsonById, allUsersJson}) => {
   const [filteredChallenges, setFilteredChallenges] = useState(challenges);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -766,7 +853,7 @@ const StudentsList = ({ challenges }) => {
       {filteredChallenges.map(challenge => (
         <Box p={4} key={challenge.id}>
           {console.log("challengeStudent", challenge)}
-          <StudentCard {...challenge} challenges={challenges} />
+          <StudentCard {...challenge} challenges={challenges} userByJsonById={userByJsonById} allUsersJson={allUsersJson}/>
         </Box>
       ))}
     </Box>
@@ -808,45 +895,6 @@ const student = [
     topics: [31, 19, 68], //fracciones, potencias, raices
     id: 1,
   },
-  {
-    title: "Desafío 2",
-    description:
-      "En este desafío, los estudiantes deben completar un proyecto práctico en equipo relacionado con la ingeniería.",
-    endDate: 1710952712 * 1000,
-    //studentName: "Estudiante 1",
-    studentProgress: 60,
-    groupProgress: 70,
-    status: "finalized",
-    tags: ["joint-control", "motiv-msg", "session-progress"],
-    content: [],
-    topics: [],
-  },
-  {
-    title: "Desafío 3",
-    description:
-      "Desafío de revisión final donde los estudiantes completan pruebas y ejercicios sobre el material del curso.",
-    endDate: 1733788800 * 1000,
-    //studentName: "Estudiante 1",
-    studentProgress: 60,
-    groupProgress: 70,
-    status: "finalized",
-    tags: ["joint-control", "session-progress"],
-    content: [],
-    topics: [],
-  },
-  {
-    title: "Desafío 4",
-    description:
-      "Desafío de resolución de problemas matemáticos, donde los estudiantes deben resolver una serie de ecuaciones y problemas complejos.",
-    endDate: 1734185600 * 1000,
-    //studentName: "Estudiante 1",
-    studentProgress: 60,
-    groupProgress: 70,
-    status: "finalized",
-    tags: ["joint-control", "oslm", "session-progress"],
-    content: [],
-    topics: [],
-  },
 ];
 */
 //--------------------------
@@ -855,19 +903,18 @@ function updateArray(array, userIdToRemove) {
   // Recorrer cada objeto en el arreglo
   return array.map(item => {
     // Agregar las nuevas propiedades al objeto
-    item.studentProgress = 60; // Valor por defecto
-    item.groupProgress = 70; // Valor por defecto
+
     item.tags = ["joint-control", "oslm", "motiv-msg", "session-progress"];
 
     // Si el objeto tiene grupos, eliminar al usuario con el id especificado
-    if (item.groups && Array.isArray(item.groups)) {
+    /*if (item.groups && Array.isArray(item.groups)) {
       item.groups.forEach(group => {
         if (group.students && Array.isArray(group.students)) {
           // Filtrar y eliminar al usuario con el id especificado
           group.students = group.students.filter(student => student.id !== userIdToRemove);
         }
       });
-    }
+    }*/
 
     return item;
   });
@@ -939,13 +986,20 @@ const updateDataWithStatus = (dataArray: Challenge[]): Challenge[] => {
 
   return dataArray?.map(item => {
     let status = "unpublished";
-    if (item.startDate) {
-      status = "published";
-    }
 
-    if (new Date(item.endDate).getTime() < currentTimestamp) {
-      //(item.endDate && new Date(item.endDate).getTime() >= currentTimestamp){
-      status = "finalized";
+    // Si enabled es false, el status siempre es "unpublished"
+    if (item.enabled === false) {
+      status = "unpublished";
+    }
+    // Si enabled es true, determinar el status basado en las fechas
+    else {
+      if (item.startDate) {
+        status = "published";
+      }
+
+      if (new Date(item.endDate).getTime() < currentTimestamp) {
+        status = "finalized";
+      }
     }
 
     return {
@@ -967,6 +1021,7 @@ type Challenge = {
   enabled: boolean;
   topics: [string];
   groups: {
+    id: string;
     name: string;
     code: string;
     users: {
@@ -1026,7 +1081,9 @@ function updateDataWithEndDate(input: Challenge[] = []) {
         status: challenge?.status,
         enabled: challenge?.enabled,
         topics: challenge?.topics,
+        startDate: challenge.startDate !== null ? new Date(challenge.startDate).getTime() : null,
         groups: challenge?.groups.map(group => ({
+          id: group.id,
           name: group.code,
           students: group?.users?.map(user => ({
             id: user.id,
@@ -1052,30 +1109,144 @@ const sortStudentsByProgress = challenges => {
 */
 //sortStudentsByProgress(challenges);
 
-//--------------------------------------------
-/*
-function filterStudentsByTopics(students, topicsKcs) {
-  // Extraer las claves de topics.kcs
-  const topicKeys = Object.keys(topicsKcs);
-
-  // Filtrar los estudiantes cuyos nodes contengan alguna clave de topics.kcs
-  const filteredStudents = students.filter(student => {
-    // Verificar si alguno de los nodes del estudiante tiene una clave que coincida con topics.kcs
-    return student.nodes.some(node => {
-      // Extraer las claves del nodo actual
-      const nodeKeys = Object.keys(node.json);
-      // Verificar si alguna clave del nodo está en topicKeys
-      return nodeKeys.some(key => topicKeys.includes(key));
-    });
-  });
-
-  return filteredStudents;
-}
-*/
 
 //-----------------------------------
 
-const ChallengesPage = () => {
+function removeAdminUsers(data) {
+  const filteredGroups = data?.groups?.map(group => {
+    const filteredUsers = group.users.filter(user => user.role === "USER");
+
+    return {
+      ...group,
+      users: filteredUsers,
+    };
+  });
+
+  return {
+    ...data, // Copia todas las propiedades del objeto original
+    groups: filteredGroups, // Sobrescribe la propiedad `groups` con los grupos filtrados
+  };
+}
+
+function getUserJsonById(currentUser: any, userId: string): any | null {
+  // Verifica si currentUser y sus propiedades existen
+  if (!currentUser || !currentUser.groups || !Array.isArray(currentUser.groups)) {
+    return null; // Si no hay datos válidos, retorna null
+  }
+
+  // Itera sobre cada grupo en el array `groups`
+  for (const group of currentUser.groups) {
+    // Verifica si el grupo tiene usuarios y si es un array
+    if (group.users && Array.isArray(group.users)) {
+      // Busca el usuario con el `id` especificado
+      const user = group.users.find(user => user.id === userId);
+      if (user) {
+        // Si el usuario tiene `modelStates` y `nodes`, busca el `json`
+        if (user.modelStates && Array.isArray(user.modelStates.nodes)) {
+          const node = user.modelStates.nodes[0]; // Asume que el `json` está en el primer nodo
+          if (node && node.json) {
+            return node.json; // Retorna el `json` del usuario
+          }
+        }
+      }
+    }
+  }
+
+  return null; // Si no se encuentra el usuario o el `json`, retorna null
+}
+
+function getUsersExcludingId(currentUser, userId) {
+  // Verifica si currentUser y sus propiedades existen
+  if (!currentUser || !currentUser.groups || !Array.isArray(currentUser.groups)) {
+    return []; // Si no hay datos válidos, retorna un arreglo vacío
+  }
+
+  const usersExcludingId: any[] = [];
+
+  // Itera sobre cada grupo en el array `groups`
+  for (const group of currentUser.groups) {
+    // Verifica si el grupo tiene usuarios y si es un array
+    if (group.users && Array.isArray(group.users)) {
+      // Filtra los usuarios cuyo `id` no coincida con `userId`
+      const filteredUsers = group.users.filter(user => user.id !== userId).map(user => ({ ...user })); // Copia profunda del usuario
+      usersExcludingId.push(...filteredUsers); // Agrega los usuarios filtrados al arreglo
+    }
+  }
+
+  return usersExcludingId; // Retorna el arreglo de usuarios excluyendo el `id` especificado
+}
+
+function getAllUsersJson(users) {
+  // Verifica si el arreglo de usuarios es válido
+  if (!users || !Array.isArray(users)) {
+    return []; // Si no hay datos válidos, retorna un arreglo vacío
+  }
+
+  const allJsons = [];
+
+  // Itera sobre cada usuario en el arreglo
+  for (const user of users) {
+    // Verifica si el usuario tiene `modelStates` y `nodes`
+    if (user.modelStates && Array.isArray(user.modelStates.nodes)) {
+      const node = user.modelStates.nodes[0]; // Asume que el `json` está en el primer nodo
+      if (node && node.json) {
+        allJsons.push(node.json); // Agrega el `json` al arreglo
+      }
+    }
+  }
+
+  return allJsons; // Retorna el arreglo con todos los `json` encontrados
+}
+
+function calculateAverageLevel(data, keysToSearch) {
+
+  // Filtra los datos que están en la lista `keysToSearch`
+  const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
+
+  // Obtiene los valores de `level` de los datos filtrados
+  const levels = filteredData.map(item => item.level);
+  console.log("data", data)
+  console.log("keyToSearch", keysToSearch)
+  console.log("levels", levels)
+    // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
+    if (levels.length === 0) {
+      console.log("Datos recibidos:", { data, keysToSearch });
+      return 0; // O cualquier valor por defecto
+    }
+
+  // Calcula el promedio de los valores de `level`
+  const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
+
+  return averageLevel;
+}
+
+
+function calculateAverageLevelGroup(
+  students, uniqueKcs
+) {
+
+  // Calcular el nivel promedio para cada usuario
+  const averageLevels = students?.map(user =>
+    calculateAverageLevel(user, uniqueKcs) * 100
+  );
+  console.log("averageLevels", averageLevels)
+
+  // Calcular el promedio de todos los niveles
+  const total = averageLevels?.reduce((sum, level) => sum + level, 0);
+  const average = total / averageLevels?.length;
+
+  return average;
+}
+//-------------------------------------
+
+const removeUnpublished = (arr) => {
+  return arr.filter(item => item && item.status !== "unpublished");
+};
+
+//--------------------
+
+//export default withAuth(function ContentSelect() {
+  export default withAuth(function ChallengesPage () {
   const [filteredChallenges, setFilteredChallenges] = useState<Challenge[]>([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -1097,57 +1268,29 @@ const ChallengesPage = () => {
   const [challengesStudents, setChallengesStudents] = useState([]);
 
   const [isUpdated, setIsUpdated] = useState(false);
-  //const [challenge, setChallenge] = useState({});
   const [challengeId, setChallengeId] = useState();
 
   const [challengesOriginal, setChallengesOriginal] = useState([]);
-  //const [topicQueries, setTopicQueries] = useState([]);
 
-  /*const { data: GroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
-    useGQLQuery(queryGroupUsersWithModelStates);
-*/
+  const[userByJsonById, setUserByJsonById] = useState([])
+  const[allUsersJson, setAllUsersJson] = useState([])
+  const[usersWithModelStates, setUsersWithModelStates] = useState({}) 
+
+
+  const { user, isLoading } = useAuth();
+  const userId = user?.id
+  //const tags = user?.tags;
+  const admin = (user?.role ?? "") == "ADMIN" ? true : false;
+
+
+const numbersAsStrings = Array.from({ length: 100 }, (_, i) => String(i + 1));
   const { data: dataChallenges, isLoading: isChallengesLoading } = useGQLQuery(queryGetChallenges, {
-    challengesIds: [
-      "1",
-      "3",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      "12",
-      "13",
-      "14",
-      "15",
-      "16",
-      "17",
-      "18",
-      "19",
-      "20",
-      "21",
-      "22",
-      "23",
-      "24",
-      "25",
-      "26",
-      "27",
-      "28",
-      "29",
-      "30",
-      "31",
-      "32",
-      "33",
-      "34",
-      "35",
-      "36",
-      "37",
-      "38",
-      "39",
-      "40",
-    ],
+    challengesIds: numbersAsStrings,
   });
+
+  const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } = useGQLQuery(
+    queryGroupUsersWithModelStates,
+  );
 
   const {
     /*data: dataUpdateChallenge,
@@ -1168,10 +1311,6 @@ const ChallengesPage = () => {
       setChallengesOriginal(dataChallenges.challenges);
     }
   }, [isChallengesLoading, dataChallenges]);
-  /*
-  useEffect(() => {
-    setIsUpdated(false);
-  }, []);*/
 
   useEffect(() => {
     const sortStudentsByProgress = challenges => {
@@ -1200,6 +1339,7 @@ const ChallengesPage = () => {
           enabled: challenge.enabled,
           topics: challenge.topics,
           groups: challenge.groups.map(group => ({
+            id: group.id,
             name: group.name,
             students: group.students.map(user => ({
               id: user.id,
@@ -1210,7 +1350,6 @@ const ChallengesPage = () => {
         }));
 
         const sortedStudents = sortStudentsByProgress(transformedChallenge);
-        console.log("sortedStudents", sortedStudents);
         setChallenges(sortedStudents);
         setFilteredChallenges(sortedStudents);
       }
@@ -1224,23 +1363,40 @@ const ChallengesPage = () => {
     router.push("/challengeForm");
   };
 
-  const { isLoading, user } = useAuth();
-  //const tags = user?.tags;
-  const admin = (user?.role ?? "") == "ADMIN" ? true : false;
-
   useEffect(() => {
     // "challneges witouth user"
-    setChallengesStudents(updateArray(challenges, user?.id));
+    //const updatedData = updateDataWithStatus(challenges);
+    //console.log("updatedData", updatedData)
+    const challengesUnpublished = removeUnpublished(challenges)
+    console.log("challengesUnpublished", challengesUnpublished)
+    setChallengesStudents(updateArray(challengesUnpublished, user?.id));
+    console.log("updateArray", updateArray(challengesUnpublished, user?.id))
+    //setChallengesStudents(updateArray(challenges, user?.id));
   }, [challenges]);
 
-  /*const students = GroupUsersWithModelStates?.groups || [];
-  const transformStudents = students =>
-    students.map(student => ({
-      id: student.id,
-      groupName: student.label,
-    }));
-*/
-  // const dynamicStudents = transformStudents(students);
+  //---------------------------------------
+
+
+  useEffect(()=> {
+    if(!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
+
+      const GroupUsersWithModelStates = dataGroupUsersWithModelStates.currentUser || [];
+      
+      const removeAdmin = removeAdminUsers(GroupUsersWithModelStates)
+
+      setUsersWithModelStates(removeAdmin)
+      setUserByJsonById(getUserJsonById(removeAdmin, userId))
+
+      const usersExcludingId = getUsersExcludingId(removeAdmin, userId)
+      setAllUsersJson(getAllUsersJson(usersExcludingId))
+    }
+  }, [isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates])
+
+  useEffect(()=>{
+   console.log("allUsersJson", allUsersJson)
+  }, [allUsersJson])
+
+  //-------------------------------------------
 
   /*
      TAGS
@@ -1338,6 +1494,8 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
                   setUpdateChallenge={setUpdateChallenge}
                   setChallengeId={setChallengeId}
                   challengesOriginal={challengesOriginal}
+                  usersWithModelStates={usersWithModelStates}
+                  allUsersJson={allUsersJson}
                 />
               ))}
             </VStack>
@@ -1346,10 +1504,10 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
           )}
         </Box>
       ) : (
-        <StudentsList challenges={challengesStudents} />
+        <StudentsList challenges={challengesStudents} userByJsonById={userByJsonById} allUsersJson={allUsersJson}/>
       )}
     </Box>
   );
-};
+});
 
-export default ChallengesPage;
+//export default ChallengesPage;

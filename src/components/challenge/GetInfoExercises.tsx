@@ -25,7 +25,7 @@ import MathDisplay from "./MathDisplay";
 
 const queryTopics = gql(/* GraphQL */ `
   query GetTopics2 {
-    topics(ids: [44, 16, 19, 68, 69, 24, 52]) {
+    topics(ids: [44, 4, 31, 19, 68, 24, 52]) {
       id
       code
       label

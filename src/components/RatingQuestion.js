@@ -7,6 +7,7 @@ import { useAction } from "../utils/action";
 import { useUpdateModel } from "../utils/updateModel";
 import { useAuth } from "./Auth";
 import parameters from "./../components/contentSelectComponents/parameters.json";
+import { useRouter } from "next/router";
 
 const colors = {
   orange: "#FFBA5A",
@@ -24,6 +25,8 @@ function RatingQuestion({ useAlternateRoute = false }) {
   const selectionData = sessionState.selectionData;
   const callback = sessionState.callback;
   const callbackType = sessionState.callbackType;
+
+  const router = useRouter();
 
   const [timeToUpdateModel, SetTimeToUpdateModel] = useState(true);
   const { updateModel, mutation } = useUpdateModel();
@@ -61,8 +64,11 @@ function RatingQuestion({ useAlternateRoute = false }) {
     });
     if (callbackType === "challenge") {
       callback();
-    } else {
-      //callback(ruta);
+    } if(callbackType === "tutor") {
+      callback();
+    }
+    else {
+      router.push(ruta);
     }
   };
   return (

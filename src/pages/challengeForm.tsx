@@ -28,6 +28,7 @@ import "katex/dist/katex.min.css";
 import MathDisplay from "../components/challenge/MathDisplay";
 import LatexPreview from "../components/challenge/LatexPreview";
 import { extractExercise, formatDate } from "../components/challenge/tools";
+import { withAuth } from "../components/Auth";
 
 const mutationUpdateChallenge = gql(`
   mutation UpdateChallenge($challengeId: IntID!, $challenge: ChallengeInput!) {
@@ -69,7 +70,7 @@ const mutationCreateChallenge = gql(`
 
 const queryTopics = gql(/* GraphQL */ `
   query GetTopics {
-    topics(ids: [44, 16, 19, 68, 69, 24, 52]) {
+    topics(ids: [44, 4, 31, 19, 68, 24, 52]) {
       id
       code
       label
@@ -340,30 +341,6 @@ const MathRecursiveAccordion = ({
     }
   };
 
-  /*const filterNestedObjects = (nestedArray, selectedObjects) => {
-    // Extraemos los IDs de los objetos seleccionados
-    const selectedIds = selectedObjects.map(obj => obj.id);
-
-    // Función recursiva para buscar coincidencias en objetos anidados
-    const filterRecursive = obj => {
-      // Si el objeto actual tiene un id que está en selectedIds, lo incluimos
-      if (selectedIds.includes(obj.id)) {
-        return true;
-      }
-
-      // Si tiene subtopics, buscamos recursivamente en ellos
-      if (obj.childrens && obj.childrens.length > 0) {
-        obj.childrens = obj.childrens.filter(filterRecursive);
-        return obj.childrens.length > 0;
-      }
-
-      return false;
-    };
-
-    // Aplicamos el filtro al arreglo principal
-    return nestedArray.filter(filterRecursive);
-  };*/
-
   return (
     <>
       {selectedTopics && selectedTopics.length > 0 && (
@@ -442,15 +419,55 @@ function formatDateToRequiredFormat(dateString) {
 }
 
 //-------------------------------
-
+/*
 function formatDateToUTC(dateString) {
-  const date = new Date(dateString); //+":00.000Z");
+  console.log("Input dateString:", dateString)
+  if (!dateString || typeof dateString !== "string") {
+    throw new Error("Invalid input: dateString must be a string");
+  }
+
+  // Parse the input date string
+  const date = new Date(dateString);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date string");
+  }
+
+  // Convert the date to ISO string (UTC)
   return date.toISOString();
-}
+}*/
 
-//----------------------------------------
+//----------------------------
+const localTimeToUTC = (localDateTime) => {
+  // Create a Date object from the local date-time string
+  const date = new Date(localDateTime);
 
-const ChallengeForm = () => {
+  // Convert to UTC and format as ISO string without the 'Z'
+  return date.toISOString()//.replace(/Z$/, '');
+};
+
+//------------------------------
+const utcToLocalTime = (utcDateTime) => {
+  // Create a Date object from the UTC date-time string
+  const date = new Date(utcDateTime);
+
+  // Extract local date and time components
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  // Format as "yyyy-MM-ddThh:mm" (with optional ":ss" or ":ss.SSS")
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};
+
+//---------------------------------
+
+export default withAuth(function ChallengesForm () {
+//const ChallengeForm = () => {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -521,16 +538,19 @@ const ChallengeForm = () => {
 
       setTitle(challenge.title || "");
       setDescription(challenge.description || "");
-      setEndDate(formatDateToRequiredFormat(challenge.endDate));
+      setEndDate(utcToLocalTime(challenge.endDate));
       setSelectedGroups(challenge.groups || []);
       setSelectedTopics(challenge.topics || []);
       setSelectedExercises(extractExercise([{ content: challenge.content }]) || []);
       setStartDate(
-        challenge.startDate !== null ? formatDateToRequiredFormat(challenge.startDate) : null,
+        challenge.startDate !== null ? utcToLocalTime(challenge.startDate) : null,
       );
-      console.log("challenge.startDate", challenge.startDate);
     }
   }, [dataChallenge, isChallengeLoading]);
+
+  useEffect(()=>{
+    console.log("endDateUseEffect", endDate)
+  }, [endDate])
 
   useEffect(() => {
     setIsCreated(false);
@@ -590,21 +610,22 @@ const ChallengeForm = () => {
   };
 
   const handleSave = () => {
-    console.log("startDate1", startDate);
+    console.log("endDate", endDate)
+    //console.log("formatDateToUTC(endDate)", formatDateToRequiredFormat(endDate))
     const challengeData = {
       code: `${title.slice(0, 25)}_${Date.now()}`, //_${user.id}`, //unique key
       contentIds: selectedExercises.map(exercise => exercise.exerciseId),
       description: description,
       enabled: true,
-      endDate: formatDateToUTC(endDate),
+      endDate: localTimeToUTC(endDate),//new Date(endDate).toISOString(),//endDate + ":00.000Z",//formatDateToRequiredFormat(endDate),
       groupsIds: selectedGroups.map(group => group.id),
       projectId: 4, // 	NivPreAlg
-      startDate: startDate ? formatDateToUTC(startDate) : null,
+      startDate: startDate ? localTimeToUTC(startDate) : null,//startDate !== null ? startDate + ":00.000Z" : null,//formatDateToRequiredFormat(startDate) : null,
       tags: [],
       title: title,
       topicsIds: selectedTopics.map(topic => topic.id),
     };
-    console.log("startDate", startDate);
+
     // Validación de campos obligatorios
     const requiredFields = [
       {
@@ -662,8 +683,7 @@ const ChallengeForm = () => {
     }
 
     setChallenge(challengeData);
-    console.log("startDate", startDate);
-    console.log("challengeData", challengeData.startDate);
+
     if (isEditMode) {
       setIsUpdated(true);
       alert("Desafío actualizado exitosamente!");
@@ -900,6 +920,6 @@ const ChallengeForm = () => {
       </Drawer>
     </ChakraProvider>
   );
-};
+})
 
-export default ChallengeForm;
+//export default ChallengeForm;
