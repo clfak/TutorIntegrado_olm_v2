@@ -222,10 +222,6 @@ export default withAuth(function ContentSelect() {
     setPL(true);
   }, []);
 
-  if (uModel.isLoading || gModel.isLoading) {
-    return <Box p={5}> Cargando...</Box>;
-  }
-
   return (
     <>
       {pageload ? (
