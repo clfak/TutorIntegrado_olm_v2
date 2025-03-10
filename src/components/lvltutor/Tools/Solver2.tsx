@@ -31,6 +31,7 @@ import type { ExType, Step } from "./ExcerciseType";
 import { useSnapshot } from "valtio";
 import MQProxy, { reset } from "./MQProxy";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
+import ShuffledLoad from "./CChoice";
 
 const Mq2 = dynamic(
   () => {
@@ -76,14 +77,31 @@ const Steporans = ({
           <MQStaticMathField key={"respuesta" + i} exp={answer} currentExpIndex={true} />
           <Alert key={"Alert" + topicId + "i"} status={"success"} mt={2}>
             <AlertIcon key={"AlertIcon" + topicId + "i"} />
-            {step.correctMsg}
+            {MQProxy.spaghettimsg ? MQProxy.spaghettimsg : step.correctMsg}
           </Alert>
         </>,
       );
     } else {
-      setCC(
-        <Mq2 key={"Mq2" + i} step={step} content={content} topicId={topicId} disablehint={false} />,
-      );
+      if (step.multipleChoice != undefined)
+        setCC(
+          <ShuffledLoad
+            key={"Mq2" + i}
+            step={step}
+            content={content}
+            topicId={topicId}
+            disablehint={false}
+          />,
+        );
+      else
+        setCC(
+          <Mq2
+            key={"Mq2" + i}
+            step={step}
+            content={content}
+            topicId={topicId}
+            disablehint={false}
+          />,
+        );
     }
   }, [, answer]);
 
@@ -150,21 +168,21 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   useEffect(() => {
     if (mqSnap.submit) {
       if (!mqSnap.submitValues.fail) {
-        currentStep.current = mqSnap.defaultIndex[0]!;
+        currentStep.current = mqSnap.defaultIndex[1]!;
         let currentStepValue = test;
         let duration = (MQProxy.endDate - MQProxy.startDate) / 1000;
         let sv = MQProxy.submitValues;
         sv.duration = duration;
         MQProxy.startDate = Date.now();
-        currentStepValue[mqSnap.defaultIndex[0]! - 1] = {
+        currentStepValue[mqSnap.defaultIndex[0]] = {
           disabled: false,
           hidden: false,
           answer: true,
           value: sv,
           open: false,
         };
-        if (mqSnap.defaultIndex[0]! < cantidadDePasos) {
-          currentStepValue[mqSnap.defaultIndex[0]!] = {
+        if (mqSnap.defaultIndex[1]! < cantidadDePasos) {
+          currentStepValue[mqSnap.defaultIndex[1]] = {
             disabled: false,
             hidden: false,
             answer: false,
@@ -209,7 +227,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
     <Flex alignItems="center" justifyContent="center" margin={"auto"}>
       <Flex
         direction="column"
-        p={12}
+        p={1}
         rounded={6}
         w="100%"
         maxW="3xl"

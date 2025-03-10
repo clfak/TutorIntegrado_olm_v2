@@ -7,6 +7,8 @@ import {
   HStack,
   Center,
   Divider,
+  Stack,
+  Image,
 } from "@chakra-ui/react";
 
 //import Link from "next/link";
@@ -22,6 +24,7 @@ import TeX from "@matejmazur/react-katex";
 import "katex/dist/katex.min.css";
 import { useAction } from "../../utils/action";
 import parameters from "./parameters.json";
+import Latex from "react-latex-next";
 
 const MathComponent = dynamic<ComponentProps<typeof import("mathjax-react").MathComponent>>(
   () => import("mathjax-react").then(v => v.MathComponent),
@@ -69,7 +72,7 @@ export const CardSelection = ({
           bg: useColorModeValue("blue.900", "gray.600"),
         }}
         as="article"
-        maxW="sm"
+        maxW="90%"
         p="3"
         borderWidth="1px"
         rounded="md"
@@ -140,14 +143,39 @@ export const CardSelection = ({
           </LinkOverlay>
         </NextLink>
         <Center fontSize={"1xl"} paddingBottom={"3"} paddingTop={"1"}>
-          {json.type == "ecc5s" || json.type == "secl5s" || json.type == "ecl2s" ? (
-            <MathComponent tex={String.raw`${json.eqc}`} display={false} />
-          ) : json.type === "wordProblem" ? (
-            <MathComponent tex={String.raw`${""}`} display={false} />
-          ) : json.initialExpression ? (
-            <MathComponent tex={String.raw`${json.initialExpression}`} display={false} />
+          {json ? (
+            json.type == "lvltutor2" ? (
+              json.img ? (
+                <Image src={"img/" + json.img} />
+              ) : json.initialExpression ? (
+                <Stack textAlign="center" fontSize="xs">
+                  <Center>
+                    <Latex>{"$$" + json.initialExpression + "$$"}</Latex>
+                  </Center>
+                </Stack>
+              ) : (
+                <Stack textAlign="center" fontSize="xs">
+                  <Center>
+                    <Latex>{"$$" + json.steps[0].expression + "$$"}</Latex>
+                  </Center>
+                </Stack>
+              )
+            ) : (
+              <Center fontSize={"2xl"} paddingBottom={"3"} paddingTop={"1"} overflow="hidden">
+                {json.img ? <Image src={"img/" + json.img} /> : null}
+                {json.type == "ecc5s" || json.type == "secl5s" || json.type == "ecl2s" ? (
+                  <MathComponent tex={String.raw`${json.eqc}`} display={false} />
+                ) : json.type === "wordProblem" ? (
+                  <MathComponent tex={String.raw`${""}`} display={false} />
+                ) : json.initialExpression ? (
+                  <MathComponent tex={String.raw`${json.initialExpression}`} display={false} />
+                ) : (
+                  <MathComponent tex={String.raw`${json.steps[0].expression}`} display={false} />
+                )}
+              </Center>
+            )
           ) : (
-            <MathComponent tex={String.raw`${json.steps[0].expression}`} display={false} />
+            <></>
           )}
         </Center>
       </LinkBox>

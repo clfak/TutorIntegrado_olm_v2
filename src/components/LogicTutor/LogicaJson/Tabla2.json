@@ -3,15 +3,15 @@
   "title": "Tablas de Verdad",
   "type": "lvltutor2",
   "meta": {},
-  "eqc": "[(p\\Rightarrow q)\\wedge p]\\Rightarrow q",
+  "initialExpression": "[(p\\Rightarrow q)\\wedge p]\\Rightarrow q",
   "text": "Utilizando una tabla de verdad compruebe que se satisface la siguiente equivalencia lógica: ",
   "steps": [
     {
       "stepId": "0",
       "expression": "{p\\Rightarrow q}",
-      "StepType": "TableStep",
+      "stepType": "TableStep",
       "stepTitle": "Paso 1: Complete la tabla de verdad para la siguiente expresión:",
-      "displayResult": [],
+      "displayResult": ["V, F, V, V"],
       "KCs": ["IdConLog", "UtRec"],
       "table": {
         "header": [
@@ -70,15 +70,15 @@
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-      "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
+      "correctMsg": "Uso correcto del recíproco",
+      "summary": "1) \\(p\\Rightarrow q\\) es "
     },
     {
       "stepId": "1",
-      "expression": "(p\\Rightarrow q)\\wedge p",
-      "StepType": "TableStep",
+      "expression": "\\text{La expresión es: } (p\\Rightarrow q)\\wedge p",
+      "stepType": "TableStep",
       "stepTitle": "Paso 2: Complete la tabla de verdad para la siguiente expresión ",
-      "displayResult": [],
+      "displayResult": ["V, F, F, F"],
       "KCs": ["IdConLog", "UtNeg"],
       "table": {
         "header": [
@@ -141,15 +141,15 @@
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-      "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
+      "correctMsg": "Uso correcto de la negación",
+      "summary": "2) \\((p\\Rightarrow q)\\wedge p\\) es"
     },
     {
       "stepId": "2",
       "expression": "[(p\\Rightarrow q)\\wedge p]\\Rightarrow q",
-      "StepType": "TableStep",
+      "stepType": "TableStep",
       "stepTitle": "Paso 3: Complete la tabla de verdad para la siguiente expresión  ",
-      "displayResult": [],
+      "displayResult": ["V, V, V, F"],
       "KCs": ["IdConLog", "UtNeg"],
       "table": {
         "header": [
@@ -211,13 +211,60 @@
       "matchingError": [],
       "answers": [
         {
-          "answer": ["V", "V", "V", "V"],
+          "answer": ["V", "V", "V", "F"],
           "nextStep": "3"
         }
       ],
       "incorrectMsg": "Compruebe su respuesta",
-      "correctMsg": "B corresponde al intervalo",
-      "summary": "1)Luego se comprueban valores del conjunto"
+      "correctMsg": "Uso correcto de la negación",
+      "summary": "3) \\([(p\\Rightarrow q)\\wedge p]\\Rightarrow q\\) es"
+    },
+    {
+      "stepId": "4",
+      "expression": "\\text{La equivalencia lógica es: }[(p\\Rightarrow q)\\wedge p]\\Rightarrow q",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 5: Indique si la equivalencia es una tauntologia",
+      "displayResult": [
+        "\\text{No es una tauntologia pues solo se cumplira cuando p y q sean Falsos}"
+      ],
+      "KCs": ["RecEcLog"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Si, ya que la equivalencia logica es siempre verdadera",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "No, pues es falsa en caso que p y q sean Falsos",
+          "correct": true
+        },
+        {
+          "id": 2,
+          "text": "Si, porque la formula es satisfacible",
+          "correct": false
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Revise el material de estudio"
+        },
+        {
+          "hintId": 1,
+          "hint": "La equivalencia es satisfacible pero no una tauntología"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["1"],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Se cumple la equivalencia lógica",
+      "summary": "5) Verficique si la proposicion es una tauntologia: "
     }
   ]
 }
