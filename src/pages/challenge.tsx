@@ -1375,6 +1375,16 @@ function removeDuplicateUsers(usersData) {
 }
 
 //---------------------------------
+function filterByUserId(dataFilterUserByRole, userId) {
+  return dataFilterUserByRole.filter(item => {
+    // Verifica si el item tiene grupos y si alguno de los grupos contiene el userId
+    return (
+      item.groups &&
+      item.groups.some(group => group.users && group.users.some(user => user.id === userId))
+    );
+  });
+}
+//---------------------------
 
 //export default withAuth(function ContentSelect() {
 export default withAuth(function ChallengesPage() {
@@ -1462,7 +1472,8 @@ export default withAuth(function ChallengesPage() {
     const transformData = () => {
       if (!isChallengesLoading) {
         const dataFilterUserByRole = filterUsersInChallenges(dataChallenges?.challenges); //elimina los users con rol Admin
-        const updatedData = updateDataWithStatus(dataFilterUserByRole); // agrega el campo status (published, unpublished, finalized)
+        const filteredData = filterByUserId(dataFilterUserByRole, userId); // elimina los desafio al que el usuario no pertenece
+        const updatedData = updateDataWithStatus(filteredData); // agrega el campo status (published, unpublished, finalized)
         const data = updateDataWithEndDate(updatedData); // convierte las fechas en timestamp
 
         const transformedChallenge = data.map(challenge => ({
