@@ -304,7 +304,7 @@ export default withAuth(function ChallengesStart() {
   const { user, project } = useAuth();
   const userId = user?.id;
 
-  const { challengeId } = router.query;
+  const { challengeId, preview } = router.query;
 
   const [title, setTitle] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -357,9 +357,13 @@ export default withAuth(function ChallengesStart() {
   useEffect(() => {
     if (!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
       const GroupUsersWithModelStates = dataGroupUsersWithModelStates.currentUser || [];
-
-      const removeAdmin = removeAdminUsers(GroupUsersWithModelStates); // modificar para preview
-
+      let removeAdmin;
+      if (preview === "true") {
+        removeAdmin = GroupUsersWithModelStates;
+      } else {
+        removeAdmin = removeAdminUsers(GroupUsersWithModelStates);
+      }
+      console.log("preview", preview);
       //setUsersWithModelStates(removeAdmin);
       setUserByJsonById(getUserJsonById(removeAdmin, userId));
 
