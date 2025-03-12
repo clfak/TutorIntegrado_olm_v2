@@ -63,7 +63,6 @@ export function Navigation() {
                 Desafío
               </SidebarLink>
             </Stack>
-
           </>
         )}
       </Stack>

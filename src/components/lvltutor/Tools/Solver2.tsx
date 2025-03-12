@@ -179,7 +179,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
 
   useEffect(() => {
     const cantidadDePasos = steps.steps.length;
-    setStepsCount(cantidadDePasos)
+    setStepsCount(cantidadDePasos);
     let potatoStates: Array<potato> = [
       {
         disabled: false,

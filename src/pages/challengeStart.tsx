@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Flex, Text, Center, SimpleGrid } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { formatDate } from "../components/challenge/tools";
-import { useAuth,  withAuth } from "../components/Auth";
+import { useAuth, withAuth } from "../components/Auth";
 import { CardSelectionDynamic } from "../components/challenge/CardSelectionDynamic";
 import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
 import { CardLastExercise } from "../components/contentSelectComponents/CardLastExercise";
@@ -14,6 +14,7 @@ import ProgressBar from "../components/challenge/ProgressBar";
 import { sessionState } from "../components/SessionState";
 import type { ContentJson } from "../components/SessionState";
 import type { wpExercise } from "../components/tutorWordProblems/types";
+//import { useAction } from "../utils/action";
 
 //----------------------------
 
@@ -89,7 +90,6 @@ const queryGetChallenge = gql(/* GraphQL */ `
   }
 `);
 
-
 const queryGroupUsersWithModelStates = gql(`
   query GetGroupUsersWithModelStates {
     currentUser {
@@ -144,7 +144,6 @@ function extractIds(data) {
 
 //----------------------------
 
-
 function removeAdminUsers(data) {
   const filteredGroups = data?.groups?.map(group => {
     const filteredUsers = group.users.filter(user => user.role === "USER");
@@ -187,7 +186,7 @@ function getUserJsonById(currentUser: any, userId: string): any | null {
 
   return null; // Si no se encuentra el usuario o el `json`, retorna null
 }
-
+/*
 function getUsersExcludingId(currentUser, userId) {
   // Verifica si currentUser y sus propiedades existen
   if (!currentUser || !currentUser.groups || !Array.isArray(currentUser.groups)) {
@@ -201,14 +200,17 @@ function getUsersExcludingId(currentUser, userId) {
     // Verifica si el grupo tiene usuarios y si es un array
     if (group.users && Array.isArray(group.users)) {
       // Filtra los usuarios cuyo `id` no coincida con `userId`
-      const filteredUsers = group.users.filter(user => user.id !== userId).map(user => ({ ...user })); // Copia profunda del usuario
+      const filteredUsers = group.users
+        .filter(user => user.id !== userId)
+        .map(user => ({ ...user })); // Copia profunda del usuario
       usersExcludingId.push(...filteredUsers); // Agrega los usuarios filtrados al arreglo
     }
   }
 
   return usersExcludingId; // Retorna el arreglo de usuarios excluyendo el `id` especificado
 }
-
+*/
+/*
 function getAllUsersJson(users) {
   // Verifica si el arreglo de usuarios es válido
   if (!users || !Array.isArray(users)) {
@@ -230,36 +232,29 @@ function getAllUsersJson(users) {
 
   return allJsons; // Retorna el arreglo con todos los `json` encontrados
 }
-
+*/
 function calculateAverageLevel(data, keysToSearch) {
-
   // Filtra los datos que están en la lista `keysToSearch`
   const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
 
   // Obtiene los valores de `level` de los datos filtrados
   const levels = filteredData.map(item => item.level);
 
-    // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
-    if (levels.length === 0) {
-      console.log("Datos recibidos:", { data, keysToSearch });
-      return 0; // O cualquier valor por defecto
-    }
+  // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
+  if (levels.length === 0) {
+    console.log("Datos recibidos:", { data, keysToSearch });
+    return 0; // O cualquier valor por defecto
+  }
 
   // Calcula el promedio de los valores de `level`
   const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
 
   return averageLevel;
 }
-
-
-function calculateAverageLevelGroup(
-  students, uniqueKcs
-) {
-
+/*
+function calculateAverageLevelGroup(students, uniqueKcs) {
   // Calcular el nivel promedio para cada usuario
-  const averageLevels = students?.map(user =>
-    calculateAverageLevel(user, uniqueKcs) * 100
-  );
+  const averageLevels = students?.map(user => calculateAverageLevel(user, uniqueKcs) * 100);
 
   // Calcular el promedio de todos los niveles
   const total = averageLevels?.reduce((sum, level) => sum + level, 0);
@@ -267,8 +262,17 @@ function calculateAverageLevelGroup(
 
   return average;
 }
-
-
+  */
+/*
+action({
+  verbName: "challengeContentCompleted",
+  contentID: ,
+  extra={
+    challengeID:string,
+    contentCode:string
+  }
+});
+*/
 function getCodes(array) {
   return array.map(item => item.code);
 }
@@ -294,12 +298,11 @@ function getUniqueKcs(kcsByContentByTopics: any[]): string[] {
 
 //------------------------------------
 
-export default withAuth(function ChallengesStart () {
-
+export default withAuth(function ChallengesStart() {
   const router = useRouter();
 
   const { user, project } = useAuth();
-  const userId = user?.id
+  const userId = user?.id;
 
   const { challengeId } = router.query;
 
@@ -308,23 +311,25 @@ export default withAuth(function ChallengesStart () {
   const [studentProgress, setStudentProgress] = useState(0);
   const [contents, setContents] = useState([]);
   const [topics, setTopics] = useState([]);
-  const [topicsCode, setTopicsCode] = useState([])
+  const [topicsCode, setTopicsCode] = useState([]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const domainId = parameters.CSMain.domain;
   //const topicsString = topics.toString() || "";
   const registerTopic = "4"; //topics[0] + ""; //topics in array
-  const nextContentPath = `/challengeStart?challengeId=${challengeId}`//"/challenge";
+  const nextContentPath = `/challengeStart?challengeId=${challengeId}`; //"/challenge";
 
   const [showContent, setShowContent] = useState(true);
   const [showDemo, setShowDemo] = useState(true);
-  const [showTutor, setShowTutor] = useState(false);
+  //const [showTutor, setShowTutor] = useState(false);
 
   const [processedContentResult, setProcessedContentResult] = useState(null);
   const [processedBestExercise, setProcessedBestExercise] = useState(null);
   const [processedSelectionData, setProcessedSelectionData] = useState(null);
   const [processedLastExercise, setProcessedLastExercise] = useState(null);
   const [processedExperimentGroup, setProcessedExperimentGroup] = useState(null);
+
+  //const [showLoading, setShowLoading] = useState(false);
 
   //const [groupProgress, setGroupProgress] = useState(0)
 
@@ -334,52 +339,53 @@ export default withAuth(function ChallengesStart () {
     challengeId: challengeId,
   });
 
-  const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } = useGQLQuery(
-    queryGroupUsersWithModelStates,
-  );
+  const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
+    useGQLQuery(queryGroupUsersWithModelStates);
 
   const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
     queryGetKcsByTopics,
     {
       topicsCodes: topicsCode,
     },
-    {enabled: !!topicsCode}
+    { enabled: !!topicsCode },
   );
 
-  const[userByJsonById, setUserByJsonById] = useState([])
-  const[allUsersJson, setAllUsersJson] = useState([])
-  const[usersWithModelStates, setUsersWithModelStates] = useState({}) 
+  const [userByJsonById, setUserByJsonById] = useState([]);
+  //const [allUsersJson, setAllUsersJson] = useState([]);
+  //const [usersWithModelStates, setUsersWithModelStates] = useState({});
 
-
-  useEffect(()=> {
-    if(!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
-
+  useEffect(() => {
+    if (!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
       const GroupUsersWithModelStates = dataGroupUsersWithModelStates.currentUser || [];
-      
-      const removeAdmin = removeAdminUsers(GroupUsersWithModelStates)
 
-      setUsersWithModelStates(removeAdmin)
-      setUserByJsonById(getUserJsonById(removeAdmin, userId))
+      const removeAdmin = removeAdminUsers(GroupUsersWithModelStates); // modificar para preview
 
-      const usersExcludingId = getUsersExcludingId(removeAdmin, userId)
-      setAllUsersJson(getAllUsersJson(usersExcludingId))
+      //setUsersWithModelStates(removeAdmin);
+      setUserByJsonById(getUserJsonById(removeAdmin, userId));
+
+      //const usersExcludingId = getUsersExcludingId(removeAdmin, userId);
+      //setAllUsersJson(getAllUsersJson(usersExcludingId));
     }
-  }, [isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates])
+  }, [isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates]);
 
-  useEffect(()=> {
-    if(!isKcsByTopicsLoading && dataKcsByTopics) {
-  
+  useEffect(() => {
+    if (
+      !isKcsByTopicsLoading &&
+      dataKcsByTopics &&
+      !isGroupUsersWithModelStatesLoading &&
+      dataGroupUsersWithModelStates &&
+      userByJsonById
+    ) {
       const kcsByContentByTopics = dataKcsByTopics?.kcsByContentByTopics || [];
-      const uniqueKcs = getUniqueKcs(kcsByContentByTopics)
-  
-      const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs)*100
+      const uniqueKcs = getUniqueKcs(kcsByContentByTopics);
+
+      const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs) * 100;
       //const averageLevelGroup = calculateAverageLevelGroup(allUsersJson, uniqueKcs)
-  
-      setStudentProgress(averageLevelUser)
+
+      setStudentProgress(averageLevelUser);
       //setGroupProgress(averageLevelGroup)
     }
-  
-  }, [isKcsByTopicsLoading, dataKcsByTopics])
+  }, [isKcsByTopicsLoading, dataKcsByTopics, isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates, userByJsonById]);
 
   useEffect(() => {
     if (!isChallengeLoading && dataChallenge) {
@@ -388,29 +394,29 @@ export default withAuth(function ChallengesStart () {
       setEndDate(challenge?.endDate);
       setContents(extractIds(challenge.content));
       setTopics(extractIds(challenge.topics));
-      setTopicsCode(getCodes(challenge.topics))
+      setTopicsCode(getCodes(challenge.topics));
     }
   }, [isChallengeLoading, dataChallenge]);
 
-  useEffect(()=> {
-    console.log("getCodes(topics)", topicsCode)
-  }, [topicsCode])
+  useEffect(() => {
+    console.log("getCodes(topics)", topicsCode);
+  }, [topicsCode]);
 
-//-------------------------------------------
+  //-------------------------------------------
 
-// Add this state variable to track previous showContent value
-const [prevShowContent, setPrevShowContent] = useState(showContent);
+  // Add this state variable to track previous showContent value
+  const [prevShowContent, setPrevShowContent] = useState(showContent);
 
-// Add this useEffect to track changes in showContent
-useEffect(() => {
-  // Check if showContent changed from false to true
-  if (!prevShowContent && showContent) {
-    console.log("showContent changed from false to true");
-    // You could trigger additional logic here if needed
-  }
-  // Update the previous value
-  setPrevShowContent(showContent);
-}, [showContent]);
+  // Add this useEffect to track changes in showContent
+  useEffect(() => {
+    // Check if showContent changed from false to true
+    if (!prevShowContent && showContent) {
+      console.log("showContent changed from false to true");
+      // You could trigger additional logic here if needed
+    }
+    // Update the previous value
+    setPrevShowContent(showContent);
+  }, [showContent]);
 
   //--------------------
   const { data, isLoading, isError, refetch } = useGQLQuery(
@@ -484,7 +490,7 @@ useEffect(() => {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
-      enabled: !showDemo //&& showContent //&& !prevShowContent,
+      enabled: !showDemo, //&& showContent //&& !prevShowContent,
     },
   );
   /*
@@ -535,7 +541,7 @@ useEffect(() => {
   }, [topics]);
 
   //----------------------------------------------
-/*
+  /*
   useEffect(()=> {
     const demoContent = dataDemo ? dataDemo.content.map((content) => content.json) : [];
     if(currentIndex >= demoContent.length) {
@@ -543,80 +549,90 @@ useEffect(() => {
     }
   }, [showContent, currentIndex, dataDemo])*/
   //--------------------
-  
-    useEffect(() => {
-      console.log("useEffect ejecutado"); // Depuración
-      console.log("isLoadingDemo:", isLoadingDemo); // Depuración
-      console.log("showDemo:", showDemo); // Depuración
-    
-      if (!isLoadingDemo && showDemo) {
-        const demoContent = dataDemo ? dataDemo.content.map((content) => content.json) : [];
-        console.log("demoContent:", demoContent); // Depuración
-    
-        if (demoContent && demoContent.length > 0) {
-          if (currentIndex >= 0 && currentIndex < demoContent.length) {
-            console.log("Accediendo a demoContent[currentIndex]"); // Depuración
-            const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
-    
-            // Actualizar sessionState con el contenido actual
-            sessionState.currentContent.code = currentContent.code;
-            sessionState.currentContent.json = currentContent;
-            sessionState.nextContentPath = nextContentPath;
-            sessionState.topic = registerTopic;
-            sessionState.callbackType = "challenge";
-            sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
-          } else {
-            console.log("currentIndex fuera de límites"); // Depuración
-            if (showContent || showDemo) {
-              console.log("Desactivando showContent y showDemo"); // Depuración
-              sessionState.callbackType = ""
-              //sessionState.callback = () => setShowContent(true);
-              setShowContent(false);
-              setShowDemo(false);
-              //setShowTutor(false);
-              
-            }
-          }
+
+  useEffect(() => {
+    console.log("useEffect ejecutado"); // Depuración
+    console.log("isLoadingDemo:", isLoadingDemo); // Depuración
+    console.log("showDemo:", showDemo); // Depuración
+
+    if (!isLoadingDemo && showDemo) {
+      const demoContent = dataDemo ? dataDemo.content.map(content => content.json) : [];
+      console.log("demoContent:", demoContent); // Depuración
+
+      if (demoContent && demoContent.length > 0) {
+        if (currentIndex >= 0 && currentIndex < demoContent.length) {
+          console.log("Accediendo a demoContent[currentIndex]"); // Depuración
+          const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
+
+          // Actualizar sessionState con el contenido actual
+          sessionState.currentContent.code = currentContent.code;
+          sessionState.currentContent.json = currentContent;
+          sessionState.nextContentPath = nextContentPath;
+          sessionState.topic = registerTopic;
+          sessionState.callbackType = "challenge";
+          sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
         } else {
-          console.log("demoContent está vacío"); // Depuración
-          // No desactivar showDemo y showContent si demoContent está vacío
+          console.log("currentIndex fuera de límites"); // Depuración
+          if (showContent || showDemo) {
+            console.log("Desactivando showContent y showDemo"); // Depuración
+            sessionState.callbackType = "";
+            //sessionState.callback = () => setShowContent(true);
+            setShowContent(false);
+            setShowDemo(false);
+            //setShowTutor(false);
+          }
         }
+      } else {
+        console.log("demoContent está vacío"); // Depuración
+        // No desactivar showDemo y showContent si demoContent está vacío
       }
-    }, [dataDemo, isLoadingDemo, showDemo, currentIndex, showContent]);
+    }
+  }, [dataDemo, isLoadingDemo, showDemo, currentIndex, showContent]);
 
   //----------------------------------------
-  useEffect(() => {//data?.contentSelection?.contentSelected?.PU[0]
+  useEffect(() => {
+    //data?.contentSelection?.contentSelected?.PU[0]
     //if(!isChallengeLoading && !!contents) {
     // Procesar lastExercise
-    if (data?.contentSelection?.contentSelected?.PU && data.contentSelection.contentSelected.PU[0]) {
+    if (
+      data?.contentSelection?.contentSelected?.PU &&
+      data.contentSelection.contentSelected.PU[0]
+    ) {
       setProcessedLastExercise(data.contentSelection.contentSelected.PU[0]);
-      console.log("data.contentSelection.contentSelected.PU[0]", data.contentSelection.contentSelected.PU[0])
-    //}
-  
-    // Procesar experimentGroup
-    if (!isError && user) {
-      const expGroup = user.tags && user.tags.indexOf(parameters.CSMain.experimentalTag) >= 0
-        ? parameters.CSMain.experimentalTag
-        : parameters.CSMain.controlTag;
-      setProcessedExperimentGroup(expGroup);
+      console.log(
+        "data.contentSelection.contentSelected.PU[0]",
+        data.contentSelection.contentSelected.PU[0],
+      );
+      //}
+
+      // Procesar experimentGroup
+      if (!isError && user) {
+        const expGroup =
+          user.tags && user.tags.indexOf(parameters.CSMain.experimentalTag) >= 0
+            ? parameters.CSMain.experimentalTag
+            : parameters.CSMain.controlTag;
+        setProcessedExperimentGroup(expGroup);
+      }
+
+      // Procesar contentResult
+      if (!isLoading && !isError && data?.contentSelection?.contentSelected?.contentResult) {
+        const sortedContent = [...data.contentSelection.contentSelected.contentResult].sort(
+          (a, b) => {
+            return parseInt(a.Order) - parseInt(b.Order);
+          },
+        );
+        setProcessedContentResult(sortedContent);
+      }
     }
-  
-    // Procesar contentResult
-    if (!isLoading && !isError && data?.contentSelection?.contentSelected?.contentResult) {
-      const sortedContent = [...data.contentSelection.contentSelected.contentResult].sort((a, b) => {
-        return parseInt(a.Order) - parseInt(b.Order);
-      });
-      setProcessedContentResult(sortedContent);
-    }
-  }
-  }, [isLoading, isError, data, user])//, parameters.CSMain.experimentalTag, parameters.CSMain.controlTag]);
-  
+  }, [isLoading, isError, data, user]); //, parameters.CSMain.experimentalTag, parameters.CSMain.controlTag]);
+
   useEffect(() => {
     if (processedContentResult && processedContentResult.length > 0) {
       try {
-        const bestIdx = processedContentResult
-          .map(x => x.Preferred)
-          .reduce((out, bool, index) => (bool ? out.concat(index) : out), [])[0] ?? 0;
+        const bestIdx =
+          processedContentResult
+            .map(x => x.Preferred)
+            .reduce((out, bool, index) => (bool ? out.concat(index) : out), [])[0] ?? 0;
         setProcessedBestExercise(bestIdx);
       } catch (error) {
         console.error("Error al calcular bestExercise:", error);
@@ -624,31 +640,43 @@ useEffect(() => {
       }
     }
   }, [processedContentResult]);
-  
+
   useEffect(() => {
-    if (processedContentResult && processedBestExercise !== null && !isLoading && !isError && processedExperimentGroup) {
+    if (
+      processedContentResult &&
+      processedBestExercise !== null &&
+      !isLoading &&
+      !isError &&
+      processedExperimentGroup
+    ) {
       if (processedExperimentGroup === parameters.CSMain.controlTag) {
         if (processedContentResult[processedBestExercise]) {
-          setProcessedSelectionData([{
-            optionCode: processedContentResult[processedBestExercise]?.P?.code ?? "",
-            optionTitle: processedContentResult[processedBestExercise]?.Msg?.label ?? parameters.CSMain.completeTopic,
-            optionBest: true,
-            optionSelected: false,
-          }]);
+          setProcessedSelectionData([
+            {
+              optionCode: processedContentResult[processedBestExercise]?.P?.code ?? "",
+              optionTitle:
+                processedContentResult[processedBestExercise]?.Msg?.label ??
+                parameters.CSMain.completeTopic,
+              optionBest: true,
+              optionSelected: false,
+            },
+          ]);
         } else {
           setProcessedSelectionData([]);
         }
       } else {
-        setProcessedSelectionData(processedContentResult.map((content, index) => ({
-          optionCode: content?.P?.code ?? "",
-          optionTitle: content?.Msg?.label ?? parameters.CSMain.completeTopic,
-          optionBest: index === processedBestExercise,
-          optionSelected: false,
-        })));
+        setProcessedSelectionData(
+          processedContentResult.map((content, index) => ({
+            optionCode: content?.P?.code ?? "",
+            optionTitle: content?.Msg?.label ?? parameters.CSMain.completeTopic,
+            optionBest: index === processedBestExercise,
+            optionSelected: false,
+          })),
+        );
       }
     }
   }, [processedContentResult, processedBestExercise, processedExperimentGroup, isLoading, isError, parameters.CSMain.completeTopic, parameters.CSMain.controlTag]);
-  
+
   //----------------------------
 
   /*
@@ -700,11 +728,9 @@ useEffect(() => {
   //const registerTopic = "31"; // O cualquier valor que necesites
   //const contentSelectUrl = `/contentSelect?topic=${topicsList}&registerTopic=${registerTopic}`;
 
-
-  
   const createNextExerciseCallback = (exercises: any[], index: number) => {
     if (index >= exercises.length) {
-      sessionState.callbackType = "challenge"
+      sessionState.callbackType = "challenge";
 
       return () => {
         setShowDemo(false);
@@ -732,6 +758,7 @@ useEffect(() => {
   const handleRefreshData = async () => {
     try {
       await refetch(); // Volver a ejecutar la consulta
+      setShowContent(false);
       console.log("Datos actualizados correctamente");
     } catch (error) {
       console.error("Error al actualizar los datos:", error);
@@ -739,15 +766,15 @@ useEffect(() => {
   };
 
   /* permite volver a cardSelection desde showCode al presionar RatingQuestion */
-  useEffect(()=> {
-    if(showContent && !showDemo) {
+  useEffect(() => {
+    if (showContent && !showDemo) {
       sessionState.callback = () => {
-        handleRefreshData()
-        setShowContent(false)
-      }
-      sessionState.callbackType = "tutor"
+        handleRefreshData();
+        //setShowContent(false)
+      };
+      sessionState.callbackType = "tutor";
     }
-  }, [showContent, showDemo])
+  }, [showContent, showDemo]);
 
   useEffect(() => {
     console.log("currentIndex", currentIndex);
@@ -783,7 +810,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     // Se ejecutará cuando el contenido cambie
     console.log("currentContent updated", sessionState.currentContent);
   }, [sessionState.currentContent]);
-/*
+  /*
   if (!isLoadingDemo && showDemo) {
 
     const demoContent = dataDemo ? dataDemo?.content.map(content => content.json) : [];
@@ -811,25 +838,17 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     }
   } */
 
+  useEffect(() => {
+    console.log("showContent", showContent);
+  }, [showContent]);
 
-    useEffect(()=> {
-      console.log("showContent", showContent)
-    }, [showContent])
-/*
-  useEffect(()=> {
-    if(showTutor) {
-    sessionState.callbackType = "tutor";
-    sessionState.callback = () => setShowContent(true);
-    }
-  }, [showTutor])*/
+  useEffect(() => {
+    console.log("showDemo", showDemo);
+  }, [showDemo]);
 
-// You can then call this function to manually refetch
-// For example, in a button click handler or some other event
-const handleManualRefetch = () => {
-  if (!showDemo && showContent) {
-    refetch();
-  }
-};
+  useEffect(() => {
+    console.log("showContent", showContent);
+  }, [showContent]);
 
   if (isLoading || isChallengeLoading || isLoadingDemo) {
     return <Box p={5}>Cargando...</Box>;
@@ -888,7 +907,7 @@ const handleManualRefetch = () => {
                 columns={{
                   lg: 1,
                   xl:
-                  processedExperimentGroup != parameters.CSMain.experimentalTag
+                    processedExperimentGroup != parameters.CSMain.experimentalTag
                       ? 1
                       : (processedContentResult ?? []).length,
                 }}
@@ -902,56 +921,42 @@ const handleManualRefetch = () => {
                   !isLoading ? (
                     processedExperimentGroup == parameters.CSMain.controlTag ? (
                       <Center>
-                      {processedContentResult && 
-                       processedBestExercise !== null && 
-                       processedContentResult[processedBestExercise] ? (
-                        <CardSelectionDynamic
-                          id={processedContentResult[processedBestExercise]?.P?.id}
-                          code={processedContentResult[processedBestExercise]?.P?.code}
-                          json={processedContentResult[processedBestExercise]?.P?.json as unknown as ExType}
-                          description={processedContentResult[processedBestExercise]?.P?.description}
-                          label={processedContentResult[processedBestExercise]?.P?.label}
-                          kcs={processedContentResult[processedBestExercise]?.P?.kcs}
-                          selectionTitle={processedContentResult[processedBestExercise]?.Msg?.label}
-                          selectionText={processedContentResult[processedBestExercise]?.Msg?.text}
-                          selectionBest={false}
-                          registerTopic={registerTopic}
-                          nextContentPath={nextContentPath}
-                          selectionData={processedSelectionData}
-                          indexSelectionData={0}
-                          key={0}
-                          setShowContent={setShowContent}
-                        ></CardSelectionDynamic>
-                      ) : (
-                        <Text>No se encontró contenido disponible</Text>
-                      )}
-                    </Center>
-                  ) : (
-                    <>
-                      {processedContentResult && processedContentResult.length > 0 ? (
-                        processedContentResult.length > 1 ? (
-                          processedContentResult.map((content, index) => (
-                            <CardSelectionDynamic
-                              id={content?.P?.id}
-                              code={content?.P?.code}
-                              json={content?.P?.json as unknown as ExType}
-                              description={content?.P?.description}
-                              label={content?.P?.label}
-                              kcs={content?.P?.kcs}
-                              selectionTitle={content?.Msg?.label}
-                              selectionText={content?.Msg?.text}
-                              selectionBest={index === processedBestExercise}
-                              registerTopic={registerTopic}
-                              nextContentPath={nextContentPath}
-                              selectionData={processedSelectionData}
-                              indexSelectionData={index}
-                              key={index}
-                              setShowContent={setShowContent}
-                            ></CardSelectionDynamic>
-                          ))
+                        {processedContentResult &&
+                        processedBestExercise !== null &&
+                        processedContentResult[processedBestExercise] ? (
+                          <CardSelectionDynamic
+                            id={processedContentResult[processedBestExercise]?.P?.id}
+                            code={processedContentResult[processedBestExercise]?.P?.code}
+                            json={
+                              processedContentResult[processedBestExercise]?.P
+                                ?.json as unknown as ExType
+                            }
+                            description={
+                              processedContentResult[processedBestExercise]?.P?.description
+                            }
+                            label={processedContentResult[processedBestExercise]?.P?.label}
+                            kcs={processedContentResult[processedBestExercise]?.P?.kcs}
+                            selectionTitle={
+                              processedContentResult[processedBestExercise]?.Msg?.label
+                            }
+                            selectionText={processedContentResult[processedBestExercise]?.Msg?.text}
+                            selectionBest={false}
+                            registerTopic={registerTopic}
+                            nextContentPath={nextContentPath}
+                            selectionData={processedSelectionData}
+                            indexSelectionData={0}
+                            key={0}
+                            setShowContent={setShowContent}
+                          ></CardSelectionDynamic>
                         ) : (
-                          processedContentResult.map((content, index) => (
-                            <Center key={index + "center"}>
+                          <Text>No se encontró contenido disponible</Text>
+                        )}
+                      </Center>
+                    ) : (
+                      <>
+                        {processedContentResult && processedContentResult.length > 0 ? (
+                          processedContentResult.length > 1 ? (
+                            processedContentResult.map((content, index) => (
                               <CardSelectionDynamic
                                 id={content?.P?.id}
                                 code={content?.P?.code}
@@ -969,31 +974,51 @@ const handleManualRefetch = () => {
                                 key={index}
                                 setShowContent={setShowContent}
                               ></CardSelectionDynamic>
-                            </Center>
-                          ))
-                        )
-                      ) : (
-                        <Text>No se encontró contenido disponible</Text>
-                      )}
-                    </>
+                            ))
+                          ) : (
+                            processedContentResult.map((content, index) => (
+                              <Center key={index + "center"}>
+                                <CardSelectionDynamic
+                                  id={content?.P?.id}
+                                  code={content?.P?.code}
+                                  json={content?.P?.json as unknown as ExType}
+                                  description={content?.P?.description}
+                                  label={content?.P?.label}
+                                  kcs={content?.P?.kcs}
+                                  selectionTitle={content?.Msg?.label}
+                                  selectionText={content?.Msg?.text}
+                                  selectionBest={index === processedBestExercise}
+                                  registerTopic={registerTopic}
+                                  nextContentPath={nextContentPath}
+                                  selectionData={processedSelectionData}
+                                  indexSelectionData={index}
+                                  key={index}
+                                  setShowContent={setShowContent}
+                                ></CardSelectionDynamic>
+                              </Center>
+                            ))
+                          )
+                        ) : (
+                          <Text>No se encontró contenido disponible</Text>
+                        )}
+                      </>
+                    )
+                  ) : (
+                    <Text>
+                      {processedExperimentGroup == parameters.CSMain.controlTag
+                        ? parameters.CSMain.waitMsgControl
+                        : parameters.CSMain.waitMsgExperimental}
+                    </Text>
                   )
-                ) : (
-                  <Text>
-                    {processedExperimentGroup == parameters.CSMain.controlTag
-                      ? parameters.CSMain.waitMsgControl
-                      : parameters.CSMain.waitMsgExperimental}
-                  </Text>
-                )
-              }
-            </SimpleGrid>
-          </>
-        )}
+                }
+              </SimpleGrid>
+            </>
+          )}
+        </Box>
       </Box>
     </Box>
-  </Box>
-);
-
-})
+  );
+});
 //};
 
 //export default ChallengeStart;

@@ -63,11 +63,14 @@ function RatingQuestion({ useAlternateRoute = false }) {
       extra: { selectionData },
     });
     if (callbackType === "challenge") {
-      callback();
-    } if(callbackType === "tutor") {
+      console.log("challenge");
       callback();
     }
-    else {
+    if (callbackType === "tutor") {
+      console.log("tutor");
+      callback();
+    } else {
+      console.log("ruta", ruta);
       router.push(ruta);
     }
   };

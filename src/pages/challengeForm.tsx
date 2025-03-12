@@ -395,7 +395,7 @@ const MathRecursiveAccordion = ({
 };
 
 //---------------------------------------------
-
+/*
 function formatDateToRequiredFormat(dateString) {
   // Crear un objeto Date a partir de la cadena de fecha
   const date = new Date(dateString);
@@ -417,7 +417,7 @@ function formatDateToRequiredFormat(dateString) {
   // Formatear la fecha en el formato requerido
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
-
+*/
 //-------------------------------
 /*
 function formatDateToUTC(dateString) {
@@ -439,26 +439,26 @@ function formatDateToUTC(dateString) {
 }*/
 
 //----------------------------
-const localTimeToUTC = (localDateTime) => {
+const localTimeToUTC = localDateTime => {
   // Create a Date object from the local date-time string
   const date = new Date(localDateTime);
 
   // Convert to UTC and format as ISO string without the 'Z'
-  return date.toISOString()//.replace(/Z$/, '');
+  return date.toISOString(); //.replace(/Z$/, '');
 };
 
 //------------------------------
-const utcToLocalTime = (utcDateTime) => {
+const utcToLocalTime = utcDateTime => {
   // Create a Date object from the UTC date-time string
   const date = new Date(utcDateTime);
 
   // Extract local date and time components
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
 
   // Format as "yyyy-MM-ddThh:mm" (with optional ":ss" or ":ss.SSS")
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
@@ -466,8 +466,8 @@ const utcToLocalTime = (utcDateTime) => {
 
 //---------------------------------
 
-export default withAuth(function ChallengesForm () {
-//const ChallengeForm = () => {
+export default withAuth(function ChallengesForm() {
+  //const ChallengeForm = () => {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [detailItem, setDetailItem] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -542,15 +542,13 @@ export default withAuth(function ChallengesForm () {
       setSelectedGroups(challenge.groups || []);
       setSelectedTopics(challenge.topics || []);
       setSelectedExercises(extractExercise([{ content: challenge.content }]) || []);
-      setStartDate(
-        challenge.startDate !== null ? utcToLocalTime(challenge.startDate) : null,
-      );
+      setStartDate(challenge.startDate !== null ? utcToLocalTime(challenge.startDate) : null);
     }
   }, [dataChallenge, isChallengeLoading]);
 
-  useEffect(()=>{
-    console.log("endDateUseEffect", endDate)
-  }, [endDate])
+  useEffect(() => {
+    console.log("endDateUseEffect", endDate);
+  }, [endDate]);
 
   useEffect(() => {
     setIsCreated(false);
@@ -610,17 +608,17 @@ export default withAuth(function ChallengesForm () {
   };
 
   const handleSave = () => {
-    console.log("endDate", endDate)
+    console.log("endDate", endDate);
     //console.log("formatDateToUTC(endDate)", formatDateToRequiredFormat(endDate))
     const challengeData = {
       code: `${title.slice(0, 25)}_${Date.now()}`, //_${user.id}`, //unique key
       contentIds: selectedExercises.map(exercise => exercise.exerciseId),
       description: description,
       enabled: true,
-      endDate: localTimeToUTC(endDate),//new Date(endDate).toISOString(),//endDate + ":00.000Z",//formatDateToRequiredFormat(endDate),
+      endDate: localTimeToUTC(endDate), //new Date(endDate).toISOString(),//endDate + ":00.000Z",//formatDateToRequiredFormat(endDate),
       groupsIds: selectedGroups.map(group => group.id),
       projectId: 4, // 	NivPreAlg
-      startDate: startDate ? localTimeToUTC(startDate) : null,//startDate !== null ? startDate + ":00.000Z" : null,//formatDateToRequiredFormat(startDate) : null,
+      startDate: startDate ? localTimeToUTC(startDate) : null, //startDate !== null ? startDate + ":00.000Z" : null,//formatDateToRequiredFormat(startDate) : null,
       tags: [],
       title: title,
       topicsIds: selectedTopics.map(topic => topic.id),
@@ -920,6 +918,6 @@ export default withAuth(function ChallengesForm () {
       </Drawer>
     </ChakraProvider>
   );
-})
+});
 
 //export default ChallengeForm;
