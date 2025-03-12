@@ -1471,9 +1471,10 @@ export default withAuth(function ChallengesPage() {
 
     const transformData = () => {
       if (!isChallengesLoading) {
-        const dataFilterUserByRole = filterUsersInChallenges(dataChallenges?.challenges); //elimina los users con rol Admin
-        const filteredData = filterByUserId(dataFilterUserByRole, userId); // elimina los desafio al que el usuario no pertenece
-        const updatedData = updateDataWithStatus(filteredData); // agrega el campo status (published, unpublished, finalized)
+        const filteredData = filterByUserId(dataChallenges?.challenges, userId)
+        const dataFilterUserByRole = filterUsersInChallenges(filteredData); //elimina los users con rol Admin
+        //; // elimina los desafio al que el usuario no pertenece
+        const updatedData = updateDataWithStatus(dataFilterUserByRole); // agrega el campo status (published, unpublished, finalized)
         const data = updateDataWithEndDate(updatedData); // convierte las fechas en timestamp
 
         const transformedChallenge = data.map(challenge => ({

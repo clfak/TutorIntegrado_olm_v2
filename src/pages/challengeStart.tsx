@@ -340,7 +340,12 @@ export default withAuth(function ChallengesStart() {
   });
 
   const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
-    useGQLQuery(queryGroupUsersWithModelStates);
+    useGQLQuery(
+      queryGroupUsersWithModelStates,
+      {
+        enabled: !showDemo
+      }
+    );
 
   const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
     queryGetKcsByTopics,
