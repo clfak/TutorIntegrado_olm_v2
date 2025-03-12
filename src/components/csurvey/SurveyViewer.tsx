@@ -218,8 +218,8 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
                       topicID: topicId,
                       extra: {
                         pollCode: data.code,
-                        context: data.items[0].content.expression
-                          ? data.items[0].content.expression
+                        context: data.items[1].content.expression
+                          ? data.items[1].content.expression
                           : "-1",
                         responses: ak,
                       },

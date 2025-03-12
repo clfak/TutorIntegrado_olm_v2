@@ -98,7 +98,7 @@ function handleAnswer(
   } else {
     output.result = 0;
     output.alerttype = "error";
-    output.alertmsg = "No has elegido una respuesta!.";
+    output.alertmsg = null;
     output.alerthidden = false;
     MQProxy.error = true;
   }
@@ -205,6 +205,9 @@ function CChoice({
 
   return (
     <>
+      <Center>
+        <MQStaticMathField exp={step.expression} currentExpIndex={true} />
+      </Center>
       <SimpleGrid columns={[1, 1, 1, 2]} spacing={2} {...group}>
         {options.map(v => {
           const radio = getRadioProps({ value: String(v.id) });
@@ -246,7 +249,8 @@ function CChoice({
                 }
               setAttempts(ans.attempts);
               setAlertType(ans.alerttype);
-              setAlertMsg(ans.alertmsg);
+              if (ans.alertmsg) setAlertMsg(ans.alertmsg);
+              else setAlertMsg(step.incorrectMsg);
               setAlertHidden(ans.alerthidden);
               action({
                 verbName: "tryStep",
