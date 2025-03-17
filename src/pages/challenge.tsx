@@ -114,11 +114,13 @@ const queryGetChallenges = gql(/* GraphQL */ `
         code
         id
         projectsIds
+        tags
         users {
           email
           id
           name
           role
+          tags
         }
       }
       id
@@ -191,17 +193,37 @@ const StudentCard = ({
   description,
   endDate,
   status,
-  tags,
+  //tags,
   topics,
   groups,
   userByJsonById,
   uniqueUsers,
+  userId,
 }) => {
   const router = useRouter();
+  console.log("groups", groups);
+
+  function getStudentTags(groups, studentId) {
+    // Recorremos cada grupo en la estructura de datos
+    for (const group of groups) {
+      // Buscamos al estudiante con el id especificado
+      const student = group.students.find(student => student.id === studentId);
+
+      // Si encontramos al estudiante, devolvemos sus tags
+      if (student) {
+        return student.tags || []; // Si no tiene tags, devolvemos un arreglo vacío
+      }
+    }
+
+    // Si no se encuentra al estudiante, devolvemos un arreglo vacío
+    return [];
+  }
+
+  const userTags = getStudentTags(groups, userId);
 
   //const jointControlEnabled = tags.includes("join-control"); // habilita selección conjunta de contenido
-  const oslmEnabled = tags.includes("oslm"); // habilita barra de progreso del grupo (comparación social)
-  const motivMsgEnabled = tags.includes("motiv-msg"); // habilita el mensaje motivacional asociado al progreso
+  const oslmEnabled = userTags?.includes("oslm"); // habilita barra de progreso del grupo (comparación social)
+  const motivMsgEnabled = false; //userTags?.includes("motiv-msg"); // habilita el mensaje motivacional asociado al progreso
   //const sessionProgressEnabled = tags.includes("session-progress"); // habilita mostrar el delta de progreso dentro de la sesión
 
   const [studentProgress, setStudentProgress] = useState(0);
@@ -296,32 +318,7 @@ const StudentCard = ({
       };
     });
   }
-  /*
-  function calculateAverageLevels(uniqueUsers, uniqueKcs) {
-    return uniqueUsers.map(user => {
-      const { email, json } = user;
-      let totalLevel = 0;
-      let count = 0;
 
-      // Iterar sobre los kcs únicos
-      uniqueKcs.forEach(kcs => {
-        if (json[kcs] && json[kcs].level !== undefined) {
-          totalLevel += json[kcs].level;
-          count++;
-        }
-      });
-
-      // Calcular el promedio
-      const averageLevel = count > 0 ? totalLevel / count : 0;
-
-      return {
-        email: email,
-        id: user.id,
-        averageLevel: averageLevel,
-      };
-    });
-  }
-*/
   // Función para calcular el promedio general de todos los grupos
   function calculateOverallGroupAverage(groups, uniqueUsers, uniqueKcs) {
     // Obtener los promedios de cada grupo
@@ -873,11 +870,11 @@ const ChallengeCard = ({
 };
 //--------------------------------------------
 
-const StudentsList = ({ challenges, userByJsonById, allUsersJson, uniqueUsers }) => {
+const StudentsList = ({ challenges, userByJsonById, allUsersJson, uniqueUsers, userId }) => {
   const [filteredChallenges, setFilteredChallenges] = useState(challenges);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("asc");
-
+  console.log("challenges", challenges);
   // Filtrar por estado
   const handleFilterChange = status => {
     setStatusFilter(status);
@@ -897,7 +894,7 @@ const StudentsList = ({ challenges, userByJsonById, allUsersJson, uniqueUsers })
     }
 
     // Ordenar por fecha
-    filtered = filtered.sort((a, b) => {
+    filtered = filtered?.sort((a, b) => {
       if (sortOrder === "asc") {
         return a.endDate - b.endDate;
       } else {
@@ -929,15 +926,15 @@ const StudentsList = ({ challenges, userByJsonById, allUsersJson, uniqueUsers })
           </Select>
         </Flex>
       </Box>
-      {filteredChallenges.map(challenge => (
+      {filteredChallenges?.map(challenge => (
         <Box p={4} key={challenge.id}>
-          {console.log("challengeStudent", challenge)}
           <StudentCard
             {...challenge}
             challenges={challenges}
             userByJsonById={userByJsonById}
             allUsersJson={allUsersJson}
             uniqueUsers={uniqueUsers}
+            userId={userId}
           />
         </Box>
       ))}
@@ -984,15 +981,27 @@ const student = [
 */
 //--------------------------
 
-function updateArray(array) {
-  // Recorrer cada objeto en el arreglo
-  return array.map(item => {
-    // Agregar las nuevas propiedades al objeto
+function addTagsToStudents(data) {
+  data.forEach(item => {
+    // Verificamos si el item tiene grupos
+    if (item.groups && Array.isArray(item.groups)) {
+      item.groups.forEach(group => {
+        const groupTags = group.tags || [];
 
-    item.tags = ["joint-control", "oslm", "motiv-msg", "session-progress"];
+        group.students?.forEach(student => {
+          if (!student.tags) {
+            //student.tags = [];
+            console.log("Faltan los tags de los estudiantes");
+          }
 
-    return item;
+          // Agregamos los tags del grupo al estudiante, evitando duplicados
+          student.tags = [...new Set([...student.tags, ...groupTags])];
+        });
+      });
+    }
   });
+  console.log("return", data);
+  return data;
 }
 
 //-----------------------------------------
@@ -1099,11 +1108,13 @@ type Challenge = {
     id: string;
     name: string;
     code: string;
+    tags: [string];
     users: {
       id: number;
       name: string;
       email: string;
       progress: number;
+      tags: [string];
     }[];
     students: {
       name: string;
@@ -1160,9 +1171,11 @@ function updateDataWithEndDate(input: Challenge[] = []) {
         groups: challenge?.groups.map(group => ({
           id: group.id,
           name: group.code,
+          tags: group.tags,
           students: group?.users?.map(user => ({
             id: user.id,
             name: user.email,
+            tags: user.tags,
             progress: Math.floor(Math.random() * 101),
           })),
         })),
@@ -1335,7 +1348,7 @@ function extractUserJsonWithEmail(GroupUsersWithModelStates) {
           // Agregar el resultado al array
           result.push({
             userId: user.id,
-            email: user.email,
+            email: user.email, // el email es para debugear
             json: json,
           });
         });
@@ -1410,14 +1423,10 @@ export default withAuth(function ChallengesPage() {
 
   const { user, isLoading } = useAuth();
   const userId = user?.id;
-  //const tags = user?.tags;
+  //const tagsUser = user?.tags;
   const isAdmin = (user?.role ?? "") == "ADMIN" ? true : false;
-  /*
-  useEffect(() => {
-    setIsPreview(isAdmin);
-  }, [isAdmin]);*/
 
-  const numbersAsStrings = Array.from({ length: 100 }, (_, i) => String(i + 1));
+  const numbersAsStrings = Array.from({ length: 200 }, (_, i) => String(i + 1));
   const { data: dataChallenges, isLoading: isChallengesLoading } = useGQLQuery(queryGetChallenges, {
     challengesIds: numbersAsStrings,
   });
@@ -1461,10 +1470,15 @@ export default withAuth(function ChallengesPage() {
         // recibe todos los desafios -> filtra los desafios en los que el usuario no esta ->
         // elimina los usuarios con rol admin -> agrega el campo status ->
         // convierte las fechas en timestamp
+        //console.log("dataChallenges", dataChallenges?.challenges)
         const filteredData = filterByUserId(dataChallenges?.challenges, userId); // elimina los desafio al que el usuario no pertenece
+        //console.log("filteredData", filteredData)
         const dataFilterUserByRole = filterUsersInChallenges(filteredData); //elimina los users con rol Admin
+        //console.log("dataFilterUserByRole", dataFilterUserByRole)
         const updatedData = updateDataWithStatus(dataFilterUserByRole); // agrega el campo status (published, unpublished, finalized)
+        //console.log("updatedData", updatedData)
         const data = updateDataWithEndDate(updatedData); // convierte las fechas en timestamp
+        //console.log("data", data)
 
         const transformedChallenge = data.map(challenge => ({
           // solo agrega el progress, crear funcion auxiliar que lo haga
@@ -1478,9 +1492,11 @@ export default withAuth(function ChallengesPage() {
           groups: challenge.groups.map(group => ({
             id: group.id,
             name: group.name,
+            tags: group.tags,
             students: group.students.map(user => ({
               id: user.id,
               name: user.name,
+              tags: user.tags,
               progress: Math.floor(Math.random() * 101),
             })),
           })),
@@ -1502,62 +1518,14 @@ export default withAuth(function ChallengesPage() {
 
   useEffect(() => {
     const challengesUnpublished = removeUnpublished(challenges); // remueve los desafios no publicados
-    setChallengesStudents(updateArray(challengesUnpublished)); //, user?.id)); // agrega tags de forma artificial
+    setChallengesStudents(addTagsToStudents(challengesUnpublished));
+    console.log("addTags", addTagsToStudents(challengesUnpublished));
+    //setChallengesStudents(updateArray(challengesUnpublished)); //, user?.id)); // agrega tags de forma artificial
   }, [challenges]);
 
-  //---------------------------------------
-  /*
-  function getCodes(array) {
-    return array.map(item => item.code);
-  }
-
-  function getUniqueKcs(kcsByContentByTopics: any[]): string[] {
-    if (!Array.isArray(kcsByContentByTopics)) {
-      return []; // Return an empty array or handle the error as needed
-    }
-
-    const uniqueKcs = new Set<string>(); // Use a Set to avoid duplicates
-
-    // Loop through each object in the main array
-    kcsByContentByTopics.forEach(item => {
-      // Loop through the kcs of each object
-      item.kcs?.forEach(kc => {
-        uniqueKcs.add(kc.code); // Add the code to the Set
-      });
-    });
-
-    // Convert the Set back to an array
-    return Array.from<string>(uniqueKcs);
-  }*/
-  /*
-  const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
-    queryGetKcsByTopics,
-    {
-      topicsCodes: getCodes(challenges.topics[0]),
-    },
-    {
-      enabled: !isChallengesLoading
-
-    }
-  );
-
-useEffect(()=> {
-  if(!isKcsByTopicsLoading) {
-
-    const kcsByContentByTopics = dataKcsByTopics.kcsByContentByTopics || [];
-    const uniqueKcs = getUniqueKcs(kcsByContentByTopics)
-    console.log("uniqueKcs", uniqueKcs)
-  }
-
-}, [isKcsByTopicsLoading])*/
-
-  /*
-useEffect(()=> {
-  if(!isChallengesLoading) {
-    console.log("dataChallenges?.challenges", dataChallenges?.challenges)
-  }
-}, [isChallengesLoading])*/
-  //------------------------------
+  useEffect(() => {
+    console.log("challengeStudents", challengesStudents);
+  }, [challengesStudents]);
 
   useEffect(() => {
     if (!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
@@ -1692,6 +1660,7 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
           userByJsonById={userByJsonById}
           allUsersJson={allUsersJson}
           uniqueUsers={uniqueUsers}
+          userId={userId}
         />
       )}
     </Box>
