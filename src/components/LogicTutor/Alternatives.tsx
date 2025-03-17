@@ -26,7 +26,6 @@ const Alternatives = ({
   const [valoresBarajados, setValoresBarajados] = useState<Array<any>>([]);
   const action = useAction();
   const [attempts, setAttempts] = useState(0);
-
   useEffect(() => {
     if (valores_a_elegir && firstTime) {
       const shuffledValues = [...valores_a_elegir].sort(() => Math.random() - 0.5);
@@ -47,7 +46,6 @@ const Alternatives = ({
       setHints(hints + 1);
     }
     setAttempts(attempts + 1);
-
     action({
       verbName: "tryStep",
       stepID: "" + exc.steps[nStep].stepId,
