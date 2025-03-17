@@ -1,5 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
+import { FaBookOpen, FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
 import { useAuth } from "./Auth";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ScrollArea } from "./ScrollArea";
@@ -54,9 +54,15 @@ export function Navigation() {
             <SidebarLink key="8" href={"wpExercises?topic=34,35&registerTopic=34"}>
               Ejercicios en contexto
             </SidebarLink>
-            {/*<SidebarLink key="9" href={"topicSelect?&registerTopic=37"}>
+            <SidebarLink key="9" href={"topicSelect?&registerTopic=37"}>
               Lógica y Teoría de Conjuntos
-            </SidebarLink>*/}
+            </SidebarLink>
+
+            <Stack fontWeight="black" pb="6">
+              <SidebarLink icon={<FaBookOpen />} href="challenge">
+                Desafío
+              </SidebarLink>
+            </Stack>
           </>
         )}
       </Stack>

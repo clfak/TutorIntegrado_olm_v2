@@ -5,7 +5,7 @@ import type { User } from "@auth0/auth0-react";
 import type { UserRole } from "../graphql";
 import type { wpExercise } from "./tutorWordProblems/types";
 
-interface ContentJson {
+export interface ContentJson {
   code: string;
   title: string;
   type: string;
@@ -19,6 +19,16 @@ export interface selectionDataType {
   optionSelected: boolean;
 }
 
+export interface CurrentContent {
+  id: string | null;
+  code: string;
+  label: string;
+  description: string;
+  kcs: Object[];
+  json: ContentJson | wpExercise;
+  state?: Object;
+}
+
 export const sessionState = proxy<{
   [x: string]: any;
   currentUser: typeof AuthState.user | null;
@@ -27,15 +37,7 @@ export const sessionState = proxy<{
   topic: string;
   sessionId: string;
   learnerModel: Object;
-  currentContent: {
-    id: string | null;
-    code: string;
-    label: string;
-    description: string;
-    kcs: Object[];
-    json: ContentJson | wpExercise;
-    state?: Object;
-  };
+  currentContent: CurrentContent;
   selectionData: selectionDataType[];
   nextContentPath: string | undefined;
   learnerTraces: Object[];
@@ -60,6 +62,8 @@ export const sessionState = proxy<{
   selectionData: [],
   nextContentPath: "",
   learnerTraces: [],
+  callback: null, // Initially, no logic is assigned (callback function),
+  callbackType: "",
 });
 
 export var sessionStateBD = localforage.createInstance({
@@ -96,7 +100,6 @@ export const sessionStateInitial = (
 ) => {
   sessionState.currentUser = JSON.parse(JSON.stringify(user));
   sessionState.sessionId = `${auth0User?.updated_at}`;
-
   for (const key in sessionState) {
     sessionStateBD.getItem(key).then(function (value) {
       if (value == null) {

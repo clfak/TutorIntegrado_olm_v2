@@ -98,7 +98,7 @@ function handleAnswer(
   } else {
     output.result = 0;
     output.alerttype = "error";
-    output.alertmsg = null;
+    output.alertmsg = "No has elegido una respuesta!.";
     output.alerthidden = false;
     MQProxy.error = true;
   }

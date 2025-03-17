@@ -23,6 +23,7 @@ import { gSelect } from "../components/GroupSelect";
 import { progresscalc } from "../components/progressbar/progresscalc";
 import { reset, Surveys, SVP } from "../components/csurvey/Answers";
 import { SurveyViewer } from "../components/csurvey/SurveyViewer";
+import { sessionState } from "../components/SessionState";
 
 export default withAuth(function ContentSelect() {
   const { user, project } = useAuth();
@@ -33,6 +34,7 @@ export default withAuth(function ContentSelect() {
   //console.log(registerTopic);
   const nextContentPath = router.asPath + ""; //topics in array
   const domainId = parameters.CSMain.domain;
+  sessionState.callbackType = "";
 
   const { data, isLoading, isError, isFetching } = useGQLQuery(
     gql(/* GraphQL */ `

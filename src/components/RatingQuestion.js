@@ -7,6 +7,7 @@ import { useAction } from "../utils/action";
 import { useUpdateModel } from "../utils/updateModel";
 import { useAuth } from "./Auth";
 import parameters from "./../components/contentSelectComponents/parameters.json";
+import { useRouter } from "next/router";
 
 const colors = {
   orange: "#FFBA5A",
@@ -22,6 +23,10 @@ function RatingQuestion({ useAlternateRoute = false }) {
   const content = sessionState.currentContent.id;
   const topic = sessionState.topic;
   const selectionData = sessionState.selectionData;
+  const callback = sessionState.callback;
+  const callbackType = sessionState.callbackType;
+
+  const router = useRouter();
 
   const [timeToUpdateModel, SetTimeToUpdateModel] = useState(true);
   const { updateModel, mutation } = useUpdateModel();
@@ -57,6 +62,17 @@ function RatingQuestion({ useAlternateRoute = false }) {
       topicID: topic,
       extra: { selectionData },
     });
+    if (callbackType === "challenge") {
+      console.log("challenge");
+      callback();
+    }
+    if (callbackType === "tutor") {
+      console.log("tutor");
+      callback();
+    } else {
+      console.log("ruta", ruta);
+      router.push(ruta);
+    }
   };
   return (
     <div style={styles.container}>
@@ -84,21 +100,21 @@ function RatingQuestion({ useAlternateRoute = false }) {
           );
         })}
       </div>
-      <Link href={ruta}>
-        <Button
-          style={styles.button}
-          disabled={currentValue != 0 && !mutation.isLoading ? false : true}
-          onClick={handleClick2}
-        >
-          {!mutation.isLoading && !timeToUpdateModel && parameters.ratingQuestion.buttonMsg}
-          {(mutation.isLoading || timeToUpdateModel) && (
-            <>
-              {parameters.ratingQuestion.buttonWaitMsg} &nbsp;&nbsp;
-              <Spinner emptyColor="gray.200" color="blue.500" />
-            </>
-          )}
-        </Button>
-      </Link>
+      {/*<Link href={ruta}>*/}
+      <Button
+        style={styles.button}
+        disabled={currentValue != 0 && !mutation.isLoading ? false : true}
+        onClick={handleClick2}
+      >
+        {!mutation.isLoading && !timeToUpdateModel && parameters.ratingQuestion.buttonMsg}
+        {(mutation.isLoading || timeToUpdateModel) && (
+          <>
+            {parameters.ratingQuestion.buttonWaitMsg} &nbsp;&nbsp;
+            <Spinner emptyColor="gray.200" color="blue.500" />
+          </>
+        )}
+      </Button>
+      {/*</Link>*/}
     </div>
   );
 }
