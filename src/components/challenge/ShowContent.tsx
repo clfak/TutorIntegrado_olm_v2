@@ -42,7 +42,20 @@ export default function ShowContent() {
 
   return (
     <>
-      <Box textAlign="right">
+      <Box
+        position="fixed"
+        top="110"
+        right="15"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        p={4}
+        zIndex="1"
+      >
+        {" "}
+        <Text fontSize="sm" color="gray.500">
+          {snap.currentContent.code}
+        </Text>
         <Info />
       </Box>
 
