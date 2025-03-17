@@ -41,6 +41,7 @@ export function getColorScheme(value) {
 export const extractExercise = data => {
   const exercises = [];
   const contentArray = data[0]?.content;
+  const topicId = data[0]?.id;
 
   contentArray?.forEach(item => {
     if (item?.json) {
@@ -104,12 +105,12 @@ export const extractExercise = data => {
           description: desc,
           mathExpression: mathExpr,
           image: img,
+          topicId: topicId,
         });
       } else {
         console.log("Caso no manejado:", item.json);
       }
     }
   });
-
   return exercises;
 };

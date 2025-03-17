@@ -133,6 +133,10 @@ const queryGetChallenge = gql(/* GraphQL */ `
           code
           id
         }
+        topics {
+          code
+          id
+        }
       }
       description
       enabled
@@ -314,6 +318,8 @@ const MathRecursiveAccordion = ({
   setSelectedExercises,
   selectedExercises = [],
 }) => {
+  console.log("selectedTopics", selectedTopics);
+  console.log("selectedExercises", selectedExercises);
   // Verifica si un item está seleccionado
   const isItemSelected = exercise => {
     return selectedExercises.some(
@@ -340,6 +346,21 @@ const MathRecursiveAccordion = ({
       setSelectedExercises([...selectedExercises, exercise]);
     }
   };
+
+  useEffect(() => {
+    // Obtén los IDs de los tópicos seleccionados actualmente
+    const currentTopicIds = selectedTopics.map(topic => topic.id);
+
+    // Filtra los ejercicios seleccionados para mantener solo aquellos asociados a tópicos existentes
+    const filteredExercises = selectedExercises.filter(
+      exercise => currentTopicIds.includes(exercise.topicId), // Asegúrate de que cada ejercicio tenga un `topicId`
+    );
+
+    // Si hay cambios, actualiza `selectedExercises`
+    if (filteredExercises.length !== selectedExercises.length) {
+      setSelectedExercises(filteredExercises);
+    }
+  }, [selectedTopics]); // Ejecuta este efecto cada vez que `selectedTopics` cambie
 
   return (
     <>
@@ -541,7 +562,11 @@ export default withAuth(function ChallengesForm() {
       setEndDate(utcToLocalTime(challenge.endDate));
       setSelectedGroups(challenge.groups || []);
       setSelectedTopics(challenge.topics || []);
-      setSelectedExercises(extractExercise([{ content: challenge.content }]) || []);
+      console.log("challenge", challenge);
+      setSelectedExercises(
+        extractExercise([{ content: challenge.content, id: challenge.content[0].topics[0].id }]) ||
+          [],
+      );
       setStartDate(challenge.startDate !== null ? utcToLocalTime(challenge.startDate) : null);
     }
   }, [dataChallenge, isChallengeLoading]);
@@ -689,6 +714,15 @@ export default withAuth(function ChallengesForm() {
       setIsCreated(true);
       alert("Desafío guardado exitosamente");
     }
+
+    // limpia todo para evitar que el usuario cree ejercicios duplicados
+
+    setTitle("");
+    setDescription("");
+    setSelectedGroups([]);
+    setEndDate("");
+    setSelectedTopics([]);
+    setSelectedExercises([]);
   };
 
   const handleCancel = () => {

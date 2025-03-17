@@ -31,7 +31,6 @@ import {
 import { gql } from "../graphql";
 import { formatDate, getColorScheme } from "../components/challenge/tools";
 import LatexPreview from "../components/challenge/LatexPreview";
-//import { CORRECT_ANSWER_COLOR } from "../components/tutorEcuaciones/types";
 
 //----------------
 
@@ -337,7 +336,7 @@ const StudentCard = ({
   //--------------------------------
 
   useEffect(() => {
-    if (!isKcsByTopicsLoading) {
+    if (!isKcsByTopicsLoading && dataKcsByTopics) {
       const kcsByContentByTopics = dataKcsByTopics.kcsByContentByTopics || [];
       const uniqueKcs = getUniqueKcs(kcsByContentByTopics);
       //console.log("uniqueKcs", uniqueKcs)
@@ -356,7 +355,7 @@ const StudentCard = ({
       console.log("overallAverage", overallAverage);
       console.log("uniqueUsers", uniqueUsers);
     }
-  }, [isKcsByTopicsLoading]);
+  }, [isKcsByTopicsLoading, dataKcsByTopics]);
 
   //--------------------------------
 
@@ -552,14 +551,11 @@ const ChallengeCard = ({
   setChallengeId,
   challengesOriginal,
   usersWithModelStates,
-  //allUsersJson,
-  //uniqueUsers,
 }) => {
   const router = useRouter();
   const [uniqueKcs, setUniqueKcs] = useState([]);
   //const [groupAverages, setGroupAverages] = useState({});
 
-  console.log("usersWithModelStates", usersWithModelStates);
   const challengeFilter = challengesOriginal.find(challenge => challenge.id === id);
 
   const challengeData: ChallengeInput = {
@@ -666,8 +662,6 @@ const ChallengeCard = ({
     if (!isKcsByTopicsLoading) {
       const kcsByContentByTopics = dataKcsByTopics.kcsByContentByTopics || [];
       setUniqueKcs(getUniqueKcs(kcsByContentByTopics));
-      console.log("kcsByContentByTopics", kcsByContentByTopics);
-      console.log("getUniqueKcs", getUniqueKcs);
 
       //const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs)*100
       //const averageLevelGroup = calculateAverageLevelGroup(allUsersJson, uniqueKcs)
@@ -732,13 +726,13 @@ const ChallengeCard = ({
         {/* Accordion for groups */}
         <Accordion allowToggle w="100%">
           {groups.map((group, index) => {
-            const groupsWithModelStates = usersWithModelStates.groups.find(
+            const groupsWithModelStates = usersWithModelStates?.groups?.find(
               item => item.id === group.id,
             );
 
             // Calcular el promedio del grupo
             const groupAverage =
-              group.students.reduce((sum, student) => {
+              group?.students?.reduce((sum, student) => {
                 const studentsWithModelStates = groupsWithModelStates?.users?.find(
                   item => item.id === student.id,
                 );
@@ -789,7 +783,7 @@ const ChallengeCard = ({
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                   {/* List of students */}
-                  {group.students.map((student, idx) => {
+                  {group?.students?.map((student, idx) => {
                     const studentsWithModelStates = groupsWithModelStates?.users?.find(
                       item => item.id === student.id,
                     );
@@ -991,22 +985,11 @@ const student = [
 //--------------------------
 
 function updateArray(array) {
-  //, userIdToRemove) {
   // Recorrer cada objeto en el arreglo
   return array.map(item => {
     // Agregar las nuevas propiedades al objeto
 
     item.tags = ["joint-control", "oslm", "motiv-msg", "session-progress"];
-
-    // Si el objeto tiene grupos, eliminar al usuario con el id especificado
-    /*if (item.groups && Array.isArray(item.groups)) {
-      item.groups.forEach(group => {
-        if (group.students && Array.isArray(group.students)) {
-          // Filtrar y eliminar al usuario con el id especificado
-          group.students = group.students.filter(student => student.id !== userIdToRemove);
-        }
-      });
-    }*/
 
     return item;
   });
@@ -1292,17 +1275,21 @@ function getAllUsersJson(users) {
 }
 
 function calculateAverageLevel(data, keysToSearch) {
+  // Check if data is defined
+  if (!data) {
+    //console.log("Data is undefined:", { data, keysToSearch });
+    return 0; // default value
+  }
+
   // Filtra los datos que están en la lista `keysToSearch`
   const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
 
   // Obtiene los valores de `level` de los datos filtrados
   const levels = filteredData.map(item => item.level);
-  console.log("data", data);
-  console.log("keyToSearch", keysToSearch);
-  console.log("levels", levels);
+
   // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
   if (levels.length === 0) {
-    console.log("Datos recibidos:", { data, keysToSearch });
+    //console.log("Datos recibidos:", { data, keysToSearch });
     return 0; // O cualquier valor por defecto
   }
 
@@ -1323,7 +1310,7 @@ function calculateAverageLevelGroup(students, uniqueKcs) {
 
   return average;
 }
-  */
+*/
 //-------------------------------------
 
 const removeUnpublished = arr => {
@@ -1471,9 +1458,11 @@ export default withAuth(function ChallengesPage() {
 
     const transformData = () => {
       if (!isChallengesLoading) {
-        const filteredData = filterByUserId(dataChallenges?.challenges, userId);
+        // recibe todos los desafios -> filtra los desafios en los que el usuario no esta ->
+        // elimina los usuarios con rol admin -> agrega el campo status ->
+        // convierte las fechas en timestamp
+        const filteredData = filterByUserId(dataChallenges?.challenges, userId); // elimina los desafio al que el usuario no pertenece
         const dataFilterUserByRole = filterUsersInChallenges(filteredData); //elimina los users con rol Admin
-        //; // elimina los desafio al que el usuario no pertenece
         const updatedData = updateDataWithStatus(dataFilterUserByRole); // agrega el campo status (published, unpublished, finalized)
         const data = updateDataWithEndDate(updatedData); // convierte las fechas en timestamp
 
@@ -1510,14 +1499,7 @@ export default withAuth(function ChallengesPage() {
   const handleClick = () => {
     router.push("/challengeForm");
   };
-  /*
-  const previewClick = () => {
-    router.push({
-      pathname: "/challengeForm",
-      query: { preview: isPreview ? "true" : "false" },
-    });
-  };
-*/
+
   useEffect(() => {
     const challengesUnpublished = removeUnpublished(challenges); // remueve los desafios no publicados
     setChallengesStudents(updateArray(challengesUnpublished)); //, user?.id)); // agrega tags de forma artificial
@@ -1592,15 +1574,10 @@ useEffect(()=> {
 
       const userJsonWithEmail = extractUserJsonWithEmail(GroupUsersWithModelStates); // obtiene el json, email y id de cadad users
       setUniqueUsers(removeDuplicateUsers(userJsonWithEmail)); // elimina los users duplicados (algunos se repiten en los grupos)
-      console.log("uniqueUsers", removeDuplicateUsers(userJsonWithEmail));
 
       //-------------------------
     }
   }, [isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates]);
-
-  useEffect(() => {
-    console.log("allUsersJson", allUsersJson);
-  }, [allUsersJson]);
 
   //-------------------------------------------
 
@@ -1648,7 +1625,7 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
     setFilteredChallenges(filtered);
   }, [challenges, statusFilter, sortOrder]);
 
-  if (isLoading || isChallengesLoading) {
+  if (isLoading || isChallengesLoading || isGroupUsersWithModelStatesLoading) {
     return <Box p={5}>Cargando...</Box>;
   }
 
@@ -1691,7 +1668,6 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
           </Heading>
           {filteredChallenges.length > 0 ? (
             <VStack spacing={6}>
-              {console.log(filteredChallenges)}
               {filteredChallenges.map((challenge, index) => (
                 <ChallengeCard
                   key={index}

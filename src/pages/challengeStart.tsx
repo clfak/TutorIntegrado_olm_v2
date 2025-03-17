@@ -14,9 +14,33 @@ import ProgressBar from "../components/challenge/ProgressBar";
 import { sessionState } from "../components/SessionState";
 import type { ContentJson } from "../components/SessionState";
 import type { wpExercise } from "../components/tutorWordProblems/types";
-//import { useAction } from "../utils/action";
+import { useAction } from "../utils/action";
 
 //----------------------------
+
+const queryGetActions = gql(`
+  query getActions($input: ActionsTopicInput!, $pagination: CursorConnectionArgs!) {
+        actionsTopic {
+          allActionsByUser(input: $input, pagination: $pagination) {
+            nodes {
+              actions {
+                timestamp
+                id
+                extra
+                content {
+                  code
+                  id
+                }
+                verb {
+                  name
+                }
+              }
+              email
+            }
+          }
+        }
+      }
+  `);
 
 const queryGetChallenge = gql(/* GraphQL */ `
   query GetChallenge2($challengeId: IntID!) {
@@ -186,53 +210,7 @@ function getUserJsonById(currentUser: any, userId: string): any | null {
 
   return null; // Si no se encuentra el usuario o el `json`, retorna null
 }
-/*
-function getUsersExcludingId(currentUser, userId) {
-  // Verifica si currentUser y sus propiedades existen
-  if (!currentUser || !currentUser.groups || !Array.isArray(currentUser.groups)) {
-    return []; // Si no hay datos válidos, retorna un arreglo vacío
-  }
 
-  const usersExcludingId: any[] = [];
-
-  // Itera sobre cada grupo en el array `groups`
-  for (const group of currentUser.groups) {
-    // Verifica si el grupo tiene usuarios y si es un array
-    if (group.users && Array.isArray(group.users)) {
-      // Filtra los usuarios cuyo `id` no coincida con `userId`
-      const filteredUsers = group.users
-        .filter(user => user.id !== userId)
-        .map(user => ({ ...user })); // Copia profunda del usuario
-      usersExcludingId.push(...filteredUsers); // Agrega los usuarios filtrados al arreglo
-    }
-  }
-
-  return usersExcludingId; // Retorna el arreglo de usuarios excluyendo el `id` especificado
-}
-*/
-/*
-function getAllUsersJson(users) {
-  // Verifica si el arreglo de usuarios es válido
-  if (!users || !Array.isArray(users)) {
-    return []; // Si no hay datos válidos, retorna un arreglo vacío
-  }
-
-  const allJsons = [];
-
-  // Itera sobre cada usuario en el arreglo
-  for (const user of users) {
-    // Verifica si el usuario tiene `modelStates` y `nodes`
-    if (user.modelStates && Array.isArray(user.modelStates.nodes)) {
-      const node = user.modelStates.nodes[0]; // Asume que el `json` está en el primer nodo
-      if (node && node.json) {
-        allJsons.push(node.json); // Agrega el `json` al arreglo
-      }
-    }
-  }
-
-  return allJsons; // Retorna el arreglo con todos los `json` encontrados
-}
-*/
 function calculateAverageLevel(data, keysToSearch) {
   // Filtra los datos que están en la lista `keysToSearch`
   const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
@@ -251,28 +229,7 @@ function calculateAverageLevel(data, keysToSearch) {
 
   return averageLevel;
 }
-/*
-function calculateAverageLevelGroup(students, uniqueKcs) {
-  // Calcular el nivel promedio para cada usuario
-  const averageLevels = students?.map(user => calculateAverageLevel(user, uniqueKcs) * 100);
 
-  // Calcular el promedio de todos los niveles
-  const total = averageLevels?.reduce((sum, level) => sum + level, 0);
-  const average = total / averageLevels?.length;
-
-  return average;
-}
-  */
-/*
-action({
-  verbName: "challengeContentCompleted",
-  contentID: ,
-  extra={
-    challengeID:string,
-    contentCode:string
-  }
-});
-*/
 function getCodes(array) {
   return array.map(item => item.code);
 }
@@ -315,13 +272,11 @@ export default withAuth(function ChallengesStart() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const domainId = parameters.CSMain.domain;
-  //const topicsString = topics.toString() || "";
-  const registerTopic = "4"; //topics[0] + ""; //topics in array
+
   const nextContentPath = `/challengeStart?challengeId=${challengeId}`; //"/challenge";
 
   const [showContent, setShowContent] = useState(true);
   const [showDemo, setShowDemo] = useState(true);
-  //const [showTutor, setShowTutor] = useState(false);
 
   const [processedContentResult, setProcessedContentResult] = useState(null);
   const [processedBestExercise, setProcessedBestExercise] = useState(null);
@@ -329,20 +284,24 @@ export default withAuth(function ChallengesStart() {
   const [processedLastExercise, setProcessedLastExercise] = useState(null);
   const [processedExperimentGroup, setProcessedExperimentGroup] = useState(null);
 
-  //const [showLoading, setShowLoading] = useState(false);
-
-  //const [groupProgress, setGroupProgress] = useState(0)
-
   //--------------------------------
 
   const { data: dataChallenge, isLoading: isChallengeLoading } = useGQLQuery(queryGetChallenge, {
     challengeId: challengeId,
   });
 
-  const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
-    useGQLQuery(queryGroupUsersWithModelStates, {
-      enabled: !showDemo,
-    });
+  const {
+    data: dataGroupUsersWithModelStates,
+    isLoading: isGroupUsersWithModelStatesLoading,
+    //refetch: refetchModelStates,
+  } = useGQLQuery(
+    queryGroupUsersWithModelStates,
+    /*{
+        refetchOnWindowFocus: false,
+        //refetchOnMount: false,
+        refetchOnReconnect: false,
+      }*/
+  );
 
   const { data: dataKcsByTopics, isLoading: isKcsByTopicsLoading } = useGQLQuery(
     queryGetKcsByTopics,
@@ -353,8 +312,6 @@ export default withAuth(function ChallengesStart() {
   );
 
   const [userByJsonById, setUserByJsonById] = useState([]);
-  //const [allUsersJson, setAllUsersJson] = useState([]);
-  //const [usersWithModelStates, setUsersWithModelStates] = useState({});
 
   useEffect(() => {
     if (!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
@@ -368,9 +325,6 @@ export default withAuth(function ChallengesStart() {
       console.log("preview", preview);
       //setUsersWithModelStates(removeAdmin);
       setUserByJsonById(getUserJsonById(removeAdmin, userId));
-
-      //const usersExcludingId = getUsersExcludingId(removeAdmin, userId);
-      //setAllUsersJson(getAllUsersJson(usersExcludingId));
     }
   }, [isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates]);
 
@@ -386,10 +340,8 @@ export default withAuth(function ChallengesStart() {
       const uniqueKcs = getUniqueKcs(kcsByContentByTopics);
 
       const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs) * 100;
-      //const averageLevelGroup = calculateAverageLevelGroup(allUsersJson, uniqueKcs)
 
       setStudentProgress(averageLevelUser);
-      //setGroupProgress(averageLevelGroup)
     }
   }, [isKcsByTopicsLoading, dataKcsByTopics, isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates, userByJsonById]);
 
@@ -425,10 +377,75 @@ export default withAuth(function ChallengesStart() {
   }, [showContent]);
 
   //--------------------
+  // Function to filter by challengeId
+  function filterByChallengeId(data, challengeId) {
+    return data?.filter(item => item.extra.challengeID === challengeId);
+  }
+
+  // Function to get the newest object based on the timestamp
+  function getNewest(data) {
+    // Check if data is undefined, null, or empty
+    if (!data || data.length === 0) return null;
+
+    let newest = data[0];
+    for (let i = 1; i < data.length; i++) {
+      if (data[i].timestamp > newest.timestamp) {
+        newest = data[i];
+      }
+    }
+    return newest;
+  }
+
+  /*function getTodayDate() {
+    // Obtener la fecha actual
+    const today = new Date();
+
+    // Convertir la fecha a formato ISO 8601 (UTC)
+    const isoString = today.toISOString();
+    //console.log("date", isoString)
+    return isoString;
+  }
+  //console.log("date", getTodayDate())
+*/
+  const {
+    data: actionsData,
+    isLoading: actionsLoading,
+    // error: actionsError,
+  } = useGQLQuery(queryGetActions, {
+    input: {
+      endDate: "2025-12-31T12:00:00.000Z", //getTodayDate(),//"2025-03-16T20:20:55.000Z", // la fecha de hoy
+      projectId: 4,
+      startDate: "2025-03-01T00:00:00.000Z", //, // El 1 de Marzo del 2025
+      verbNames: ["challengeContentCompleted"],
+    },
+    pagination: { last: 1 },
+  });
+
+  function findObjectById(data, id) {
+    // Verifica si el contenido existe y es un array
+    if (!data.content || !Array.isArray(data.content)) {
+      console.error("El contenido no es válido o no es un array.");
+      return null;
+    }
+
+    // Busca el objeto que tenga el id especificado
+    const result = data.content.find(item => item.id === id);
+
+    // Si no se encuentra ningún objeto con ese id, devuelve null
+    if (!result) {
+      console.warn(`No se encontró ningún objeto con el id: ${id}`);
+      return null;
+    }
+
+    // Devuelve el objeto encontrado
+    return result;
+  }
+
+  //-----------------------------------
   const { data, isLoading, isError, refetch } = useGQLQuery(
     // isFetching
     gql(/* GraphQL */ `
-      query ProjectData($input: ContentSelectionInput!) {
+      query ContentSelected($input: ContentSelectionInput!) {
         contentSelection {
           contentSelected(input: $input) {
             contentResult {
@@ -441,6 +458,10 @@ export default withAuth(function ChallengesStart() {
                 }
                 description
                 label
+                topics {
+                  id
+                  code
+                }
               }
               Msg {
                 label
@@ -499,17 +520,6 @@ export default withAuth(function ChallengesStart() {
       enabled: !showDemo, //&& showContent //&& !prevShowContent,
     },
   );
-  /*
-  const { data: dataContent, isLoading: isContentLoading } = useGQLQuery(
-    gql(`
-      query getContent {
-        content(ids:[419, 459]) {
-          code,
-          id
-          json
-        }
-      }`),
-  );*/
 
   const {
     data: dataDemo,
@@ -528,6 +538,10 @@ export default withAuth(function ChallengesStart() {
             code
           }
           label
+          topics {
+            id
+            code
+          }
         }
       }
     `),
@@ -541,33 +555,49 @@ export default withAuth(function ChallengesStart() {
       //enabled: !isChallengeLoading && !!contents,
     },
   );
-
-  useEffect(() => {
-    console.log("topics", topics);
-  }, [topics]);
-
-  //----------------------------------------------
   /*
   useEffect(()=> {
-    const demoContent = dataDemo ? dataDemo.content.map((content) => content.json) : [];
-    if(currentIndex >= demoContent.length) {
-      setShowContent(false)
+    if(actionsError) {
+      console.log("Error:", actionsError);
     }
-  }, [showContent, currentIndex, dataDemo])*/
-  //--------------------
+    
+        if(!actionsLoading && actionsData && !isLoadingDemo && dataDemo) {
+          //console.log("email", actionsData.actionsTopic.allActionsByUser.nodes[0].email)
+          const actions = actionsData.actionsTopic.allActionsByUser.nodes[0].actions
+          console.log("actionsData", actions)
+    
+          const filtered = filterByChallengeId(actions, challengeId); // filtra ejercicios por id, devuelve null si no action
+          if (filtered === null) {
 
+          }
+          //console.log(filtered);
+          
+          const newest = getNewest(filtered); // obtiene el ejercicio más nuevo
+          //console.log(newest?.content.id);
+          //console.log(dataDemo)
+          const resultContent = findObjectById(dataDemo?.content, newest?.content.id)
+          //console.log(resultContent)
+    
+        }
+      }, [actionsLoading, actionsData, isLoadingDemo, dataDemo])*/
+
+  const action = useAction();
+  /*
+Version anterior
   useEffect(() => {
-    console.log("useEffect ejecutado"); // Depuración
-    console.log("isLoadingDemo:", isLoadingDemo); // Depuración
-    console.log("showDemo:", showDemo); // Depuración
+    //console.log("useEffect ejecutado"); // Depuración
+    //console.log("isLoadingDemo:", isLoadingDemo); // Depuración
+    //console.log("showDemo:", showDemo); // Depuración
 
     if (!isLoadingDemo && showDemo) {
       const demoContent = dataDemo ? dataDemo.content.map(content => content.json) : [];
-      console.log("demoContent:", demoContent); // Depuración
+      //console.log("content", dataDemo.content)
+      //console.log("demoContent:", demoContent); // Depuración
 
       if (demoContent && demoContent.length > 0) {
         if (currentIndex >= 0 && currentIndex < demoContent.length) {
-          console.log("Accediendo a demoContent[currentIndex]"); // Depuración
+          
+          //console.log("Accediendo a demoContent[currentIndex]"); // Depuración
           const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
 
           // Actualizar sessionState con el contenido actual
@@ -577,15 +607,23 @@ export default withAuth(function ChallengesStart() {
           sessionState.topic = registerTopic;
           sessionState.callbackType = "challenge";
           sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
+          //console.log("dataDemo.content[currentIndex].id,", dataDemo.content[currentIndex].id,)
+          console.log("registerTopic", registerTopic)
+          action({
+            verbName: "challengeContentCompleted",
+            contentID:dataDemo.content[currentIndex].id,
+            extra: {
+              challengeID: challengeId,
+              contentCode: dataDemo.content[currentIndex].code
+            }
+          });
         } else {
-          console.log("currentIndex fuera de límites"); // Depuración
+          //console.log("currentIndex fuera de límites"); // Depuración
           if (showContent || showDemo) {
-            console.log("Desactivando showContent y showDemo"); // Depuración
+            //console.log("Desactivando showContent y showDemo"); // Depuración
             sessionState.callbackType = "";
-            //sessionState.callback = () => setShowContent(true);
             setShowContent(false);
             setShowDemo(false);
-            //setShowTutor(false);
           }
         }
       } else {
@@ -594,12 +632,131 @@ export default withAuth(function ChallengesStart() {
       }
     }
   }, [dataDemo, isLoadingDemo, showDemo, currentIndex, showContent]);
-
+*/
   //----------------------------------------
+
+  function getNextContent(demoContent, resultContent) {
+    // Verifica si demoContent es un array y tiene elementos
+    if (!Array.isArray(demoContent) || demoContent.length === 0) {
+      console.error("demoContent no es un array válido o está vacío.");
+      return null;
+    }
+
+    // Encuentra el índice de resultContent en demoContent
+    const currentIndex = demoContent.findIndex(item => item.id === resultContent.id);
+
+    // Si no se encuentra resultContent, devuelve null
+    if (currentIndex === -1) {
+      console.warn("resultContent no se encontró en demoContent.");
+      return null;
+    }
+
+    // Calcula el índice del siguiente objeto
+    const nextIndex = currentIndex + 1;
+
+    // Si nextIndex está dentro de los límites del arreglo, devuelve el siguiente objeto
+    if (nextIndex < demoContent.length) {
+      return demoContent[nextIndex];
+    } else {
+      // Si resultContent es el último elemento, devuelve null
+      console.log("resultContent es el último elemento en demoContent.");
+      return null;
+    }
+  }
+
+  const [useFiltered, setUseFiltered] = useState(null); // Estado para controlar si se usa filtered o demoContent
+
   useEffect(() => {
-    //data?.contentSelection?.contentSelected?.PU[0]
-    //if(!isChallengeLoading && !!contents) {
-    // Procesar lastExercise
+    console.log("currentIndex", currentIndex);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    if (!actionsLoading && actionsData && !isLoadingDemo && dataDemo) {
+      const actions = actionsData.actionsTopic.allActionsByUser.nodes[0].actions;
+      console.log("actionsData", actions);
+
+      const filtered = filterByChallengeId(actions, challengeId); // Filtra ejercicios por id
+      console.log("filtered:", filtered);
+
+      if (filtered !== null && filtered.length > 0) {
+        const newest = getNewest(filtered); // Obtiene el ejercicio más nuevo
+        console.log("newest.content.id:", newest?.content.id);
+
+        const resultContent = findObjectById(dataDemo, newest?.content.id); // Busca el contenido en dataDemo
+        console.log("resultContent:", resultContent);
+
+        if (resultContent) {
+          const nextContent = getNextContent(dataDemo.content, resultContent); // Obtiene el siguiente contenido
+          console.log("nextContent:", nextContent);
+
+          if (nextContent) {
+            // Encuentra el índice de nextContent en demoContent
+            const nextIndex = dataDemo.content.findIndex(item => item.id === nextContent.id);
+            console.log("nextIndex:", nextIndex);
+
+            if (nextIndex !== -1) {
+              setCurrentIndex(nextIndex); // Actualiza currentIndex a la posición de nextContent, ayuda a sincronizar localStorage con lo que envia el servidor
+
+              const topic = nextContent.topics[0].id;
+              // Actualiza sessionState con el siguiente contenido
+              sessionState.currentContent.code = nextContent.json.code;
+              sessionState.currentContent.json = nextContent.json;
+              sessionState.nextContentPath = nextContentPath;
+              sessionState.topic = topic;
+              sessionState.callbackType = "challenge";
+              sessionState.callback = createNextExerciseCallback(
+                dataDemo.content.map(content => content.json),
+                nextIndex,
+              );
+            } else {
+              console.log("nextContent no se encontró en demoContent.");
+            }
+          } else {
+            // sale de demo y entra al tutor (usa cardSelection)
+            setShowDemo(false);
+            setShowContent(false);
+            console.log("No hay siguiente contenido.");
+          }
+        } else {
+          console.log("No se encontró resultContent para el id:", newest?.content.id);
+        }
+      } else {
+        setUseFiltered(false); // Indica que se debe usar demoContent
+      }
+    }
+  }, [actionsLoading, actionsData, isLoadingDemo, dataDemo]);
+
+  // useEffect para la lógica de demoContent (solo se ejecuta si useFiltered es false)
+  useEffect(() => {
+    if (useFiltered === false && !isLoadingDemo && showDemo) {
+      const demoContent = dataDemo ? dataDemo.content.map(content => content.json) : [];
+
+      const topic = dataDemo.content[currentIndex]?.topics[0].id;
+      if (
+        demoContent &&
+        demoContent.length > 0 &&
+        currentIndex >= 0 &&
+        currentIndex < demoContent.length
+      ) {
+        //const currentContent = demoContent[currentIndex]  as ContentJson | wpExercise;;
+        const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
+
+        // Actualiza sessionState con el contenido actual
+        sessionState.currentContent.code = currentContent.code;
+        sessionState.currentContent.json = currentContent;
+        sessionState.nextContentPath = nextContentPath;
+        sessionState.topic = topic;
+        sessionState.callbackType = "challenge";
+        sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
+      } else {
+        console.log("No hay contenido demo disponible o currentIndex está fuera de límites.");
+      }
+    }
+  }, [useFiltered, isLoadingDemo, showDemo, dataDemo, currentIndex]);
+
+  //-----------------------------------
+
+  useEffect(() => {
     if (
       data?.contentSelection?.contentSelected?.PU &&
       data.contentSelection.contentSelected.PU[0]
@@ -609,7 +766,6 @@ export default withAuth(function ChallengesStart() {
         "data.contentSelection.contentSelected.PU[0]",
         data.contentSelection.contentSelected.PU[0],
       );
-      //}
 
       // Procesar experimentGroup
       if (!isError && user) {
@@ -683,57 +839,6 @@ export default withAuth(function ChallengesStart() {
     }
   }, [processedContentResult, processedBestExercise, processedExperimentGroup, isLoading, isError, parameters.CSMain.completeTopic, parameters.CSMain.controlTag]);
 
-  //----------------------------
-
-  /*
-  const contentResult = data?.contentSelection?.contentSelected?.contentResult?.sort((a, b) => {
-    return parseInt(a.Order) - parseInt(b.Order);
-  });
-  //console.log(data?.contentSelection?.contentSelected);
-
-  const lastExercise = data?.contentSelection?.contentSelected?.PU[0];
-  //const [queryLastExercise, setQueryLastExercise] = useState(false);
-
-  const bestExercise =
-    !isLoading &&
-    !isError &&
-    ((contentResult ?? [])
-      .map(x => x.Preferred)
-      .reduce((out, bool, index) => (bool ? out.concat(index) : out), [])[0] ??
-      0);
-
-  const experimentGroup =
-    !isError && user?.tags.indexOf(parameters.CSMain.experimentalTag) >= 0
-      ? parameters.CSMain.experimentalTag
-      : parameters.CSMain.controlTag;
-
-  const selectionData =
-    !isLoading &&
-    !isError &&
-    (experimentGroup == parameters.CSMain.controlTag
-      ? [
-          {
-            optionCode: contentResult[bestExercise]?.P?.code ?? "",
-            optionTitle: contentResult[bestExercise]?.Msg?.label ?? parameters.CSMain.completeTopic,
-            optionBest: true,
-            optionSelected: false,
-          },
-        ]
-      : (contentResult ?? []).map((content, index) => {
-          return {
-            optionCode: content?.P?.code ?? "",
-            optionTitle: content?.Msg?.label ?? parameters.CSMain.completeTopic,
-            optionBest: index == bestExercise,
-            optionSelected: false,
-          };
-        }));
-
-  console.log(selectionData);*/
-  // Construir la URL dinámica para ContentSelect
-  // const topicsList = "16,31,17,18,63";
-  //const registerTopic = "31"; // O cualquier valor que necesites
-  //const contentSelectUrl = `/contentSelect?topic=${topicsList}&registerTopic=${registerTopic}`;
-
   const createNextExerciseCallback = (exercises: any[], index: number) => {
     if (index >= exercises.length) {
       sessionState.callbackType = "challenge";
@@ -751,19 +856,24 @@ export default withAuth(function ChallengesStart() {
       sessionState.currentContent.json = nextContent;
       sessionState.currentContent.code = nextContent.code;
       setCurrentIndex(index + 1);
+      action({
+        verbName: "challengeContentCompleted",
+        contentID: dataDemo.content[currentIndex].id,
+        extra: {
+          challengeID: challengeId,
+          contentCode: dataDemo.content[currentIndex].code,
+        },
+      });
+
       // Configura el callback para el siguiente ejercicio
       sessionState.callback = createNextExerciseCallback(exercises, index + 1);
-
-      /* sessionStateBD.setItem(
-                        "currentContent",
-                        JSON.parse(JSON.stringify(sessionState.currentContent)),
-                      );*/
     };
   };
 
   const handleRefreshData = async () => {
     try {
-      await refetch(); // Volver a ejecutar la consulta
+      await refetch(); // solicita datos al modelo
+      //await refetchModelStates() // actualiza la barra de progreso (no funciona, revisar)
       setShowContent(false);
       console.log("Datos actualizados correctamente");
     } catch (error) {
@@ -776,19 +886,10 @@ export default withAuth(function ChallengesStart() {
     if (showContent && !showDemo) {
       sessionState.callback = () => {
         handleRefreshData();
-        //setShowContent(false)
       };
       sessionState.callbackType = "tutor";
     }
   }, [showContent, showDemo]);
-
-  useEffect(() => {
-    console.log("currentIndex", currentIndex);
-  }, [currentIndex]);
-
-  useEffect(() => {
-    console.log("showContent", showContent);
-  }, [showContent]);
 
   //---------------------------------
   /* Necesario para evitar que el contador que se encarga de
@@ -798,17 +899,17 @@ de las páginas en Nextjs y eso hace que los datos cambie a los que había al mo
 de montar el componente por primera vez reiniciando el contador a 0*/
 
   useEffect(() => {
-    // El challengeId para evitar colisiones entre los challenges
+    // Se usa challengeId para evitar colisiones
     sessionStorage.setItem("currentIndex" + challengeId, JSON.stringify(currentIndex));
-  }, [currentIndex]);
+  }, [currentIndex, challengeId]);
 
   useEffect(() => {
-    const savedIndex = sessionStorage.getItem("currentIndex");
+    const savedIndex = sessionStorage.getItem("currentIndex" + challengeId);
 
     if (savedIndex !== null) {
       setCurrentIndex(JSON.parse(savedIndex));
     }
-  }, []);
+  }, [challengeId]);
 
   //------------------------------------------------------------
 
@@ -843,20 +944,15 @@ de montar el componente por primera vez reiniciando el contador a 0*/
       sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
     }
   } */
+  /*
+    useEffect(()=> {
+      if(processedContentResult) {
+      console.log("processedContentResult[processedBestExercise]", processedContentResult[0].P.topics[0].id)
+      }
+    }, [processedContentResult])
+*/
 
-  useEffect(() => {
-    console.log("showContent", showContent);
-  }, [showContent]);
-
-  useEffect(() => {
-    console.log("showDemo", showDemo);
-  }, [showDemo]);
-
-  useEffect(() => {
-    console.log("showContent", showContent);
-  }, [showContent]);
-
-  if (isLoading || isChallengeLoading || isLoadingDemo) {
+  if (isLoading || isChallengeLoading || isLoadingDemo || isGroupUsersWithModelStatesLoading) {
     return <Box p={5}>Cargando...</Box>;
   }
 
@@ -947,7 +1043,9 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                             }
                             selectionText={processedContentResult[processedBestExercise]?.Msg?.text}
                             selectionBest={false}
-                            registerTopic={registerTopic}
+                            registerTopic={
+                              processedContentResult[processedBestExercise]?.P?.topics[0]?.id
+                            }
                             nextContentPath={nextContentPath}
                             selectionData={processedSelectionData}
                             indexSelectionData={0}
@@ -973,7 +1071,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                                 selectionTitle={content?.Msg?.label}
                                 selectionText={content?.Msg?.text}
                                 selectionBest={index === processedBestExercise}
-                                registerTopic={registerTopic}
+                                registerTopic={content?.P?.topics[0]?.id}
                                 nextContentPath={nextContentPath}
                                 selectionData={processedSelectionData}
                                 indexSelectionData={index}
@@ -994,7 +1092,7 @@ de montar el componente por primera vez reiniciando el contador a 0*/
                                   selectionTitle={content?.Msg?.label}
                                   selectionText={content?.Msg?.text}
                                   selectionBest={index === processedBestExercise}
-                                  registerTopic={registerTopic}
+                                  registerTopic={content?.P?.topics[0]?.id}
                                   nextContentPath={nextContentPath}
                                   selectionData={processedSelectionData}
                                   indexSelectionData={index}
