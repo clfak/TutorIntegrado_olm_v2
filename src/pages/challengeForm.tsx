@@ -723,6 +723,10 @@ export default withAuth(function ChallengesForm() {
     setEndDate("");
     setSelectedTopics([]);
     setSelectedExercises([]);
+
+    router.push({
+      pathname: "/challenge",
+    });
   };
 
   const handleCancel = () => {

@@ -60,7 +60,7 @@ export function Navigation() {
 
             <Stack fontWeight="black" pb="6">
               <SidebarLink icon={<FaBookOpen />} href="challenge">
-                Desafío
+                Desafíos
               </SidebarLink>
             </Stack>
           </>
