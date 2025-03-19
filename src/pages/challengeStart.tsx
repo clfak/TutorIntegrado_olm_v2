@@ -660,7 +660,10 @@ Version anterior
     } else {
       // Si resultContent es el último elemento, devuelve null
       console.log("resultContent es el último elemento en demoContent.");
-      return null;
+      return () => {
+        setShowDemo(false);
+        setShowContent(false);
+      };
     }
   }
 
@@ -671,13 +674,19 @@ Version anterior
   }, [currentIndex]);
 
   useEffect(() => {
-    if (!actionsLoading && actionsData && !isLoadingDemo && dataDemo) {
+    if (
+      !actionsLoading &&
+      actionsData &&
+      !isLoadingDemo &&
+      dataDemo &&
+      dataDemo.content.length > 0
+    ) {
       const actions = actionsData.actionsTopic.allActionsByUser.nodes[0].actions;
       console.log("actionsData", actions);
 
       const filtered = filterByChallengeId(actions, challengeId); // Filtra ejercicios por id
       console.log("filtered:", filtered);
-
+      console.log("datademo", dataDemo);
       if (filtered !== null && filtered.length > 0) {
         const newest = getNewest(filtered); // Obtiene el ejercicio más nuevo
         console.log("newest.content.id:", newest?.content.id);
@@ -718,7 +727,16 @@ Version anterior
             console.log("No hay siguiente contenido.");
           }
         } else {
+          // El profesor modifico los ejercicios demo y el ultimo ejercicio completado no concuerda con los nuevos
+          // ejercicios demos
+          // 1) los nuevos ejercicios demos no concuerdan con el ultimo realizado por el usuario, solo basta con
+          // ejecutar los demos desde el primero, pero, 2) si alguno concuerda podrían no mostrarse los nuevos
+          // ejercicios demos anteriores a ese:
           console.log("No se encontró resultContent para el id:", newest?.content.id);
+
+          setCurrentIndex(0); // para modificar el valor guardado en localStorage
+
+          setUseFiltered(false); // corrige el caso 1
         }
       } else {
         setUseFiltered(false); // Indica que se debe usar demoContent
@@ -738,7 +756,6 @@ Version anterior
         currentIndex >= 0 &&
         currentIndex < demoContent.length
       ) {
-        //const currentContent = demoContent[currentIndex]  as ContentJson | wpExercise;;
         const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
 
         // Actualiza sessionState con el contenido actual
@@ -749,6 +766,8 @@ Version anterior
         sessionState.callbackType = "challenge";
         sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
       } else {
+        setShowDemo(false);
+        setShowContent(false);
         console.log("No hay contenido demo disponible o currentIndex está fuera de límites.");
       }
     }
@@ -856,6 +875,7 @@ Version anterior
       sessionState.currentContent.json = nextContent;
       sessionState.currentContent.code = nextContent.code;
       setCurrentIndex(index + 1);
+      console.log("action", dataDemo.content[currentIndex].id);
       action({
         verbName: "challengeContentCompleted",
         contentID: dataDemo.content[currentIndex].id,
@@ -867,6 +887,8 @@ Version anterior
 
       // Configura el callback para el siguiente ejercicio
       sessionState.callback = createNextExerciseCallback(exercises, index + 1);
+      //setShowDemo(false);
+      // setShowContent(false);
     };
   };
 

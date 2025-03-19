@@ -27,6 +27,7 @@ import {
   FaFlagCheckered,
   FaEye,
   FaEyeSlash,
+  FaTimes,
 } from "react-icons/fa";
 import { gql } from "../graphql";
 import { formatDate, getColorScheme } from "../components/challenge/tools";
@@ -230,6 +231,13 @@ const StudentCard = ({
   const [groupProgress, setGroupProgress] = useState(0);
 
   const handleStartChallenge = () => {
+    router.push({
+      pathname: "/challengeStart",
+      query: { challengeId: id },
+    });
+  };
+
+  const handleContinueChallenge = () => {
     router.push({
       pathname: "/challengeStart",
       query: { challengeId: id },
@@ -507,10 +515,15 @@ const StudentCard = ({
           </>
         )}
         <Box display="flex" justifyContent="center" alignItems="center" w="100%">
-          <Button colorScheme="green" onClick={handleStartChallenge}>
-            Comenzar desafío
-            {/*<FaRocket size={24} />*/}
-          </Button>
+          {status === "finalized" ? (
+            <Button colorScheme="green" onClick={handleContinueChallenge} flex="1" maxW="200px">
+              Continuar desafío
+            </Button>
+          ) : (
+            <Button colorScheme="green" onClick={handleStartChallenge} flex="1" maxW="200px">
+              Comenzar desafío
+            </Button>
+          )}
         </Box>
       </VStack>
     </Box>
@@ -597,6 +610,17 @@ const ChallengeCard = ({
     alert("Desafío publicado");
   };
 
+  const handleUnpublish = () => {
+    const updatedChallengeData = {
+      ...challengeData,
+      startDate: null, // Sobrescribe startDate con null
+    };
+    setChallengeId(id);
+    setUpdateChallenge(updatedChallengeData);
+    setIsUpdated(true);
+    alert("Desafío publicado");
+  };
+
   const handleDelete = () => {
     const updatedChallengeData = {
       ...challengeData,
@@ -614,14 +638,6 @@ const ChallengeCard = ({
       query: { mode: "edit", challengeId: id },
     });
   };
-
-  /* const calculateGroupProgress = students => {
-    if (students.length === 0) return 0; // Avoid division by zero
-    const totalProgress = students.reduce((sum, student) => sum + student.progress, 0);
-    return totalProgress / students.length;
-  };
-*/
-  //------------------------------------------
 
   function getCodes(array) {
     return array.map(item => item.code);
@@ -858,11 +874,17 @@ const ChallengeCard = ({
             </Button>
           )}
           {/* Botón para publicar el desafío */}
-          {status == "unpublished" && (
+          {status === "unpublished" ? (
+            // Botón para publicar
             <Button colorScheme="green" onClick={() => handlePublish()} flex="1" maxW="200px">
               <FaPaperPlane size={16} />
             </Button>
-          )}
+          ) : status === "published" ? (
+            // Botón para despublicar
+            <Button colorScheme="red" onClick={() => handleUnpublish()} flex="1" maxW="200px">
+              <FaTimes size={16} />
+            </Button>
+          ) : null}
         </HStack>
       </VStack>
     </Box>
@@ -1184,20 +1206,6 @@ function updateDataWithEndDate(input: Challenge[] = []) {
 }
 
 //-------------------------------------------
-/*
-const sortStudentsByProgress = challenges => {
-  return challenges.map(challenge => {
-    const sortedGroups = challenge.groups?.map(group => {
-      const sortedStudents = group.students.sort((a, b) => b.progress - a.progress);
-      return { ...group, students: sortedStudents };
-    });
-    return { ...challenge, groups: sortedGroups };
-  });
-};
-*/
-//sortStudentsByProgress(challenges);
-
-//-----------------------------------
 
 function removeAdminUsers(data) {
   const filteredGroups = data?.groups?.map(group => {
