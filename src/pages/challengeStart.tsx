@@ -719,6 +719,9 @@ Version anterior
               );
             } else {
               console.log("nextContent no se encontró en demoContent.");
+              // sale de demo y entra al tutor (usa cardSelection)
+              setShowDemo(false);
+              setShowContent(false);
             }
           } else {
             // sale de demo y entra al tutor (usa cardSelection)
@@ -757,7 +760,8 @@ Version anterior
         currentIndex < demoContent.length
       ) {
         const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
-
+        console.log("demoContent 2", demoContent);
+        console.log("currentContent 2", currentContent.code);
         // Actualiza sessionState con el contenido actual
         sessionState.currentContent.code = currentContent.code;
         sessionState.currentContent.json = currentContent;
@@ -875,13 +879,13 @@ Version anterior
       sessionState.currentContent.json = nextContent;
       sessionState.currentContent.code = nextContent.code;
       setCurrentIndex(index + 1);
-      console.log("action", dataDemo.content[currentIndex].id);
+      console.log("action", dataDemo.content[index].id);
       action({
         verbName: "challengeContentCompleted",
-        contentID: dataDemo.content[currentIndex].id,
+        contentID: dataDemo.content[index].id,
         extra: {
           challengeID: challengeId,
-          contentCode: dataDemo.content[currentIndex].code,
+          contentCode: dataDemo.content[index].code,
         },
       });
 
@@ -974,7 +978,13 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     }, [processedContentResult])
 */
 
-  if (isLoading || isChallengeLoading || isLoadingDemo || isGroupUsersWithModelStatesLoading) {
+  if (
+    isLoading ||
+    isChallengeLoading ||
+    isLoadingDemo ||
+    isGroupUsersWithModelStatesLoading ||
+    isKcsByTopicsLoading
+  ) {
     return <Box p={5}>Cargando...</Box>;
   }
 
