@@ -32,7 +32,7 @@ export function getColorScheme(value) {
   } else if (value < 70) {
     return "orange.400"; // Naranja para valores entre 51% y 69%
   } else if (value <= 100) {
-    return "orange.300"; // Naranja claro para valores entre 70% y 99%
+    return "green"; // Naranja claro para valores entre 70% y 99%
   } else {
     return "white"; // Blanco para valores >= 100
   }
@@ -113,4 +113,75 @@ export const extractExercise = data => {
     }
   });
   return exercises;
+};
+
+export interface SkillModel {
+  mth: number; // Threshold value
+  level: number; // Current skill level
+}
+
+/**
+ * Calculates the normalized progress value for a single user's skills
+ * @param skillNames Array of skill identifiers to evaluate
+ * @param userValues User's skill data (record of SkillModel)
+ * @returns Normalized progress value (0-1)
+ */
+export const calculateUserProgress = (
+  skillNames: string[],
+  userValues: Record<string, SkillModel> | undefined | null,
+): number => {
+  // Handle undefined/null cases
+  if (!skillNames?.length || !userValues) return 0;
+
+  // Handle single skill case
+  if (skillNames.length === 1) {
+    const skill = userValues[skillNames[0]];
+    if (!skill || skill.level === undefined) return 0;
+    return skill.level >= skill.mth ? 1 : skill.level;
+  }
+
+  // Calculate average for multiple skills
+  let total = 0;
+  let validSkillsCount = 0;
+
+  for (const skillName of skillNames) {
+    // Safely access the skill
+    const skill = userValues[skillName];
+    if (!skill || skill.level === undefined) continue;
+
+    validSkillsCount++;
+    total += skill.level >= skill.mth ? 1 : skill.level;
+  }
+
+  return validSkillsCount > 0 ? total / validSkillsCount : 0;
+};
+
+/**
+ * Calculates the average progress across multiple users
+ * @param skillNames Array of skill identifiers to evaluate
+ * @param usersData Array of users with their skill data
+ * @returns Average progress value (0-1) rounded to 2 decimal places
+ */
+export const calculateGroupProgress = (
+  skillNames: string[] | undefined | null,
+  usersData:
+    | Array<{ id: string; json: Record<string, SkillModel> | undefined | null }>
+    | undefined
+    | null,
+): number => {
+  // Handle undefined/null cases
+  if (!skillNames?.length || !usersData?.length) return 0;
+
+  // Handle single user case
+  if (usersData.length === 1) {
+    return calculateUserProgress(skillNames, usersData[0].json);
+  }
+
+  // Calculate average for multiple users
+  const totalProgress = usersData.reduce((sum, user) => {
+    return sum + calculateUserProgress(skillNames, user.json);
+  }, 0);
+
+  const averageProgress = totalProgress / usersData.length;
+  return Number(averageProgress.toFixed(2));
 };

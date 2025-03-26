@@ -29,6 +29,8 @@ import MathDisplay from "../components/challenge/MathDisplay";
 import LatexPreview from "../components/challenge/LatexPreview";
 import { extractExercise, formatDate } from "../components/challenge/tools";
 import { withAuth } from "../components/Auth";
+import { useAction } from "../utils/action";
+import { sessionState } from "../components/SessionState";
 
 const mutationUpdateChallenge = gql(`
   mutation UpdateChallenge($challengeId: IntID!, $challenge: ChallengeInput!) {
@@ -513,7 +515,9 @@ export default withAuth(function ChallengesForm() {
 
   const isEditMode = mode === "edit";
   const challengeId = id ? id : "default-id";
-  //const { isLoading, user } = useAuth();
+  const action = useAction();
+  //const { user } = useAuth();
+  const userId = sessionState.currentUser.id;
 
   const { data: TopicsData, isLoading: isTopicsLoading } = useGQLQuery(queryTopics);
   const { data: GroupsData, isLoading: isGroupsLoading } = useGQLQuery(queryGroups);
@@ -572,10 +576,6 @@ export default withAuth(function ChallengesForm() {
   }, [dataChallenge, isChallengeLoading]);
 
   useEffect(() => {
-    console.log("endDateUseEffect", endDate);
-  }, [endDate]);
-
-  useEffect(() => {
     setIsCreated(false);
     setIsUpdated(false);
   }, []);
@@ -623,27 +623,21 @@ export default withAuth(function ChallengesForm() {
     );
   };
 
-  useEffect(() => {
-    console.log("selectedTopics", selectedTopics);
-  }, [selectedTopics]);
-
   const handleShowDetails = item => {
     setDetailItem(item);
     setDrawerOpen(true);
   };
 
   const handleSave = () => {
-    console.log("endDate", endDate);
-    //console.log("formatDateToUTC(endDate)", formatDateToRequiredFormat(endDate))
     const challengeData = {
       code: `${title.slice(0, 25)}_${Date.now()}`, //_${user.id}`, //unique key
       contentIds: selectedExercises.map(exercise => exercise.exerciseId),
       description: description,
       enabled: true,
-      endDate: localTimeToUTC(endDate), //new Date(endDate).toISOString(),//endDate + ":00.000Z",//formatDateToRequiredFormat(endDate),
+      endDate: localTimeToUTC(endDate),
       groupsIds: selectedGroups.map(group => group.id),
       projectId: 4, // 	NivPreAlg
-      startDate: startDate ? localTimeToUTC(startDate) : null, //startDate !== null ? startDate + ":00.000Z" : null,//formatDateToRequiredFormat(startDate) : null,
+      startDate: startDate ? localTimeToUTC(startDate) : null,
       tags: [],
       title: title,
       topicsIds: selectedTopics.map(topic => topic.id),
@@ -709,9 +703,33 @@ export default withAuth(function ChallengesForm() {
 
     if (isEditMode) {
       setIsUpdated(true);
+
+      action({
+        verbName: "challengeUpdate",
+        extra: {
+          challengeID: challengeId,
+          userID: userId,
+          contentIDs: challengeData.contentIds,
+          topicIDs: challengeData.topicsIds,
+          groupIDs: challengeData.groupsIds,
+        },
+      });
+
       alert("Desafío actualizado exitosamente!");
     } else {
       setIsCreated(true);
+
+      action({
+        verbName: "challengeCreate",
+        extra: {
+          challengeID: challengeId,
+          userID: userId,
+          contentIDs: challengeData.contentIds,
+          topicIDs: challengeData.topicsIds,
+          groupIDs: challengeData.groupsIds,
+        },
+      });
+
       alert("Desafío guardado exitosamente");
     }
 

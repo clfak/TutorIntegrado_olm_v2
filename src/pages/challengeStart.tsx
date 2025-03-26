@@ -11,10 +11,12 @@ import { useGQLQuery } from "rq-gql";
 import { gql } from "../graphql";
 import ShowContent from "../components/challenge/ShowContent";
 import ProgressBar from "../components/challenge/ProgressBar";
+import { LoadingOverlay } from "../components/challenge/LoadingOverlay";
 import { sessionState } from "../components/SessionState";
 import type { ContentJson } from "../components/SessionState";
 import type { wpExercise } from "../components/tutorWordProblems/types";
 import { useAction } from "../utils/action";
+import { SkillModel, calculateUserProgress } from "../components/challenge/tools";
 
 //----------------------------
 
@@ -211,25 +213,6 @@ function getUserJsonById(currentUser: any, userId: string): any | null {
   return null; // Si no se encuentra el usuario o el `json`, retorna null
 }
 
-function calculateAverageLevel(data, keysToSearch) {
-  // Filtra los datos que están en la lista `keysToSearch`
-  const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
-
-  // Obtiene los valores de `level` de los datos filtrados
-  const levels = filteredData.map(item => item.level);
-
-  // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
-  if (levels.length === 0) {
-    console.log("Datos recibidos:", { data, keysToSearch });
-    return 0; // O cualquier valor por defecto
-  }
-
-  // Calcula el promedio de los valores de `level`
-  const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
-
-  return averageLevel;
-}
-
 function getCodes(array) {
   return array.map(item => item.code);
 }
@@ -284,6 +267,10 @@ export default withAuth(function ChallengesStart() {
   const [processedLastExercise, setProcessedLastExercise] = useState(null);
   const [processedExperimentGroup, setProcessedExperimentGroup] = useState(null);
 
+  //const [showLoading, setShowLoading] = useState(false);
+  const [refreshDataManualLoading, setRefreshDataManualLoading] = useState(false); // Estado de carga para la actualización de CardSelection
+  const [refreshProgressManualLoading, setRefreshProgressManualLoading] = useState(false); // Estado de carga para la barra de progreso
+
   //--------------------------------
 
   const { data: dataChallenge, isLoading: isChallengeLoading } = useGQLQuery(queryGetChallenge, {
@@ -293,7 +280,7 @@ export default withAuth(function ChallengesStart() {
   const {
     data: dataGroupUsersWithModelStates,
     isLoading: isGroupUsersWithModelStatesLoading,
-    //refetch: refetchModelStates,
+    refetch: refetchModelStates,
   } = useGQLQuery(
     queryGroupUsersWithModelStates,
     /*{
@@ -311,7 +298,7 @@ export default withAuth(function ChallengesStart() {
     { enabled: !!topicsCode },
   );
 
-  const [userByJsonById, setUserByJsonById] = useState([]);
+  const [userByJsonById, setUserByJsonById] = useState<Record<string, SkillModel>>({});
 
   useEffect(() => {
     if (!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
@@ -339,8 +326,8 @@ export default withAuth(function ChallengesStart() {
       const kcsByContentByTopics = dataKcsByTopics?.kcsByContentByTopics || [];
       const uniqueKcs = getUniqueKcs(kcsByContentByTopics);
 
-      const averageLevelUser = calculateAverageLevel(userByJsonById, uniqueKcs) * 100;
-
+      console.log("userByJsonById", userByJsonById);
+      const averageLevelUser = calculateUserProgress(uniqueKcs, userByJsonById) * 100;
       setStudentProgress(averageLevelUser);
     }
   }, [isKcsByTopicsLoading, dataKcsByTopics, isGroupUsersWithModelStatesLoading, dataGroupUsersWithModelStates, userByJsonById]);
@@ -355,10 +342,6 @@ export default withAuth(function ChallengesStart() {
       setTopicsCode(getCodes(challenge.topics));
     }
   }, [isChallengeLoading, dataChallenge]);
-
-  useEffect(() => {
-    console.log("getCodes(topics)", topicsCode);
-  }, [topicsCode]);
 
   //-------------------------------------------
 
@@ -517,7 +500,7 @@ export default withAuth(function ChallengesStart() {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
-      enabled: !showDemo, //&& showContent //&& !prevShowContent,
+      enabled: !!showContent, //&& showContent //&& !prevShowContent,
     },
   );
 
@@ -555,84 +538,9 @@ export default withAuth(function ChallengesStart() {
       //enabled: !isChallengeLoading && !!contents,
     },
   );
-  /*
-  useEffect(()=> {
-    if(actionsError) {
-      console.log("Error:", actionsError);
-    }
-    
-        if(!actionsLoading && actionsData && !isLoadingDemo && dataDemo) {
-          //console.log("email", actionsData.actionsTopic.allActionsByUser.nodes[0].email)
-          const actions = actionsData.actionsTopic.allActionsByUser.nodes[0].actions
-          console.log("actionsData", actions)
-    
-          const filtered = filterByChallengeId(actions, challengeId); // filtra ejercicios por id, devuelve null si no action
-          if (filtered === null) {
-
-          }
-          //console.log(filtered);
-          
-          const newest = getNewest(filtered); // obtiene el ejercicio más nuevo
-          //console.log(newest?.content.id);
-          //console.log(dataDemo)
-          const resultContent = findObjectById(dataDemo?.content, newest?.content.id)
-          //console.log(resultContent)
-    
-        }
-      }, [actionsLoading, actionsData, isLoadingDemo, dataDemo])*/
 
   const action = useAction();
-  /*
-Version anterior
-  useEffect(() => {
-    //console.log("useEffect ejecutado"); // Depuración
-    //console.log("isLoadingDemo:", isLoadingDemo); // Depuración
-    //console.log("showDemo:", showDemo); // Depuración
 
-    if (!isLoadingDemo && showDemo) {
-      const demoContent = dataDemo ? dataDemo.content.map(content => content.json) : [];
-      //console.log("content", dataDemo.content)
-      //console.log("demoContent:", demoContent); // Depuración
-
-      if (demoContent && demoContent.length > 0) {
-        if (currentIndex >= 0 && currentIndex < demoContent.length) {
-          
-          //console.log("Accediendo a demoContent[currentIndex]"); // Depuración
-          const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
-
-          // Actualizar sessionState con el contenido actual
-          sessionState.currentContent.code = currentContent.code;
-          sessionState.currentContent.json = currentContent;
-          sessionState.nextContentPath = nextContentPath;
-          sessionState.topic = registerTopic;
-          sessionState.callbackType = "challenge";
-          sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
-          //console.log("dataDemo.content[currentIndex].id,", dataDemo.content[currentIndex].id,)
-          console.log("registerTopic", registerTopic)
-          action({
-            verbName: "challengeContentCompleted",
-            contentID:dataDemo.content[currentIndex].id,
-            extra: {
-              challengeID: challengeId,
-              contentCode: dataDemo.content[currentIndex].code
-            }
-          });
-        } else {
-          //console.log("currentIndex fuera de límites"); // Depuración
-          if (showContent || showDemo) {
-            //console.log("Desactivando showContent y showDemo"); // Depuración
-            sessionState.callbackType = "";
-            setShowContent(false);
-            setShowDemo(false);
-          }
-        }
-      } else {
-        console.log("demoContent está vacío"); // Depuración
-        // No desactivar showDemo y showContent si demoContent está vacío
-      }
-    }
-  }, [dataDemo, isLoadingDemo, showDemo, currentIndex, showContent]);
-*/
   //----------------------------------------
 
   function getNextContent(demoContent, resultContent) {
@@ -668,10 +576,6 @@ Version anterior
   }
 
   const [useFiltered, setUseFiltered] = useState(null); // Estado para controlar si se usa filtered o demoContent
-
-  useEffect(() => {
-    console.log("currentIndex", currentIndex);
-  }, [currentIndex]);
 
   useEffect(() => {
     if (
@@ -760,8 +664,8 @@ Version anterior
         currentIndex < demoContent.length
       ) {
         const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
-        console.log("demoContent 2", demoContent);
-        console.log("currentContent 2", currentContent.code);
+        //console.log("demoContent 2", demoContent);
+        //console.log("currentContent 2", currentContent.code);
         // Actualiza sessionState con el contenido actual
         sessionState.currentContent.code = currentContent.code;
         sessionState.currentContent.json = currentContent;
@@ -870,6 +774,18 @@ Version anterior
         setShowDemo(false);
         setShowContent(false);
         console.log("No hay más ejercicios disponibles");
+
+        if (studentProgress === 100) {
+          action({
+            verbName: "challengeCompleted",
+            extra: {
+              challengeID: challengeId,
+              userID: userId,
+            },
+          });
+        }
+
+        handleRefreshProgress(); // actualiza la barra de progreso
       };
     }
 
@@ -879,7 +795,7 @@ Version anterior
       sessionState.currentContent.json = nextContent;
       sessionState.currentContent.code = nextContent.code;
       setCurrentIndex(index + 1);
-      console.log("action", dataDemo.content[index].id);
+
       action({
         verbName: "challengeContentCompleted",
         contentID: dataDemo.content[index].id,
@@ -888,6 +804,18 @@ Version anterior
           contentCode: dataDemo.content[index].code,
         },
       });
+
+      if (studentProgress === 100) {
+        action({
+          verbName: "challengeCompleted",
+          extra: {
+            challengeID: challengeId,
+            userID: userId,
+          },
+        });
+      }
+
+      handleRefreshProgress(); // actualiza la barra de progreso
 
       // Configura el callback para el siguiente ejercicio
       sessionState.callback = createNextExerciseCallback(exercises, index + 1);
@@ -898,12 +826,27 @@ Version anterior
 
   const handleRefreshData = async () => {
     try {
-      await refetch(); // solicita datos al modelo
-      //await refetchModelStates() // actualiza la barra de progreso (no funciona, revisar)
+      setRefreshDataManualLoading(true);
+      await refetch(); // solicita datos al modelo (json)
+      await refetchModelStates(); // actualiza la barra de progreso
       setShowContent(false);
       console.log("Datos actualizados correctamente");
     } catch (error) {
       console.error("Error al actualizar los datos:", error);
+    } finally {
+      setRefreshDataManualLoading(false);
+    }
+  };
+
+  const handleRefreshProgress = async () => {
+    try {
+      setRefreshProgressManualLoading(true);
+      await refetchModelStates(); // actualiza la barra de progreso
+      console.log("Datos actualizados correctamente");
+    } catch (error) {
+      console.error("Error al actualizar los datos:", error);
+    } finally {
+      setRefreshProgressManualLoading(false);
     }
   };
 
@@ -912,6 +855,16 @@ Version anterior
     if (showContent && !showDemo) {
       sessionState.callback = () => {
         handleRefreshData();
+
+        if (studentProgress === 100) {
+          action({
+            verbName: "challengeCompleted",
+            extra: {
+              challengeID: challengeId,
+              userID: userId,
+            },
+          });
+        }
       };
       sessionState.callbackType = "tutor";
     }
@@ -937,59 +890,45 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     }
   }, [challengeId]);
 
-  //------------------------------------------------------------
+  //---------------------
 
-  useEffect(() => {
-    // Se ejecutará cuando el contenido cambie
-    console.log("currentContent updated", sessionState.currentContent);
-  }, [sessionState.currentContent]);
-  /*
-  if (!isLoadingDemo && showDemo) {
-
-    const demoContent = dataDemo ? dataDemo?.content.map(content => content.json) : [];
-
-    if (
-      demoContent &&
-      demoContent.length > 0 &&
-      currentIndex >= 0 &&
-      currentIndex < demoContent.length
-    ) {
-      console.log("demoContent", demoContent)
-      const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise; //contentResult[bestExercise]?.P;
-      //sessionState.currentContent.id = currentContent.id;
-      sessionState.currentContent.code = currentContent.code;
-      //sessionState.currentContent.description = currentContent.description;
-      //sessionState.currentContent.label = currentContent.label;
-      sessionState.currentContent.json = currentContent; //.json as unknown as ExType;
-      //sessionState.currentContent.kcs = currentContent.kcs;
-      //sessionState.selectionData = selectionData;
-      //sessionState.selectionData[0].optionSelected = true;
-      sessionState.nextContentPath = nextContentPath;
-      sessionState.topic = registerTopic;
-      sessionState.callbackType = "challenge";
-      sessionState.callback = createNextExerciseCallback(demoContent, currentIndex);
-    }
-  } */
-  /*
-    useEffect(()=> {
-      if(processedContentResult) {
-      console.log("processedContentResult[processedBestExercise]", processedContentResult[0].P.topics[0].id)
-      }
-    }, [processedContentResult])
-*/
-
-  if (
+  const isAnythingLoading =
     isLoading ||
     isChallengeLoading ||
     isLoadingDemo ||
     isGroupUsersWithModelStatesLoading ||
-    isKcsByTopicsLoading
-  ) {
-    return <Box p={5}>Cargando...</Box>;
+    isKcsByTopicsLoading ||
+    actionsLoading ||
+    refreshDataManualLoading ||
+    refreshProgressManualLoading;
+  /*
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isAnythingLoading) {
+      // Mostrar LoadingOverlay después de 1.8 segundos si aún está cargando
+      timeoutId = setTimeout(() => {
+        setShowLoading(true);
+      }, 3000); // 1800 ms = 1.8 segundos
+    } else {
+      setShowLoading(false); // Ocultar inmediatamente si ya no hay carga
+    }
+
+    return () => {
+      clearTimeout(timeoutId); // Limpiar el timeout si el componente se desmonta o cambia el estado
+    };
+  }, [isAnythingLoading]);*/
+  /*
+  if (showLoading) {
+    return <LoadingOverlay />;
+  }
+*/
+  if (isAnythingLoading) {
+    return <LoadingOverlay />;
   }
 
   return (
-    <Box>
+    <Box key={`challengeId-${challengeId}`}>
       <Box>
         {/* Franja en la parte superior */}
         <Box
@@ -1015,7 +954,12 @@ de montar el componente por primera vez reiniciando el contador a 0*/
 
             {/* Barra de Progreso */}
             <Box w="45%">
-              <ProgressBar label="" progress={studentProgress} color="green" />
+              <ProgressBar
+                key={`challengeId-${challengeId}-studentProgress-${studentProgress}`}
+                label=""
+                progress={studentProgress}
+                color="green"
+              />
             </Box>
           </Flex>
         </Box>
