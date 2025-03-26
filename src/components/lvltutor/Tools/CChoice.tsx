@@ -98,7 +98,7 @@ function handleAnswer(
   } else {
     output.result = 0;
     output.alerttype = "error";
-    output.alertmsg = "No has elegido una respuesta!.";
+    output.alertmsg = null;
     output.alerthidden = false;
     MQProxy.error = true;
   }
@@ -157,13 +157,13 @@ function RadioCard(props) {
   );
 }
 
-function ChoiceContent(option: option) {
+function ChoiceContent({ option, id }: { option: option; id: number }) {
   let text = option.text;
   let exp = option.expression;
   return (
-    <VStack alignItems={"center"} alignContent={"center"}>
-      {text ? <Text>{text}</Text> : null}
-      {exp ? <MQStaticMathField exp={exp} currentExpIndex={true} /> : null}
+    <VStack key={"CCVS" + id} alignItems={"center"} alignContent={"center"}>
+      {text ? <Text key={"CCT" + id}>{text}</Text> : null}
+      {exp ? <MQStaticMathField key={"CCL" + id} exp={exp} currentExpIndex={true} /> : null}
     </VStack>
   );
 }
@@ -205,17 +205,22 @@ function CChoice({
 
   return (
     <>
+      <Center>
+        <MQStaticMathField exp={step.expression} currentExpIndex={true} />
+      </Center>
       <SimpleGrid columns={[1, 1, 1, 2]} spacing={2} {...group}>
         {options.map(v => {
           const radio = getRadioProps({ value: String(v.id) });
           return (
             <RadioCard key={v.id} {...radio}>
-              <Grid templateColumns="repeat(20, 1fr)">
-                <GridItem colSpan={2} alignContent={"center"}>
-                  <Box borderRadius={"full"} bg="black" h={"2"} w={"2"} />
+              <Grid key={"SGG" + v.id} templateColumns="repeat(20, 1fr)">
+                <GridItem key={"SGI1" + v.id} colSpan={2} alignContent={"center"}>
+                  <Box key={"SGB" + v.id} borderRadius={"full"} bg="black" h={"2"} w={"2"} />
                 </GridItem>
-                <GridItem colSpan={16}>
-                  <Center>{ChoiceContent(v)}</Center>
+                <GridItem key={"SGI2" + v.id} colSpan={16}>
+                  <Center key={"SGC" + v.id}>
+                    <ChoiceContent key={"SGCC" + v.id} option={v} id={v.id} />
+                  </Center>
                 </GridItem>
               </Grid>
             </RadioCard>
@@ -244,7 +249,8 @@ function CChoice({
                 }
               setAttempts(ans.attempts);
               setAlertType(ans.alerttype);
-              setAlertMsg(ans.alertmsg);
+              if (ans.alertmsg) setAlertMsg(ans.alertmsg);
+              else setAlertMsg(step.incorrectMsg);
               setAlertHidden(ans.alerthidden);
               action({
                 verbName: "tryStep",

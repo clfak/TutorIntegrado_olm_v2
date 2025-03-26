@@ -55,6 +55,7 @@ export function handleInitialexpresion(e: ExType, svd: SD) {
   var d = JSON.stringify(svd);
   var dd = JSON.parse(d);
   dd.items.unshift({ id: -1, index: -1, content: { type: "expression", expression: exp } });
+  dd.items.unshift({ id: -1, index: -1, content: { type: "text", text: ejercicio.text } });
 
   return dd;
 }
@@ -162,7 +163,12 @@ const SurveyContent = ({ data }: { data: SD }) => {
                   <MathComponent tex={String.raw`${e.content.expression}`} display={false} />
                 </Center>
               );
-            //if (e.type.localeCompare("text")==0) return <TextAnswerView index={i} key={"sbq"+i}/>;
+            if (e.content.type.localeCompare("text") == 0)
+              return (
+                <Text key={"TSV1" + i} fontWeight="bold">
+                  {e.content.text}
+                </Text>
+              );
             return 0;
           })
         : 0}
@@ -212,8 +218,8 @@ function BasicUsage({ data, topicId }: { data: SD; topicId: string }) {
                       topicID: topicId,
                       extra: {
                         pollCode: data.code,
-                        context: data.items[0].content.expression
-                          ? data.items[0].content.expression
+                        context: data.items[1].content.expression
+                          ? data.items[1].content.expression
                           : "-1",
                         responses: ak,
                       },

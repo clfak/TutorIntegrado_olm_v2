@@ -1,6 +1,4 @@
 import { Box, Center, Heading, SimpleGrid, Text } from "@chakra-ui/react";
-import { useGQLQuery } from "rq-gql";
-import { gql } from "../graphql";
 import { withAuth, useAuth } from "../components/Auth";
 import { CardSelectionTopic } from "../components/contentSelectComponents/CardSelectionTopics";
 import { useRouter } from "next/router";
@@ -12,6 +10,9 @@ import StartModel, {
   SelectExcercise,
   uModel,
   UserModel,
+  Subtopic,
+  GetSubtopics,
+  gModel,
 } from "../utils/startModel";
 import { useSnapshot } from "valtio";
 import { gSelect } from "../components/GroupSelect";
@@ -30,29 +31,9 @@ export default withAuth(function TopicSelect() {
 
   StartModel(user.id);
   SuerveyQ("4", ["poll-srl1", "poll-srl2", "motiv-msg"]);
+  console.log("holaaaaaa");
 
-  const { data: subtopicsData, isLoading: isSubtopicsLoading } = useGQLQuery(
-    gql(/* GraphQL */ `
-      query GetSubtopics($parentIds: [IntID!]!) {
-        topics(ids: $parentIds) {
-          childrens {
-            id
-            code
-            label
-            sortIndex
-          }
-        }
-      }
-    `),
-    {
-      parentIds: [topic], // Convertir a número para la consulta
-    },
-    {
-      refetchOnWindowFocus: false,
-      //refetchOnMount: false,
-      refetchOnReconnect: false,
-    },
-  );
+  GetSubtopics(topic);
 
   // Acción para el registro
   const action = useAction();
@@ -66,17 +47,17 @@ export default withAuth(function TopicSelect() {
 
   // Manejo de subtópicos
   useEffect(() => {
-    if (subtopicsData) {
-      const codes = subtopicsData.topics[0]?.childrens?.map(child => child.code) || [];
+    if (Subtopic.data) {
+      const codes = Subtopic.data[0]?.childrens?.map(child => child.code) || [];
       setTopicCodes(codes);
     }
-  }, [subtopicsData]);
+  }, [Subtopic.data]);
 
   SelectExcercise(topicCodes);
 
   //Asegurar que en admin la correlacion entre la id del subtópico y sortindex vaya de menor a mayor
   const sortedChildrens =
-    subtopicsData?.topics?.[0]?.childrens?.sort((a, b) => Number(a.id) - Number(b.id)) || [];
+    Subtopic.data[0]?.childrens?.sort((a, b) => Number(a.id) - Number(b.id)) || [];
 
   UserModel(user.id);
   const gs = useSnapshot(gSelect);
@@ -87,17 +68,41 @@ export default withAuth(function TopicSelect() {
 
   useEffect(() => {
     reset2();
-    let alltags = user.tags;
-    if (gs.group) {
-      alltags = user.tags.concat(gs.group.tags);
-    }
-
-    for (var e of alltags) {
-      if (e === "oslm") uModel.osml = true;
-      if (e === "motiv-msg") uModel.motivmsg = true;
-      if (e === "session-progress") uModel.sprog = true;
-    }
   }, []);
+
+  let alltags = user.tags;
+  if (gs.group) {
+    alltags = user.tags.concat(gs.group.tags);
+  }
+
+  var oslm: number = 0;
+  var motiv: number = 0;
+  var sprog: number = 0;
+  var pol1: number = 0;
+  var pol2: number = 0;
+
+  for (var e of alltags) {
+    if (e === "oslm") oslm++;
+    if (e === "motiv-msg") motiv++;
+    if (e === "session-progress") sprog++;
+    if (e === "poll-srl1") pol1++;
+    if (e === "poll-srl2") pol2++;
+  }
+
+  if (oslm > 0) uModel.osml = true;
+  else uModel.osml = false;
+  if (motiv > 0) uModel.motivmsg = true;
+  else uModel.motivmsg = false;
+  if (sprog > 0) uModel.sprog = true;
+  else uModel.sprog = false;
+  if (pol1 > 0) uModel.pol1 = true;
+  else uModel.pol1 = false;
+  if (pol2 > 0) uModel.pol2 = true;
+  else uModel.pol2 = false;
+
+  if (Subtopic.isLoading || selectedExcercise.isLoading || uModel.isLoading || gModel.isLoading) {
+    return <Box p={5}> Cargando...</Box>;
+  }
 
   return (
     <>
@@ -131,7 +136,7 @@ export default withAuth(function TopicSelect() {
         <Text mb="5">Lista de subtópicos</Text>
         <Box w="full" mx="auto" p={4}>
           <SimpleGrid columns={[1, 1, 1, 3]} spacing={10} mt="4">
-            {!isSubtopicsLoading &&
+            {!Subtopic.isLoading &&
               !selectedExcercise.isLoading &&
               sortedChildrens.map((ejercicio, i) =>
                 selectedExcercise.kcXtopic[ejercicio.id] &&
@@ -141,7 +146,6 @@ export default withAuth(function TopicSelect() {
                     id={ejercicio.id}
                     index={i}
                     label={ejercicio.label}
-                    registerTopic={registerTopic}
                     //nextContentPath={nextContentPath}
                     KCs={selectedExcercise.kcXtopic[ejercicio.id] || []} // pasar KCs correspondientes
                   />

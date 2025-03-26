@@ -1,12 +1,18 @@
-.mq-root-block sup{
-    position: unset !important;
+.mq-root-block sup {
+  position: unset !important;
 }
 
 .mq-sup {
-    margin-bottom: 0px !important;
+  margin-bottom: 0px !important;
 }
 
+.mq-scaled {
+  transform: scale(1, 1) !important;
+}
 
+.mq-paren {
+  vertical-align: middle !important;
+}
 /*.mq-root-block {
     overflow: visible !important;
 }*/

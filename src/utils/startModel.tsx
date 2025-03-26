@@ -1,5 +1,5 @@
 import { useGQLQuery } from "rq-gql";
-import { gql } from "../graphql";
+import { gql, Topic } from "../graphql";
 import { proxy } from "valtio";
 import { useEffect } from "react";
 import type { ExType } from "../components/lvltutor/Tools/ExcerciseType";
@@ -66,6 +66,8 @@ export const uModel = proxy<{
   osml: boolean;
   motivmsg: boolean;
   sprog: boolean;
+  pol1: boolean;
+  pol2: boolean;
   data: Array<{
     id: string;
     json: Record<string, model>;
@@ -75,6 +77,8 @@ export const uModel = proxy<{
   osml: false,
   motivmsg: false,
   sprog: false,
+  pol1: false,
+  pol2: false,
   data: [
     {
       id: "-2",
@@ -82,6 +86,50 @@ export const uModel = proxy<{
     },
   ],
 });
+
+export const Subtopic = proxy<{
+  isLoading: boolean;
+  data: Array<Partial<Topic>>;
+}>({
+  isLoading: true,
+  data: [],
+});
+
+export function GetSubtopics(parentid: string) {
+  const { isLoading: subtopicLoading } = useGQLQuery(
+    gql(/* GraphQL */ `
+      query GetSubtopics($parentIds: [IntID!]!) {
+        topics(ids: $parentIds) {
+          childrens {
+            id
+            code
+            label
+            sortIndex
+          }
+        }
+      }
+    `),
+    {
+      parentIds: [parentid], // Convertir a número para la consulta
+    },
+    {
+      //enabled: false,
+      onSuccess(data) {
+        Subtopic.data = data.topics as Array<Partial<Topic>>;
+      },
+      onSettled() {
+        Subtopic.isLoading = false;
+      },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  );
+
+  useEffect(() => {
+    Subtopic.isLoading = subtopicLoading;
+  }, [subtopicLoading]);
+}
 
 export function UserModel(uid: string) {
   const { isLoading: userModelData } = useGQLQuery(
