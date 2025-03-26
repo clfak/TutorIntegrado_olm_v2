@@ -664,8 +664,10 @@ export default withAuth(function ChallengesStart() {
         currentIndex < demoContent.length
       ) {
         const currentContent = demoContent[currentIndex] as unknown as ContentJson | wpExercise;
+
         //console.log("demoContent 2", demoContent);
         //console.log("currentContent 2", currentContent.code);
+
         // Actualiza sessionState con el contenido actual
         sessionState.currentContent.code = currentContent.code;
         sessionState.currentContent.json = currentContent;
@@ -923,8 +925,10 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     return <LoadingOverlay />;
   }
 */
+
   if (isAnythingLoading) {
     return <LoadingOverlay />;
+
   }
 
   return (
