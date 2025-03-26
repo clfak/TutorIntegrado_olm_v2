@@ -31,7 +31,6 @@ export default withAuth(function TopicSelect() {
 
   StartModel(user.id);
   SuerveyQ("4", ["poll-srl1", "poll-srl2", "motiv-msg"]);
-  console.log("holaaaaaa");
 
   GetSubtopics(topic);
 

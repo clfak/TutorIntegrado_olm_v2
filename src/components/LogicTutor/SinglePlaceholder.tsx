@@ -70,6 +70,7 @@ const SinglePlaceholder = ({
       setHints(hints + 1);
     }
     setAttempts(attempts + 1);
+
     action({
       verbName: "tryStep",
       stepID: "" + exc.steps[nStep].stepId,
@@ -79,7 +80,7 @@ const SinglePlaceholder = ({
       kcsIDs: exc.steps[nStep].KCs,
       extra: {
         response: [Values],
-        attempts: attempts,
+        attempts: attempts + 1,
         hints: hints,
       },
     });

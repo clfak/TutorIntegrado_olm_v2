@@ -1,17 +1,10 @@
 import React from "react";
 import { Image, Container, Center, Stack, Box } from "@chakra-ui/react";
-import Inter1 from "../../components/LogicTutor/LogicaJson/Inter1.json";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import Latex from "react-latex-next";
 import "katex/dist/katex.min.css";
 import StepComponent from "./StepComponent";
 const DynamicTutorLogic = ({ exc, topicId }: { exc: ExLog; topicId: string }) => {
-  if (exc == undefined) {
-    exc = Inter1 as ExLog;
-  }
-  if (topicId == undefined) {
-    topicId = "38";
-  }
   return (
     <>
       <Stack textAlign="center" fontSize={{ base: "12px", sm: "15px", lg: "20px" }}>

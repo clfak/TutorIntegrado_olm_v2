@@ -83,10 +83,10 @@ const MultiplePlaceholders = ({
       contentID: exc.code,
       topicID: topic,
       result: respuesta ? 1 : 0,
-      kcsIDs: exc.steps[nStep].KCs,
+      kcsIDs: [...exc.steps[nStep].KCs],
       extra: {
-        response: [ValuesArray],
-        attempts: attempts,
+        response: ValuesArray,
+        attempts: attempts + 1,
         hints: hints,
       },
     });
@@ -132,6 +132,7 @@ const MultiplePlaceholders = ({
             <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
               Enviar
             </Button>
+
             <Hint
               hints={exc.steps[nStep].hints}
               contentId={exc.code}
