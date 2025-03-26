@@ -125,19 +125,22 @@ const SinglePlaceholder = ({
         <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
           Enviar
         </Button>
-        <Hint
-          hints={exc.steps[nStep].hints}
-          contentId={exc.code}
-          topicId={topic}
-          stepId={exc.steps[nStep].stepId}
-          matchingError={exc.steps[nStep].matchingError}
-          response={[latex]}
-          error={error}
-          setError={setError}
-          hintCount={hints}
-          setHints={setHints}
-          setLastHint={setLastHint}
-        ></Hint>
+        {isCorrectValue ? null : 
+        (
+          <Hint
+            hints={exc.steps[nStep].hints}
+            contentId={exc.code}
+            topicId={topic}
+            stepId={exc.steps[nStep].stepId}
+            matchingError={exc.steps[nStep].matchingError}
+            response={[latex]}
+            error={error}
+            setError={setError}
+            hintCount={hints}
+            setHints={setHints}
+            setLastHint={setLastHint}
+          ></Hint>
+        )}
       </Stack>
 
       {error && (
