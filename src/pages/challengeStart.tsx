@@ -928,7 +928,6 @@ de montar el componente por primera vez reiniciando el contador a 0*/
 
   if (isAnythingLoading) {
     return <LoadingOverlay />;
-
   }
 
   return (
