@@ -55,7 +55,7 @@ const ShowSteps = ({
         <AccordionButton
           style={{ backgroundColor: color }}
           onClick={() => {
-            setStep(nStep);
+            setStep((prev: number) => (prev === nStep ? -1 : nStep));
           }}
         >
           <Box
