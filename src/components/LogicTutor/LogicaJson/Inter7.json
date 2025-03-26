@@ -1,0 +1,86 @@
+{
+  "code": "inter7",
+  "title": "Representacion Intervalos",
+  "type": "lvltutor2",
+  "img": "rectaEj7.png",
+  "meta": {},
+  "text": "Escriba como conjunto e intervalo la siguiente recta perteneciente a los números Reales.",
+  "initialExpression": " ",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "\\text{Extremo Inferior} \\quad \\placeholder[a]{} \\quad  \\text{Extremo Superior} \\quad \\placeholder[b]{}",
+      "stepType": "MultiplePlaceholders",
+      "stepTitle": "Paso 1: Reconozca los valores extremos de la recta",
+      "displayResult": ["\\text{Extremo inferior -3, Extremo superior ∞}"],
+      "KCs": ["RecValExt"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Los valores extremos se representan a ambos lados de la recta"
+        },
+        {
+          "hintId": 1,
+          "hint": "El extremo inferior se representa a la izquierda y el superior a la derecha"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["-3", "\\infty"],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "Los Extremos corresponden",
+      "summary": "1)Luego se comprueban valores del conjunto"
+    },
+    {
+      "stepId": "1",
+      "expression": "",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 2: Reconozca que valor no pertenece al conjunto",
+      "displayResult": ["\\text{El valor es -5}"],
+      "KCs": ["RecValMed"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "584",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "6",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "text": "1",
+          "correct": false
+        },
+        {
+          "id": 3,
+          "text": "-5",
+          "correct": true
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Los extremos en un intervalo abierto no pertenecen al conjunto"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["3"],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El valor seleccionado no pertenece al conjunto",
+      "summary": "2) Se reconoce el valor que no pertenece al conjunto"
+    }
+  ]
+}

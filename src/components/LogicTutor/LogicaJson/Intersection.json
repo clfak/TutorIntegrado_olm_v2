@@ -1,0 +1,142 @@
+{
+  "code": "inters1",
+  "title": "Intersección de Intervalos",
+  "type": "lvltutor2",
+  "img": "RectaFinal.png",
+  "meta": {},
+  "text": "Dada la siguiente representación de intervalos ",
+  "initialExpression": " ",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "\\text{¿Cuál de los siguientes tramos en la gráfica} \\\\ \\text{representa la intersección de los 2 intervalos?}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 1: Reconozca la intersección",
+      "displayResult": ["[1,4]"],
+      "KCs": ["RecInter"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "[1,4]",
+          "correct": true
+        },
+        {
+          "id": 1,
+          "text": "[1,7]",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "text": "[4,7]",
+          "correct": false
+        },
+        {
+          "id": 3,
+          "text": "[-3,1]",
+          "correct": false
+        },
+        {
+          "id": 4,
+          "text": "[-3,7]",
+          "correct": false
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "La intersección esta representada por los elementos en común entre los intervalos"
+        },
+        {
+          "hintId": 1,
+          "hint": "La interseccion corresponde a [1,4]"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["0"],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "B corresponde al intervalo",
+      "summary": "1) El tramo que corresponde a la intersección es: "
+    },
+    {
+      "stepId": "1",
+      "expression": "\\text{El valor es -3}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 2: Reconozca si el valor siguiente pertenece a la intersección",
+      "displayResult": ["Falso"],
+      "KCs": ["RecValMed"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Verdadero",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "Falso",
+          "correct": true
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Debes verificar si el valor pertenece a ambos intervalos"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["1"],
+          "nextStep": "2"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El Valor no pertenece a la interseccion",
+      "summary": "2) Se comprueba si el valor \\( \\sqrt{3} \\) pertenece al conjunto"
+    },
+    {
+      "stepId": "2",
+      "expression": "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}",
+      "stepType": "MultiplePlaceholders",
+      "stepTitle": "Paso 3: Escriba por comprensión el intervalo que representa la intersección",
+      "displayResult": ["x\\inℝ:1\\le x\\le4"],
+      "KCs": ["RepComp"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Atento a la notación"
+        },
+        {
+          "hintId": 1,
+          "hint": "Por ejemplo el intervalo [-1,1] representado por comprensión es: ",
+          "expression": "x \\in \\mathrm{R}:-1 \\leq x \\leq 1"
+        },
+        {
+          "hintId": 2,
+          "hint": "Por compresión un intervalo cerrado se representa como: ",
+          "expression": "x \\in \\mathrm{P}:a \\leq x \\leq b"
+        },
+        {
+          "hintId": 3,
+          "hint": "La respuesta es: ",
+          "expression": "x\\inℝ:1\\le x\\le4"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["R", "1", "\\le", "\\le", "4"],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El intervalo corresponde a la interseccion",
+      "summary": "3)Se representa el conjunto por conprensión"
+    }
+  ]
+}

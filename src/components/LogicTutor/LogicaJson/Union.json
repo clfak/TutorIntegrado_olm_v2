@@ -1,0 +1,146 @@
+{
+  "code": "uni1",
+  "title": "Unión de intervalos",
+  "type": "lvltutor2",
+  "img": "Union1.png",
+  "meta": {},
+  "text": "Dada la siguiente representación de intervalos ",
+  "initialExpression": " ",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "\\text{¿Cuál de los siguientes tramos en la gráfica} \\\\ \\text{representa la unión de los 2 intervalos}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 1: Reconozca la Unión de los intervalos",
+      "displayResult": ["]-3,8]"],
+      "KCs": ["RecUnGraf"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "[3,5[",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "]5,8]",
+          "correct": false
+        },
+        {
+          "id": 2,
+          "text": "]-3,8]",
+          "correct": true
+        },
+        {
+          "id": 3,
+          "text": "[-3,8]",
+          "correct": false
+        },
+        {
+          "id": 4,
+          "text": "[3,8]",
+          "correct": false
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "La Unión esta representada por el conjunto que reune los elementos de ambos conjuntos"
+        },
+        {
+          "hintId": 1,
+          "hint": "Un intervalo extremo cerrado se representa con corchetes cerrados [ mientras que el abierto utiliza corchete abierto ]"
+        },
+        {
+          "hintId": 2,
+          "hint": "La Unión corresponde a  ]-3,8]"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["2"],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "B corresponde al intervalo",
+      "summary": "1) El tramo que corresponde a la Unión es: "
+    },
+    {
+      "stepId": "1",
+      "expression": "\\text{El valor es -3}",
+      "stepType": "Alternatives",
+      "stepTitle": "Paso 2: Reconozca si el valor siguiente pertenece a la Unión",
+      "displayResult": ["Falso"],
+      "KCs": ["RecValMedio"],
+      "multipleChoice": [
+        {
+          "id": 0,
+          "text": "Verdadero",
+          "correct": false
+        },
+        {
+          "id": 1,
+          "text": "Falso",
+          "correct": true
+        }
+      ],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Debes seleccionar si el valor pertenece a la Unión"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["1"],
+          "nextStep": "2"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El Valor no pertenece a la Unión",
+      "summary": "2) Se comprueba si el valor -3 pertenece al conjunto"
+    },
+    {
+      "stepId": "2",
+      "expression": "{x\\in \\placeholder[a]{} : \\placeholder[b]{} \\placeholder[c]{} x \\placeholder[d]{} \\placeholder[e]{}}",
+      "stepType": "MultiplePlaceholders",
+      "stepTitle": "Paso 3: Escriba por comprensión el intervalo que representa la Unión:",
+      "displayResult": ["x\\inℝ:-3< x\\le8"],
+      "KCs": ["RecInter", "RepIntCerr", "RepIntAb"],
+      "texts": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Atento a la notación"
+        },
+        {
+          "hintId": 1,
+          "hint": "Por ejemplo el intervalo [-1,1] representado por comprensión es: ",
+          "expression": "x \\in \\mathrm{R}:-1 \\leq x \\leq 1"
+        },
+        {
+          "hintId": 2,
+          "hint": "Por compresión un intervalo cerrado se representa como: ",
+          "expression": "x \\in \\mathrm{P}:a \\leq x \\leq b"
+        },
+        {
+          "hintId": 3,
+          "hint": "La respuesta es: ",
+          "expression": "x\\inℝ:-3< x\\le8"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["R", "-3", "<", "\\le", "8"],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El intervalo corresponde a la Unión",
+      "summary": "3)Se representa el conjunto por conprensión"
+    }
+  ]
+}

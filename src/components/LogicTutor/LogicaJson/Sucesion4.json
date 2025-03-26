@@ -1,0 +1,111 @@
+{
+  "code": "succ4",
+  "title": "Sucesión",
+  "type": "lvltutor2",
+  "img": "",
+  "meta": {},
+  "text": "Dado el siguiente término general de una sucesión: ",
+  "initialExpression": "B_n = \\frac{{(3n+1)^{2} \\cdot (2n)}}{(1+n^2)\\cdot (-n-3)}",
+  "steps": [
+    {
+      "stepId": "0",
+      "expression": "B_1 = \\frac{{(3\\placeholder[a]{n}+1)^{2} \\cdot (2\\placeholder[b]{n})}}{{(1+\\placeholder[c]{n}²)\\cdot (-\\placeholder[d]{n}-3)}",
+      "stepType": "MultiplePlaceholders",
+      "stepTitle": "Paso 1: Represente el término indicado de la sucesión",
+      "displayResult": [
+        "B_1 = \\frac{{(3\\cdot 1 +1)^{2} \\cdot (2\\cdot 1)}}{{(1+1²)\\cdot (-1\\cdot-3)}}"
+      ],
+      "KCs": ["RecNotSuc"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "En este caso tienes que representar el primer valor de la serie"
+        },
+        {
+          "hintId": 1,
+          "hint": "Estamos calculando B1 "
+        },
+        {
+          "hintId": 1,
+          "hint": "Debes reemplazar los valores de n en la expresion por 1"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["1", "1", "1", "1"],
+          "nextStep": "1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "La representacion esta correcta",
+      "summary": "1) La representación del primer termino es"
+    },
+    {
+      "stepId": "1",
+      "expression": "B_1 = \\placeholder[a]{}",
+      "stepType": "SinglePlaceholder",
+      "stepTitle": "Paso 2: Resuelva el primer valor de la sucesión, si no es entero, represéntelo como fracción de la forma $\\frac{a}{b}$",
+      "displayResult": ["-4"],
+      "KCs": [],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Debe representar la respuesta como fraccion"
+        },
+        {
+          "hintId": 1,
+          "hint": "La respuesta es -4 ",
+          "expression": "0"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["-4"],
+          "nextStep": "2"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "El valor de B1 es correcto",
+      "summary": "2) El primer valor de la sucesión es"
+    },
+    {
+      "stepId": "2",
+      "expression": "-4,\\; -\\frac{196}{25}\\; ,   \\placeholder[a]{},\\; \\placeholder[b]{}",
+      "stepType": "MultiplePlaceholders",
+      "validation": "evaluate",
+      "stepTitle": "Paso 3: Encuentre los primeros 4 términos de la sucesión, simplifica las fracciones cuando corresponda",
+      "displayResult": ["-4, -\\frac{196}{25}, -10, -\\frac{1352}{119}"],
+      "KCs": ["CalcValSuc"],
+      "values": [],
+      "hints": [
+        {
+          "hintId": 0,
+          "hint": "Debes calcular B3 y B4"
+        },
+        {
+          "hintId": 1,
+          "hint": "Expresa los valores como fraccion"
+        },
+        {
+          "hintId": 0,
+          "hint": "Los valores son: ",
+          "expression": "-10 y -\\frac{1352}{119}"
+        }
+      ],
+      "matchingError": [],
+      "answers": [
+        {
+          "answer": ["-10", "-\\frac{1352}{119}"],
+          "nextStep": "-1"
+        }
+      ],
+      "incorrectMsg": "Compruebe su respuesta",
+      "correctMsg": "La sucesion corresponde",
+      "summary": "3) Los cuatro primeros valores de la sucesión son"
+    }
+  ]
+}
