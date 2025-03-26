@@ -20,7 +20,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     <Flex
       height="100vh"
       bg={mainContainerBackground}
-      overflow="clip"
+      overflow="hidden"
       sx={{ "--sidebar-width": "16rem" }}
     >
       <Box
