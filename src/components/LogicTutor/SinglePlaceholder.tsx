@@ -67,7 +67,6 @@ const SinglePlaceholder = ({
       response = true;
     } else {
       setError(true);
-      setHints(hints + 1);
     }
     setAttempts(attempts + 1);
 
@@ -122,23 +121,25 @@ const SinglePlaceholder = ({
         </Box>
       </Center>
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-        <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
-          Enviar
-        </Button>
         {isCorrectValue ? null : (
-          <Hint
-            hints={exc.steps[nStep].hints}
-            contentId={exc.code}
-            topicId={topic}
-            stepId={exc.steps[nStep].stepId}
-            matchingError={exc.steps[nStep].matchingError}
-            response={[latex]}
-            error={error}
-            setError={setError}
-            hintCount={hints}
-            setHints={setHints}
-            setLastHint={setLastHint}
-          ></Hint>
+          <>
+            <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
+              Enviar
+            </Button>
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={[latex]}
+              error={error}
+              setError={setError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
+            ></Hint>
+          </>
         )}
       </Stack>
 

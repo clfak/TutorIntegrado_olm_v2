@@ -37,7 +37,6 @@ const Blank = ({
       setCompleted(true);
     } else {
       setError(true);
-      setHints(hints + 1);
     }
     setAttempts(attempts + 1);
     action({

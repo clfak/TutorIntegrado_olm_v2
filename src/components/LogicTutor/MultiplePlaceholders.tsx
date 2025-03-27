@@ -63,7 +63,6 @@ const MultiplePlaceholders = ({
         respuesta = true;
       } else {
         setError(true);
-        setHints(hints + 1);
       }
     } else {
       if (ValuesArray.every((value, index) => value === answer[index])) {
@@ -71,7 +70,6 @@ const MultiplePlaceholders = ({
         respuesta = true;
       } else {
         setError(true);
-        setHints(hints + 1);
       }
     }
 

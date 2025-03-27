@@ -37,9 +37,7 @@ const InputButtons = ({
       setCompleted(true);
       respuesta = true;
     } else {
-      //console.log("Respuesta incorrecta");
       setError(true);
-      setHints(hints + 1);
     }
     setAttempts(attempts + 1);
     action({
