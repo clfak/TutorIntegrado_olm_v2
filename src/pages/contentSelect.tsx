@@ -247,7 +247,7 @@ export default withAuth(function ContentSelect() {
         <p>{parameters.CSMain.noData}</p>
       ) : data?.contentSelection?.contentSelected?.topicCompletedMsg?.label ==
         parameters.CSMain.completeMsgService ? (
-        <CompleteTopic />
+        <CompleteTopic topicCodes={[topics]} />
       ) : !isLoading && !isFetching /*&& !queryLastExercise*/ ? (
         <Box maxW="90%" padding="1">
           <Center>
