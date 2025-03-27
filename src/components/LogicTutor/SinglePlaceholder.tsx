@@ -125,8 +125,7 @@ const SinglePlaceholder = ({
         <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
           Enviar
         </Button>
-        {isCorrectValue ? null : 
-        (
+        {isCorrectValue ? null : (
           <Hint
             hints={exc.steps[nStep].hints}
             contentId={exc.code}

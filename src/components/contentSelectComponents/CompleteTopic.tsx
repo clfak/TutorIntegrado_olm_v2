@@ -37,7 +37,7 @@ export const CompleteTopic = ({ topicCodes }: { topicCodes: Array<string> }) => 
             label={content.label}
             kcs={content.kcs}
             selectionTitle={content.label}
-            selectionText={"potato"}
+            selectionText={""}
             selectionBest={false}
             registerTopic={topicCodes[0]}
             nextContentPath={nextContentPath}

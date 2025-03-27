@@ -81,25 +81,24 @@ const Blank = ({
         </Button>
       </Stack>
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-      {isCorrectValue ? null : 
-        (
+        {isCorrectValue ? null : (
           <>
-          <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
-            {" "}
-            Enviar
-          </Button>
-          <Hint
-            hints={exc.steps[nStep].hints}
-            contentId={exc.code}
-            topicId={topic}
-            stepId={exc.steps[nStep].stepId}
-            matchingError={exc.steps[nStep].matchingError}
-            response={respuestas}
-            error={error}
-            setError={setError}
-            hintCount={hints}
-            setHints={setHints}
-            setLastHint={setLastHint}
+            <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
+              {" "}
+              Enviar
+            </Button>
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={respuestas}
+              error={error}
+              setError={setError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
             ></Hint>
           </>
         )}

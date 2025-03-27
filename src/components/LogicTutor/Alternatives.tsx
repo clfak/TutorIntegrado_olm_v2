@@ -100,25 +100,23 @@ const Alternatives = ({
         </Alert>
       )}
       <Center>
-      {isCorrectValue ? null : 
-        (
+        {isCorrectValue ? null : (
           <>
-          <Hint
-            hints={exc.steps[nStep].hints}
-            contentId={exc.code}
-            topicId={topic}
-            stepId={exc.steps[nStep].stepId}
-            matchingError={exc.steps[nStep].matchingError}
-            response={[response]}
-            error={showError}
-            setError={setShowError}
-            hintCount={hints}
-            setHints={setHints}
-            setLastHint={setLastHint}
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={[response]}
+              error={showError}
+              setError={setShowError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
             />
           </>
-          )
-        }
+        )}
       </Center>
     </>
   );
