@@ -172,8 +172,8 @@ const SurveyContent = ({ data }: { data: SD }) => {
                   {e.content.text}
                 </Text>
               );
-            if (e.content.type.localeCompare("img") == 0) console.log(e.content.img);
-            return <Image src={"img/" + e.content.img} />;
+            if (e.content.type.localeCompare("img") == 0)
+              return <Image key={"ISV1" + i} src={"img/" + e.content.img} />;
             return 0;
           })
         : 0}
