@@ -267,7 +267,6 @@ export default withAuth(function ChallengesStart() {
   const [processedLastExercise, setProcessedLastExercise] = useState(null);
   const [processedExperimentGroup, setProcessedExperimentGroup] = useState(null);
 
-  //const [showLoading, setShowLoading] = useState(false);
   const [refreshDataManualLoading, setRefreshDataManualLoading] = useState(false); // Estado de carga para la actualización de CardSelection
   const [refreshProgressManualLoading, setRefreshProgressManualLoading] = useState(false); // Estado de carga para la barra de progreso
 
@@ -326,7 +325,7 @@ export default withAuth(function ChallengesStart() {
       const kcsByContentByTopics = dataKcsByTopics?.kcsByContentByTopics || [];
       const uniqueKcs = getUniqueKcs(kcsByContentByTopics);
 
-      console.log("userByJsonById", userByJsonById);
+      //console.log("userByJsonById", userByJsonById);
       const averageLevelUser = calculateUserProgress(uniqueKcs, userByJsonById) * 100;
       setStudentProgress(averageLevelUser);
     }
@@ -500,7 +499,7 @@ export default withAuth(function ChallengesStart() {
       refetchOnWindowFocus: false,
       //refetchOnMount: false,
       refetchOnReconnect: false,
-      enabled: !!showContent, //&& showContent //&& !prevShowContent,
+      enabled: !!showContent,
     },
   );
 
@@ -508,7 +507,6 @@ export default withAuth(function ChallengesStart() {
     data: dataDemo,
     isLoading: isLoadingDemo,
     //isError: isErrorDemo,
-    //isFetched: isFetchingDemo,
   } = useGQLQuery(
     gql(`
       query DataDemo($ids: [IntID!]!) {
@@ -903,28 +901,6 @@ de montar el componente por primera vez reiniciando el contador a 0*/
     actionsLoading ||
     refreshDataManualLoading ||
     refreshProgressManualLoading;
-  /*
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    if (isAnythingLoading) {
-      // Mostrar LoadingOverlay después de 1.8 segundos si aún está cargando
-      timeoutId = setTimeout(() => {
-        setShowLoading(true);
-      }, 3000); // 1800 ms = 1.8 segundos
-    } else {
-      setShowLoading(false); // Ocultar inmediatamente si ya no hay carga
-    }
-
-    return () => {
-      clearTimeout(timeoutId); // Limpiar el timeout si el componente se desmonta o cambia el estado
-    };
-  }, [isAnythingLoading]);*/
-  /*
-  if (showLoading) {
-    return <LoadingOverlay />;
-  }
-*/
 
   if (isAnythingLoading) {
     return <LoadingOverlay />;

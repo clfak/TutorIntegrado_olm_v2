@@ -379,6 +379,10 @@ const StudentCard = ({
     );
   };
 
+  if (isKcsByTopicsLoading) {
+    return <LoadingOverlay />;
+  }
+
   return (
     <Box
       borderWidth={status === "finalized" ? "4px" : "1px"}
@@ -553,7 +557,6 @@ const ChallengeCard = ({
 }) => {
   const router = useRouter();
   const [uniqueKcs, setUniqueKcs] = useState([]);
-  //const [groupAverages, setGroupAverages] = useState({});
 
   const challengeFilter = challengesOriginal.find(challenge => challenge.id === id);
 
@@ -687,6 +690,13 @@ const ChallengeCard = ({
 
   //------------------------------
 
+  // Si está cargando, muestra un Spinner, se ve un doble Spinner
+  /*if (isKcsByTopicsLoading) {
+    return <LoadingOverlay />;
+  }*/
+
+  //------------------------------
+
   return (
     <Box
       borderWidth={status === "finalized" ? "4px" : "1px"}
@@ -804,9 +814,9 @@ const ChallengeCard = ({
                       item => item.id === student.id,
                     );
                     const averageLevelStudent =
-                      calculateAverageLevel(
-                        studentsWithModelStates?.modelStates?.nodes[0]?.json,
+                      calculateUserProgress(
                         uniqueKcs,
+                        studentsWithModelStates?.modelStates?.nodes[0]?.json,
                       ) * 100;
                     return (
                       <HStack key={idx} justify="space-between" w="100%">
@@ -1016,7 +1026,7 @@ function addTagsToStudents(data) {
         group.students?.forEach(student => {
           if (!student.tags) {
             //student.tags = [];
-            console.log("Faltan los tags de los estudiantes");
+            //console.log("Faltan los tags de los estudiantes");
           }
 
           // Agregamos los tags del grupo al estudiante, evitando duplicados
@@ -1298,31 +1308,6 @@ function getAllUsersJson(users) {
   return allJsons; // Retorna el arreglo con todos los `json` encontrados
 }
 
-function calculateAverageLevel(data, keysToSearch) {
-  // Check if data is defined
-  if (!data) {
-    //console.log("Data is undefined:", { data, keysToSearch });
-    return 0; // default value
-  }
-
-  // Filtra los datos que están en la lista `keysToSearch`
-  const filteredData = keysToSearch?.map(key => data[key]).filter(Boolean);
-
-  // Obtiene los valores de `level` de los datos filtrados
-  const levels = filteredData.map(item => item.level);
-
-  // Si no hay valores de `level`, imprime los datos recibidos y retorna 0
-  if (levels.length === 0) {
-    //console.log("Datos recibidos:", { data, keysToSearch });
-    return 0; // O cualquier valor por defecto
-  }
-
-  // Calcula el promedio de los valores de `level`
-  const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
-
-  return averageLevel;
-}
-
 //-------------------------------------
 
 const removeUnpublished = arr => {
@@ -1409,7 +1394,7 @@ export default withAuth(function ChallengesPage() {
 
   const { user, isLoading } = useAuth();
   const userId = user?.id;
-  //const tagsUser = user?.tags;
+
   const isAdmin = (user?.role ?? "") == "ADMIN" ? true : false;
 
   const numbersAsStrings = Array.from({ length: 200 }, (_, i) => String(i + 1));
@@ -1504,14 +1489,10 @@ export default withAuth(function ChallengesPage() {
 
   useEffect(() => {
     const challengesUnpublished = removeUnpublished(challenges); // remueve los desafios no publicados
-    setChallengesStudents(addTagsToStudents(challengesUnpublished));
-    console.log("addTags", addTagsToStudents(challengesUnpublished));
-    //setChallengesStudents(updateArray(challengesUnpublished)); //, user?.id)); // agrega tags de forma artificial
-  }, [challenges]);
 
-  useEffect(() => {
-    console.log("challengeStudents", challengesStudents);
-  }, [challengesStudents]);
+    // agrega los tags de los grupos a los que pertence el estudiante al estudiante
+    setChallengesStudents(addTagsToStudents(challengesUnpublished));
+  }, [challenges]);
 
   useEffect(() => {
     if (!isGroupUsersWithModelStatesLoading && dataGroupUsersWithModelStates) {
@@ -1631,8 +1612,6 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
                   setChallengeId={setChallengeId}
                   challengesOriginal={challengesOriginal}
                   usersWithModelStates={usersWithModelStates}
-                  //allUsersJson={allUsersJson}
-                  //uniqueUsers={uniqueUsers}
                 />
               ))}
             </VStack>
@@ -1652,5 +1631,3 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
     </Box>
   );
 });
-
-//export default ChallengesPage;
