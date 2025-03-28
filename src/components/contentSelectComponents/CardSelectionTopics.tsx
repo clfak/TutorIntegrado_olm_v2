@@ -5,7 +5,6 @@ import {
   HStack,
   LinkOverlay,
   Text,
-  Box,
   Image,
   Stack,
 } from "@chakra-ui/react";
