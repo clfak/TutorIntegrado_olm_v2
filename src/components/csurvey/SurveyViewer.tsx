@@ -11,6 +11,7 @@ import {
   ModalHeader,
   Grid,
   GridItem,
+  Image,
 } from "@chakra-ui/react";
 import Choice from "./Choice";
 import Ranked from "./Ranked";
@@ -33,6 +34,7 @@ export interface SD {
       rankedLabel?: Array<string>;
       options?: Array<string>;
       expression?: string;
+      img?: string;
     };
   }>;
   tags: Array<string>;
@@ -48,13 +50,14 @@ export function handleInitialexpresion(e: ExType, svd: SD) {
   )
     exp = ejercicio.eqc;
   else if (ejercicio.type.localeCompare("wordProblem") == 0) exp = "";
-  else if (ejercicio.initialExpression != undefined) exp = ejercicio.initialExpression;
+  else if (ejercicio.initialExpression) exp = ejercicio.initialExpression;
   else exp = ejercicio.steps[0].expression;
 
   //deep copy needed
   var d = JSON.stringify(svd);
   var dd = JSON.parse(d);
-  dd.items.unshift({ id: -1, index: -1, content: { type: "expression", expression: exp } });
+  if (e.img) dd.items.unshift({ id: -1, index: -1, content: { type: "img", img: e.img } });
+  else dd.items.unshift({ id: -1, index: -1, content: { type: "expression", expression: exp } });
   dd.items.unshift({ id: -1, index: -1, content: { type: "text", text: ejercicio.text } });
 
   return dd;
@@ -169,6 +172,8 @@ const SurveyContent = ({ data }: { data: SD }) => {
                   {e.content.text}
                 </Text>
               );
+            if (e.content.type.localeCompare("img") == 0) console.log(e.content.img);
+            return <Image src={"img/" + e.content.img} />;
             return 0;
           })
         : 0}

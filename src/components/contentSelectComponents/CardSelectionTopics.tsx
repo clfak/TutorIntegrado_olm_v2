@@ -49,6 +49,7 @@ function displayExp(e: ExType): string {
     exp = ejercicio.eqc;
   else if (ejercicio.type.localeCompare("wordProblem") == 0) exp = "";
   else if (ejercicio.initialExpression != undefined) exp = ejercicio.initialExpression;
+  else if (ejercicio.img != undefined) exp = ejercicio.img;
   else exp = ejercicio.steps[0].expression;
   return exp;
 }
