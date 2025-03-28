@@ -244,7 +244,11 @@ export default withAuth(function ContentSelect() {
         ) : null
       ) : null}
       {isError ? (
-        <p>{parameters.CSMain.noData}</p>
+        pbValues.uservalues == 1 ? (
+          <CompleteTopic topicCodes={[topics]} />
+        ) : (
+          <p>{parameters.CSMain.noData}</p>
+        )
       ) : data?.contentSelection?.contentSelected?.topicCompletedMsg?.label ==
         parameters.CSMain.completeMsgService ? (
         <CompleteTopic topicCodes={[topics]} />

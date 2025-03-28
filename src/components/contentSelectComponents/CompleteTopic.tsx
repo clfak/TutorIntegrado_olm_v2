@@ -1,6 +1,5 @@
 import { Center, Heading, SimpleGrid } from "@chakra-ui/react";
 import { AllContent, contentByTopic } from "../../utils/startModel";
-import parameters from "./parameters.json";
 import { CardSelectionDynamic } from "./CardSelectionDynamic";
 import type { ExType } from "../lvltutor/Tools/ExcerciseType";
 import { useRouter } from "next/router";
@@ -24,7 +23,7 @@ export const CompleteTopic = ({ topicCodes }: { topicCodes: Array<string> }) => 
     <>
       <Center>
         <Heading>
-          {parameters.completeTopic.title + " " + parameters.completeTopic.text + "!"}
+          {"¡Muy bien!, has completado el tópico: " + contentByTopic.data.content[0].label}
         </Heading>
       </Center>
       <SimpleGrid columns={[1, 1, 1, 3]} spacing="8" p="10" textAlign="center" rounded="lg">
