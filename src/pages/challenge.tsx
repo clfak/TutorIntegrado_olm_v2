@@ -1035,7 +1035,6 @@ function addTagsToStudents(data) {
       });
     }
   });
-  console.log("return", data);
   return data;
 }
 
@@ -1398,9 +1397,18 @@ export default withAuth(function ChallengesPage() {
   const isAdmin = (user?.role ?? "") == "ADMIN" ? true : false;
 
   const numbersAsStrings = Array.from({ length: 200 }, (_, i) => String(i + 1));
-  const { data: dataChallenges, isLoading: isChallengesLoading } = useGQLQuery(queryGetChallenges, {
-    challengesIds: numbersAsStrings,
-  });
+  const { data: dataChallenges, isLoading: isChallengesLoading } = useGQLQuery(
+    queryGetChallenges,
+    {
+      challengesIds: numbersAsStrings,
+    },
+    {
+      staleTime: 0,
+      cacheTime: 0,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  );
 
   const { data: dataGroupUsersWithModelStates, isLoading: isGroupUsersWithModelStatesLoading } =
     useGQLQuery(queryGroupUsersWithModelStates);
@@ -1616,7 +1624,7 @@ session-progress: habilita mostrar el delta de progreso dentro de la sesión
               ))}
             </VStack>
           ) : (
-            <p>Cargando datos...</p>
+            <LoadingOverlay />
           )}
         </Box>
       ) : (

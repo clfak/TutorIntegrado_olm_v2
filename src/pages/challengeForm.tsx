@@ -321,8 +321,6 @@ const MathRecursiveAccordion = ({
   setSelectedExercises,
   selectedExercises = [],
 }) => {
-  console.log("selectedTopics", selectedTopics);
-  console.log("selectedExercises", selectedExercises);
   // Verifica si un item está seleccionado
   const isItemSelected = exercise => {
     return selectedExercises.some(
