@@ -13,12 +13,16 @@ const MathDisplay = ({ description, mathExpression, image }) => {
     if (!texRegex.test(text)) {
       return <Text mb={4}>{text}</Text>;
     }
-    return <TeX>{text}</TeX>;
+    return (
+      <Box mb={4}>
+        <TeX>{text}</TeX>
+      </Box>
+    );
   };
 
   return (
     <Box p={4} borderWidth="1px" borderRadius="lg" boxShadow="sm" maxW="400px">
-      <Box mb={4}>{renderDescription(description)}</Box>
+      {renderDescription(description)}
       {image ? <Image src={image}></Image> : <TeX>{mathExpression}</TeX>}
     </Box>
   );
