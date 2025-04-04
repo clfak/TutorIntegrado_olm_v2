@@ -690,6 +690,13 @@ const ChallengeCard = ({
 
   //------------------------------
 
+  // Si está cargando, muestra un Spinner, se ve un doble Spinner
+  /*if (isKcsByTopicsLoading) {
+    return <LoadingOverlay />;
+  }*/
+
+  //------------------------------
+
   return (
     <Box
       key={`challengeId-{id}`}
