@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@auth0/auth0-react':
-        specifier: ^1.9.0
-        version: 1.9.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: ^2.3.0
+        version: 2.3.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@chakra-ui/react':
         specifier: ^1.7.4
         version: 1.7.4(@emotion/react@11.7.1(@babel/core@7.16.12)(@types/react@17.0.38)(react@17.0.2))(@emotion/styled@11.6.0(@babel/core@7.16.12)(@emotion/react@11.7.1(@babel/core@7.16.12)(@types/react@17.0.38)(react@17.0.2))(@types/react@17.0.38)(react@17.0.2))(@types/react@17.0.38)(framer-motion@6.2.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -156,14 +156,14 @@ importers:
 
 packages:
 
-  '@auth0/auth0-react@1.9.0':
-    resolution: {integrity: sha512-VkovI2i7dI1dkIJAdS51O9XMq6vlcHJn9DL+if4rSxt+sNocFd1i4q0j07a9XbafBj4/WEkSbOiX93z2ZXqdAA==}
+  '@auth0/auth0-react@2.3.0':
+    resolution: {integrity: sha512-YYTc/DWWigKC9fURufR/79h3+3DAnIzbfEzJLZ8Z4Q0BXE0azru3pKUbU+vYzS4lMAJkclwLuAbUnLjK81vCpA==}
     peerDependencies:
-      react: ^16.11.0 || ^17
-      react-dom: ^16.11.0 || ^17
+      react: ^16.11.0 || ^17 || ^18 || ^19
+      react-dom: ^16.11.0 || ^17 || ^18 || ^19
 
-  '@auth0/auth0-spa-js@1.19.4':
-    resolution: {integrity: sha512-2kcTo9DYwt79wpuZ1IkRofnTr/xAe7AvERZZ2p2hN0EpQkIEG2mMJ4tD2NfmZTZHdQOJFy2yvd+ZPkfvsXefow==}
+  '@auth0/auth0-spa-js@2.1.3':
+    resolution: {integrity: sha512-NMTBNuuG4g3rame1aCnNS5qFYIzsTUV5qTFPRfTyYFS1feS6jsCBR+eTq9YkxCp1yuoM2UIcjunPaoPl77U9xQ==}
 
   '@babel/code-frame@7.16.7':
     resolution: {integrity: sha512-iAXqUn8IIeBTNd72xsFlgaXHkMBMt6y4HJp1tIaK465CWLT/fG1aqB7ykr95gHHmlBdGbFeWWfyB4NJJ0nmeIg==}
@@ -1311,9 +1311,6 @@ packages:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
 
-  abortcontroller-polyfill@1.7.3:
-    resolution: {integrity: sha512-zetDJxd89y3X99Kvo4qFx8GKlt6GsvN3UcRZHwU6iFA/0KiOmhkTVhe8oRoTBiTVPZu09x3vCra47+w8Yz1+2Q==}
-
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
@@ -1512,9 +1509,6 @@ packages:
 
   broadcast-channel@3.7.0:
     resolution: {integrity: sha512-cIAKJXAxGJceNZGTZSBzMxzyOn72cVgPnKx4dc6LRjQgbaJUQqhy5rzL3zbMxkMWsGKkv2hSFkPRMEXfoMZ2Mg==}
-
-  browser-tabs-lock@1.2.15:
-    resolution: {integrity: sha512-J8K9vdivK0Di+b8SBdE7EZxDr88TnATing7XoLw6+nFkXMQ6sVBh92K3NQvZlZU91AIkFRi0w3sztk5Z+vsswA==}
 
   browserslist@4.19.1:
     resolution: {integrity: sha512-u2tbbG5PdKRTUoctO3NBD8FQ5HdPh1ZXPHzp1rwaa5jTc+RV9/+RlWiAIKmjRPQF+xbGM9Kklj5bZQFa2s/38A==}
@@ -1920,9 +1914,6 @@ packages:
     resolution: {integrity: sha512-ioRRcXMO6OFyRpyzV3kE1IIBd4WG5/kltnzdxSCqoP8CMGs/Li+M1uF5o7lOkZVFjDs+NLesthnF66Pg/0q0Lw==}
     engines: {node: '>= 0.4'}
 
-  es-cookie@1.3.2:
-    resolution: {integrity: sha512-UTlYYhXGLOy05P/vKVT2Ui7WtC7NiRzGtJyAKKn32g5Gvcjn7KAClLPWlipCtxIus934dFg9o9jXiBL0nP+t9Q==}
-
   es-iterator-helpers@1.0.13:
     resolution: {integrity: sha512-LK3VGwzvaPWobO8xzXXGRUOGw8Dcjyfk62CsY/wfHN75CwsJPbuypOYJxK6g5RyEL8YDjIWcl6jgd8foO6mmrA==}
 
@@ -2104,9 +2095,6 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
-
-  fast-text-encoding@1.0.3:
-    resolution: {integrity: sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig==}
 
   fastq@1.13.0:
     resolution: {integrity: sha512-YpkpUnK8od0o1hmeSc7UUs/eB/vIPWJYjKck2QKIzAf71Vm1AAQ3EbuZB3g2JIy+pg+ERD0vqI79KyZiB2e2Nw==}
@@ -3266,9 +3254,6 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  promise-polyfill@8.2.1:
-    resolution: {integrity: sha512-3p9zj0cEHbp7NVUxEYUWjQlffXqnXaZIMPkAO7HhFh8u5636xLRDHOUo2vpWSK0T2mqm6fKLXYn1KP6PAZ2gKg==}
-
   promise@7.3.1:
     resolution: {integrity: sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==}
 
@@ -3990,9 +3975,6 @@ packages:
     resolution: {integrity: sha512-RZj6SbkQFs5O/pJCboGEo6l5DTCe3Zg4r/8Z/0/2qnIv08+s6zL4akohOPMYWKc3mzwv15WTvsfMWaafZcvYoQ==}
     engines: {node: '>=12.18'}
 
-  unfetch@4.2.0:
-    resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}
-
   unique-string@2.0.0:
     resolution: {integrity: sha512-uNaeirEPvpZWSgzwsPGtU2zVSTrn/8L5q/IexZmH0eH6SA73CmAA5U4GwORTxQAZs95TAXLNqeLoPPNO5gZfWg==}
     engines: {node: '>=8'}
@@ -4240,21 +4222,13 @@ packages:
 
 snapshots:
 
-  '@auth0/auth0-react@1.9.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
+  '@auth0/auth0-react@2.3.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
-      '@auth0/auth0-spa-js': 1.19.4
+      '@auth0/auth0-spa-js': 2.1.3
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
 
-  '@auth0/auth0-spa-js@1.19.4':
-    dependencies:
-      abortcontroller-polyfill: 1.7.3
-      browser-tabs-lock: 1.2.15
-      core-js: 3.20.3
-      es-cookie: 1.3.2
-      fast-text-encoding: 1.0.3
-      promise-polyfill: 8.2.1
-      unfetch: 4.2.0
+  '@auth0/auth0-spa-js@2.1.3': {}
 
   '@babel/code-frame@7.16.7':
     dependencies:
@@ -5849,8 +5823,6 @@ snapshots:
     dependencies:
       event-target-shim: 5.0.1
 
-  abortcontroller-polyfill@1.7.3: {}
-
   acorn-jsx@5.3.2(acorn@8.7.0):
     dependencies:
       acorn: 8.7.0
@@ -6086,10 +6058,6 @@ snapshots:
       oblivious-set: 1.0.0
       rimraf: 3.0.2
       unload: 2.2.0
-
-  browser-tabs-lock@1.2.15:
-    dependencies:
-      lodash: 4.17.21
 
   browserslist@4.19.1:
     dependencies:
@@ -6553,8 +6521,6 @@ snapshots:
       unbox-primitive: 1.0.2
       which-typed-array: 1.1.11
 
-  es-cookie@1.3.2: {}
-
   es-iterator-helpers@1.0.13:
     dependencies:
       asynciterator.prototype: 1.0.0
@@ -6602,7 +6568,7 @@ snapshots:
       eslint: 8.7.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0)
-      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0))(eslint@8.7.0)
+      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.7.0)
       eslint-plugin-jsx-a11y: 6.5.1(eslint@8.7.0)
       eslint-plugin-react: 7.33.2(eslint@8.7.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.7.0)
@@ -6625,7 +6591,7 @@ snapshots:
     dependencies:
       debug: 4.3.4
       eslint: 8.7.0
-      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0))(eslint@8.7.0)
+      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.7.0)
       glob: 7.2.0
       is-glob: 4.0.3
       resolve: 1.22.4
@@ -6644,7 +6610,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0))(eslint@8.7.0):
+  eslint-plugin-import@2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.7.0):
     dependencies:
       array-includes: 3.1.6
       array.prototype.findlastindex: 1.2.2
@@ -6816,8 +6782,6 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
-
-  fast-text-encoding@1.0.3: {}
 
   fastq@1.13.0:
     dependencies:
@@ -8021,8 +7985,6 @@ snapshots:
 
   prettier@2.5.1: {}
 
-  promise-polyfill@8.2.1: {}
-
   promise@7.3.1:
     dependencies:
       asap: 2.0.6
@@ -8808,8 +8770,6 @@ snapshots:
   unc-path-regex@0.1.2: {}
 
   undici@4.12.2: {}
-
-  unfetch@4.2.0: {}
 
   unique-string@2.0.0:
     dependencies:
