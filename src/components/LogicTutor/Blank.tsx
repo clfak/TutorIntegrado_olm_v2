@@ -37,7 +37,6 @@ const Blank = ({
       setCompleted(true);
     } else {
       setError(true);
-      setHints(hints + 1);
     }
     setAttempts(attempts + 1);
     action({
@@ -81,23 +80,27 @@ const Blank = ({
         </Button>
       </Stack>
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-        <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
-          {" "}
-          Enviar
-        </Button>
-        <Hint
-          hints={exc.steps[nStep].hints}
-          contentId={exc.code}
-          topicId={topic}
-          stepId={exc.steps[nStep].stepId}
-          matchingError={exc.steps[nStep].matchingError}
-          response={respuestas}
-          error={error}
-          setError={setError}
-          hintCount={hints}
-          setHints={setHints}
-          setLastHint={setLastHint}
-        ></Hint>
+        {isCorrectValue ? null : (
+          <>
+            <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
+              {" "}
+              Enviar
+            </Button>
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={respuestas}
+              error={error}
+              setError={setError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
+            ></Hint>
+          </>
+        )}
       </Stack>
       {firstTime ? null : !isCorrectValue ? (
         <Alert status="error">

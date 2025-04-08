@@ -74,7 +74,7 @@ const TableStep = ({
 
     isCorrect
       ? (setIsCorrectValue(true), (respuesta = true), setCompleted(true))
-      : (setHints(hints + 1), setFirstTime(false), setError(true));
+      : (setFirstTime(false), setError(true));
     setAttempts(attempts + 1);
     action({
       verbName: "tryStep",

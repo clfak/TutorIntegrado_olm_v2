@@ -71,7 +71,6 @@ const SingleAnswer = ({ exc, nStep, setCompleted, topic }) => {
       setError(false);
     } else {
       setError(true);
-      setHints(hints + 1);
     }
 
     setAttempts(attempts + 1);

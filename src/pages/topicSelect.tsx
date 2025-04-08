@@ -31,7 +31,6 @@ export default withAuth(function TopicSelect() {
 
   StartModel(user.id);
   SuerveyQ("4", ["poll-srl1", "poll-srl2", "motiv-msg"]);
-  console.log("holaaaaaa");
 
   GetSubtopics(topic);
 
@@ -135,7 +134,7 @@ export default withAuth(function TopicSelect() {
         </Heading>
         <Text mb="5">Lista de subtópicos</Text>
         <Box w="full" mx="auto" p={4}>
-          <SimpleGrid columns={[1, 1, 1, 3]} spacing={10} mt="4">
+          <SimpleGrid columns={[1, 1, 1, 1, 2, 3]} spacing={10} mt="4">
             {!Subtopic.isLoading &&
               !selectedExcercise.isLoading &&
               sortedChildrens.map((ejercicio, i) =>

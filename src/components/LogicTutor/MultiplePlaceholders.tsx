@@ -63,7 +63,6 @@ const MultiplePlaceholders = ({
         respuesta = true;
       } else {
         setError(true);
-        setHints(hints + 1);
       }
     } else {
       if (ValuesArray.every((value, index) => value === answer[index])) {
@@ -71,7 +70,6 @@ const MultiplePlaceholders = ({
         respuesta = true;
       } else {
         setError(true);
-        setHints(hints + 1);
       }
     }
 
@@ -83,10 +81,10 @@ const MultiplePlaceholders = ({
       contentID: exc.code,
       topicID: topic,
       result: respuesta ? 1 : 0,
-      kcsIDs: exc.steps[nStep].KCs,
+      kcsIDs: [...exc.steps[nStep].KCs],
       extra: {
-        response: [ValuesArray],
-        attempts: attempts,
+        response: ValuesArray,
+        attempts: attempts + 1,
         hints: hints,
       },
     });
@@ -132,19 +130,23 @@ const MultiplePlaceholders = ({
             <Button colorScheme="blue" size="sm" onClick={() => evaluar()}>
               Enviar
             </Button>
-            <Hint
-              hints={exc.steps[nStep].hints}
-              contentId={exc.code}
-              topicId={topic}
-              stepId={exc.steps[nStep].stepId}
-              matchingError={exc.steps[nStep].matchingError}
-              response={ValuesArray}
-              error={error}
-              setError={setError}
-              hintCount={hints}
-              setHints={setHints}
-              setLastHint={setLastHint}
-            />
+            {isCorrectValue ? null : (
+              <>
+                <Hint
+                  hints={exc.steps[nStep].hints}
+                  contentId={exc.code}
+                  topicId={topic}
+                  stepId={exc.steps[nStep].stepId}
+                  matchingError={exc.steps[nStep].matchingError}
+                  response={ValuesArray}
+                  error={error}
+                  setError={setError}
+                  hintCount={hints}
+                  setHints={setHints}
+                  setLastHint={setLastHint}
+                />
+              </>
+            )}
           </>
         )}
       </Stack>

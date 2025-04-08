@@ -13,6 +13,8 @@ import Latex from "react-latex-next";
 import type { ExLog } from "./Tools/ExcerciseType2";
 import { FaHandPointRight } from "react-icons/fa";
 import { useAction } from "../../utils/action";
+import Summary from "./Summary";
+import RatingQuestion from "../RatingQuestion";
 const TrueFalse = dynamic(() => import("./TrueFalse"), { ssr: false });
 const Blank = dynamic(() => import("./Blank"), { ssr: false });
 const InputButtons = dynamic(() => import("./InputButtons"), { ssr: false });
@@ -47,7 +49,7 @@ const ShowSteps = ({
         <AccordionButton
           style={{ backgroundColor: color }}
           onClick={() => {
-            setStep(nStep);
+            setStep((prev: number) => (prev === nStep ? -1 : nStep));
           }}
         >
           <Box
@@ -93,6 +95,8 @@ const ShowSteps = ({
             <AlertIcon />
             Ejercicio Terminado
           </Alert>
+          <Summary exc={exc} />
+          <RatingQuestion />
           {!changed ? (setColor("#C6F6D5"), setChanged(true)) : null}
           {report ? (
             <>

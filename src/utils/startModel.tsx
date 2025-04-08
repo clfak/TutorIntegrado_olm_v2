@@ -294,3 +294,51 @@ export function SelectExcercise(topicCodes: Array<string>) {
     selectedExcercise.isLoading = false;
   }, [userModelData]);
 }
+
+export const contentByTopic = proxy<{
+  isLoading: boolean;
+  data: Partial<Topic>;
+}>({
+  isLoading: true,
+  data: {},
+});
+
+export function AllContent(topicCodes: Array<string>) {
+  const { isLoading: userModelData } = useGQLQuery(
+    gql(`
+     query potatocontentbytopicid($topicsCodes: [IntID!]!){
+      topics(ids: $topicsCodes) {
+        code
+        content {
+          code
+          description
+          id
+          kcs {
+            code
+          }
+          json
+          label
+          tags
+        }
+      }
+    }
+    `),
+    { topicsCodes: topicCodes },
+    {
+      //enabled: false,
+      onSuccess(data) {
+        contentByTopic.data = data.topics[0] as Partial<Topic>;
+      },
+      onSettled() {
+        contentByTopic.isLoading = false;
+      },
+      refetchOnWindowFocus: false,
+      //refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  );
+
+  useEffect(() => {
+    contentByTopic.isLoading = false;
+  }, [userModelData]);
+}

@@ -67,9 +67,9 @@ const SinglePlaceholder = ({
       response = true;
     } else {
       setError(true);
-      setHints(hints + 1);
     }
     setAttempts(attempts + 1);
+
     action({
       verbName: "tryStep",
       stepID: "" + exc.steps[nStep].stepId,
@@ -79,7 +79,7 @@ const SinglePlaceholder = ({
       kcsIDs: exc.steps[nStep].KCs,
       extra: {
         response: [Values],
-        attempts: attempts,
+        attempts: attempts + 1,
         hints: hints,
       },
     });
@@ -121,22 +121,26 @@ const SinglePlaceholder = ({
         </Box>
       </Center>
       <Stack spacing={4} m={2} direction="row" justifyContent={"center"}>
-        <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
-          Enviar
-        </Button>
-        <Hint
-          hints={exc.steps[nStep].hints}
-          contentId={exc.code}
-          topicId={topic}
-          stepId={exc.steps[nStep].stepId}
-          matchingError={exc.steps[nStep].matchingError}
-          response={[latex]}
-          error={error}
-          setError={setError}
-          hintCount={hints}
-          setHints={setHints}
-          setLastHint={setLastHint}
-        ></Hint>
+        {isCorrectValue ? null : (
+          <>
+            <Button colorScheme="blue" size="sm" onClick={() => evaluar(latex, Values)}>
+              Enviar
+            </Button>
+            <Hint
+              hints={exc.steps[nStep].hints}
+              contentId={exc.code}
+              topicId={topic}
+              stepId={exc.steps[nStep].stepId}
+              matchingError={exc.steps[nStep].matchingError}
+              response={[latex]}
+              error={error}
+              setError={setError}
+              hintCount={hints}
+              setHints={setHints}
+              setLastHint={setLastHint}
+            ></Hint>
+          </>
+        )}
       </Stack>
 
       {error && (

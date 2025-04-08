@@ -40,7 +40,6 @@ const TrueFalse = ({
       respuesta = true;
     } else {
       setError(true);
-      setHints(hints + 1);
     }
     setFirstTime(false);
     setAttempts(attempts + 1);
