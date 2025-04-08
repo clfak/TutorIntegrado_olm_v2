@@ -103,7 +103,7 @@ const Steporans = ({
           />,
         );
     }
-  }, [, answer]);
+  }, [answer, step, content, topicId, i]);
 
   return currentComponent;
 };
@@ -113,7 +113,17 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
 
   const action = useAction();
   const currentStep = useRef(0);
+  const [test, setTest] = useState<Array<potato>>([]); //(potatoStates);
+  const [resumen, setResumen] = useState(true);
+  const [stepsCount, setStepsCount] = useState(0);
 
+  // const[steps, setSteps] = useState(initialSteps)
+  /*steps: initialSteps
+  useEffect(()=> {
+    setSteps(initialSteps)
+  },[initialSteps])*/
+
+  /*
   const cantidadDePasos = steps.steps.length;
 
   let potatoStates: Array<potato> = [
@@ -149,9 +159,11 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
       open: true,
     });
   }
+*/
 
-  const [test, setTest] = useState<Array<potato>>(potatoStates);
-  const [resumen, setResumen] = useState(true);
+  useEffect(() => {
+    console.log("Solver2 mounted with:", { topicId, steps });
+  }, [topicId, steps]);
 
   useEffect(() => {
     reset();
@@ -164,6 +176,60 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
       topicID: topicId,
     });
   }, []);
+
+  useEffect(() => {
+    const cantidadDePasos = steps.steps.length;
+    setStepsCount(cantidadDePasos);
+    let potatoStates: Array<potato> = [
+      {
+        disabled: false,
+        hidden: false,
+        answer: false,
+        value: {
+          ans: "",
+          att: 0,
+          hints: 0,
+          lasthint: false,
+          fail: false,
+          duration: 0,
+        },
+        open: true,
+      },
+    ];
+
+    for (let i = 1; i < cantidadDePasos; i++) {
+      potatoStates.push({
+        disabled: true,
+        hidden: false,
+        answer: false,
+        value: {
+          ans: "",
+          att: 0,
+          hints: 0,
+          lasthint: false,
+          fail: false,
+          duration: 0,
+        },
+        open: true,
+      });
+    }
+
+    const initializeExercise = () => {
+      reset();
+      MQProxy.startDate = Date.now();
+      MQProxy.content = steps.code;
+      MQProxy.topicId = topicId;
+      action({
+        verbName: "loadContent",
+        contentID: steps?.code,
+        topicID: topicId,
+      });
+      setTest(potatoStates);
+      setResumen(true);
+    };
+
+    initializeExercise();
+  }, [topicId, steps.code]);
 
   useEffect(() => {
     if (mqSnap.submit) {
@@ -181,7 +247,7 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
           value: sv,
           open: false,
         };
-        if (mqSnap.defaultIndex[1]! < cantidadDePasos) {
+        if (mqSnap.defaultIndex[1]! < stepsCount) {
           currentStepValue[mqSnap.defaultIndex[1]] = {
             disabled: false,
             hidden: false,
@@ -219,12 +285,12 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
       }
       MQProxy.submit = false;
     }
-  }, [mqSnap.submit]);
+  }, [mqSnap.submit, stepsCount]);
 
   let initialExp = steps.initialExpression ? steps.initialExpression : steps.steps[0]?.expression;
 
   return (
-    <Flex alignItems="center" justifyContent="center" margin={"auto"}>
+    <Flex key={steps.code} alignItems="center" justifyContent="center" margin={"auto"}>
       <Flex
         direction="column"
         p={1}

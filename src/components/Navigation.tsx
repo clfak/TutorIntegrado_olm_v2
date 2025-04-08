@@ -1,5 +1,5 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
+import { FaBookOpen, FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
 import { useAuth } from "./Auth";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ScrollArea } from "./ScrollArea";
@@ -57,6 +57,11 @@ export function Navigation() {
             <SidebarLink key="9" href={"topicSelect?&registerTopic=37"}>
               Lógica y Teoría de Conjuntos
             </SidebarLink>
+            <Stack fontWeight="black" pb="6">
+              <SidebarLink icon={<FaBookOpen />} href="challenge">
+                Desafíos
+              </SidebarLink>
+            </Stack>
           </>
         )}
       </Stack>
