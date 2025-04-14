@@ -96,8 +96,8 @@ importers:
         specifier: 1.0.2
         version: 1.0.2(react@17.0.2)
       react-notification-badge:
-        specifier: 1.5.0
-        version: 1.5.0(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
+        specifier: 1.5.1
+        version: 1.5.1(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-query:
         specifier: ^3.34.12
         version: 3.34.12(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -3372,8 +3372,8 @@ packages:
     peerDependencies:
       react: ^17.0.2
 
-  react-notification-badge@1.5.0:
-    resolution: {integrity: sha512-B6CV7lDSxxPP/iGe2naIlkG7Kd2Imej/p0ZeoVF3XGhbdXTsc30n9hl5mNRP9R5sYlfHBC2VEPikKLguN5Cybg==}
+  react-notification-badge@1.5.1:
+    resolution: {integrity: sha512-4/kFrQcJ7eMfYh9SdXXgBaaEDCIV7UsLX5bgSS1aj+OnX2OpIFTatY3Dclo8qLpkX+Ue6x0Aiib+U9dkDKrSwQ==}
     peerDependencies:
       prop-types: ^15.7.2
       react: ^16.8.6
@@ -6602,7 +6602,7 @@ snapshots:
       eslint: 8.7.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0)
-      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0))(eslint@8.7.0)
+      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.7.0)
       eslint-plugin-jsx-a11y: 6.5.1(eslint@8.7.0)
       eslint-plugin-react: 7.33.2(eslint@8.7.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.7.0)
@@ -6625,7 +6625,7 @@ snapshots:
     dependencies:
       debug: 4.3.4
       eslint: 8.7.0
-      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0))(eslint@8.7.0)
+      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.7.0)
       glob: 7.2.0
       is-glob: 4.0.3
       resolve: 1.22.4
@@ -6644,7 +6644,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.28.1(eslint@8.7.0))(eslint@8.7.0))(eslint@8.7.0):
+  eslint-plugin-import@2.28.1(@typescript-eslint/parser@5.62.0(eslint@8.7.0)(typescript@4.5.5))(eslint-import-resolver-typescript@2.7.1)(eslint@8.7.0):
     dependencies:
       array-includes: 3.1.6
       array.prototype.findlastindex: 1.2.2
@@ -8147,7 +8147,7 @@ snapshots:
     dependencies:
       react: 17.0.2
 
-  react-notification-badge@1.5.0(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
+  react-notification-badge@1.5.1(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
     dependencies:
       core-js: 3.20.3
       prop-types: 15.8.1
