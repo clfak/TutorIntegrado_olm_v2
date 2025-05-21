@@ -1,9 +1,11 @@
 import { Stack, Text } from "@chakra-ui/react";
-import { FaBookOpen, FaHome, FaQuestionCircle, FaSearch } from "react-icons/fa";
+import { FaBookOpen, FaHome, FaQuestionCircle, FaSearch, FaChartLine  } from "react-icons/fa";
 import { useAuth } from "./Auth";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ScrollArea } from "./ScrollArea";
 import { SidebarLink } from "./SidebarLink";
+
+
 
 export function Navigation() {
   const { user } = useAuth();
@@ -16,10 +18,17 @@ export function Navigation() {
         <SidebarLink icon={<FaHome />} href="/">
           Inicio
         </SidebarLink>
+        {user && !user.tags.includes("wp-test-user") && (
+          <>
+            <SidebarLink icon= {<FaChartLine/>}href="tutorial">
+              Mi progreso
+            </SidebarLink>
+          </>
+        )}
         {user && admin && (
           <>
             <Text fontWeight="black">Selección por Código</Text>
-            <SidebarLink icon={<FaSearch />} href={"selectByCode"}>
+            <SidebarLink icon={<FaSearch /> as React.ReactNode} href={"selectByCode"}>
               Search by Code
             </SidebarLink>
           </>
