@@ -10,6 +10,7 @@ interface value {
   duration: number;
 }
 
+//spaghettimsg is the msg that overrides the correctmsg utilized for the success alert feedback.
 interface sharedValues {
   content: string;
   step: Step | null;
@@ -22,6 +23,8 @@ interface sharedValues {
   hints: number;
   error: boolean;
   finishedEval: boolean;
+  spaghettimsg?: string;
+  spaghettimsgexp?: string;
 }
 
 const initialObj: sharedValues = {
@@ -43,6 +46,8 @@ const initialObj: sharedValues = {
   hints: 0,
   error: false,
   finishedEval: false,
+  spaghettimsg: undefined,
+  spaghettimsgexp: undefined,
 };
 
 const MQProxy = proxy(initialObj);

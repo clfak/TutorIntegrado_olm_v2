@@ -31,6 +31,7 @@ import type { ExType, Step } from "./ExcerciseType";
 import { useSnapshot } from "valtio";
 import MQProxy, { reset } from "./MQProxy";
 import MQStaticMathField from "../../../utils/MQStaticMathField";
+import ShuffledLoad from "./CChoice";
 
 const Mq2 = dynamic(
   () => {
@@ -76,16 +77,33 @@ const Steporans = ({
           <MQStaticMathField key={"respuesta" + i} exp={answer} currentExpIndex={true} />
           <Alert key={"Alert" + topicId + "i"} status={"success"} mt={2}>
             <AlertIcon key={"AlertIcon" + topicId + "i"} />
-            {step.correctMsg}
+            {MQProxy.spaghettimsg ? MQProxy.spaghettimsg : step.correctMsg}
           </Alert>
         </>,
       );
     } else {
-      setCC(
-        <Mq2 key={"Mq2" + i} step={step} content={content} topicId={topicId} disablehint={false} />,
-      );
+      if (step.multipleChoice != undefined)
+        setCC(
+          <ShuffledLoad
+            key={"Mq2" + i}
+            step={step}
+            content={content}
+            topicId={topicId}
+            disablehint={false}
+          />,
+        );
+      else
+        setCC(
+          <Mq2
+            key={"Mq2" + i}
+            step={step}
+            content={content}
+            topicId={topicId}
+            disablehint={false}
+          />,
+        );
     }
-  }, [, answer]);
+  }, [answer, step, content, topicId, i]);
 
   return currentComponent;
 };
@@ -95,7 +113,17 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
 
   const action = useAction();
   const currentStep = useRef(0);
+  const [test, setTest] = useState<Array<potato>>([]); //(potatoStates);
+  const [resumen, setResumen] = useState(true);
+  const [stepsCount, setStepsCount] = useState(0);
 
+  // const[steps, setSteps] = useState(initialSteps)
+  /*steps: initialSteps
+  useEffect(()=> {
+    setSteps(initialSteps)
+  },[initialSteps])*/
+
+  /*
   const cantidadDePasos = steps.steps.length;
 
   let potatoStates: Array<potato> = [
@@ -131,9 +159,11 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
       open: true,
     });
   }
+*/
 
-  const [test, setTest] = useState<Array<potato>>(potatoStates);
-  const [resumen, setResumen] = useState(true);
+  useEffect(() => {
+    console.log("Solver2 mounted with:", { topicId, steps });
+  }, [topicId, steps]);
 
   useEffect(() => {
     reset();
@@ -148,23 +178,77 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
   }, []);
 
   useEffect(() => {
+    const cantidadDePasos = steps.steps.length;
+    setStepsCount(cantidadDePasos);
+    let potatoStates: Array<potato> = [
+      {
+        disabled: false,
+        hidden: false,
+        answer: false,
+        value: {
+          ans: "",
+          att: 0,
+          hints: 0,
+          lasthint: false,
+          fail: false,
+          duration: 0,
+        },
+        open: true,
+      },
+    ];
+
+    for (let i = 1; i < cantidadDePasos; i++) {
+      potatoStates.push({
+        disabled: true,
+        hidden: false,
+        answer: false,
+        value: {
+          ans: "",
+          att: 0,
+          hints: 0,
+          lasthint: false,
+          fail: false,
+          duration: 0,
+        },
+        open: true,
+      });
+    }
+
+    const initializeExercise = () => {
+      reset();
+      MQProxy.startDate = Date.now();
+      MQProxy.content = steps.code;
+      MQProxy.topicId = topicId;
+      action({
+        verbName: "loadContent",
+        contentID: steps?.code,
+        topicID: topicId,
+      });
+      setTest(potatoStates);
+      setResumen(true);
+    };
+
+    initializeExercise();
+  }, [topicId, steps.code]);
+
+  useEffect(() => {
     if (mqSnap.submit) {
       if (!mqSnap.submitValues.fail) {
-        currentStep.current = mqSnap.defaultIndex[0]!;
+        currentStep.current = mqSnap.defaultIndex[1]!;
         let currentStepValue = test;
         let duration = (MQProxy.endDate - MQProxy.startDate) / 1000;
         let sv = MQProxy.submitValues;
         sv.duration = duration;
         MQProxy.startDate = Date.now();
-        currentStepValue[mqSnap.defaultIndex[0]! - 1] = {
+        currentStepValue[mqSnap.defaultIndex[0]] = {
           disabled: false,
           hidden: false,
           answer: true,
           value: sv,
           open: false,
         };
-        if (mqSnap.defaultIndex[0]! < cantidadDePasos) {
-          currentStepValue[mqSnap.defaultIndex[0]!] = {
+        if (mqSnap.defaultIndex[1]! < stepsCount) {
+          currentStepValue[mqSnap.defaultIndex[1]] = {
             disabled: false,
             hidden: false,
             answer: false,
@@ -201,15 +285,15 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
       }
       MQProxy.submit = false;
     }
-  }, [mqSnap.submit]);
+  }, [mqSnap.submit, stepsCount]);
 
   let initialExp = steps.initialExpression ? steps.initialExpression : steps.steps[0]?.expression;
 
   return (
-    <Flex alignItems="center" justifyContent="center" margin={"auto"}>
+    <Flex key={steps.code} alignItems="center" justifyContent="center" margin={"auto"}>
       <Flex
         direction="column"
-        p={12}
+        p={1}
         rounded={6}
         w="100%"
         maxW="3xl"
@@ -313,11 +397,13 @@ const Solver2 = ({ topicId, steps }: { topicId: string; steps: ExType }) => {
                   <Text key={"ResumenText" + i} w="100%" justifyContent={"space-between"}>
                     {step.summary}
                   </Text>
-                  <MQStaticMathField
-                    key={"ResumenMC" + i}
-                    exp={step.displayResult[0]!}
-                    currentExpIndex={!resumen}
-                  />
+                  <Box key={"ResumenMCContainer" + i} display="flex" justifyContent="center">
+                    <MQStaticMathField
+                      key={"ResumenMC" + i}
+                      exp={step.displayResult[0]!}
+                      currentExpIndex={!resumen}
+                    />
+                  </Box>
                 </Box>
               ))}
             </VStack>

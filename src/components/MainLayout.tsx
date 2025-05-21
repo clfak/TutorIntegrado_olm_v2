@@ -7,6 +7,7 @@ import { useMobileMenuState } from "./useMobileMenuState";
 import { UserInfo } from "./UserInfo";
 
 import type { ReactNode } from "react";
+import { GroupSelect } from "./GroupSelect";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const { isOpen, toggle } = useMobileMenuState();
@@ -19,7 +20,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     <Flex
       height="100vh"
       bg={mainContainerBackground}
-      overflow="hidden"
+      overflow="clip"
       sx={{ "--sidebar-width": "16rem" }}
     >
       <Box
@@ -36,7 +37,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
         <Image src="/img/logo.png" alt="Logo" w="220px" h="80px" mb="1" ml="6" />
         <Box fontSize="sm" lineHeight="tall">
           <UserInfo />
-
+          <GroupSelect />
           <Navigation />
         </Box>
       </Box>

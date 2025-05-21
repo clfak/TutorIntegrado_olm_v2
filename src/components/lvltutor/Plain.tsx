@@ -13,7 +13,7 @@ export const Plain = ({ topicId, steps }: { topicId: string; steps: ExType }) =>
   return (
     <>
       {steps?.type == "lvltutor" ? (
-        <Lvltutor key={topicId} topicId={topicId} steps={steps} />
+        <Lvltutor key={steps.code} topicId={topicId} steps={steps} />
       ) : (
         "potato"
       )}

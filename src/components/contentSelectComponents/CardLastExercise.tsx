@@ -93,9 +93,14 @@ export const CardLastExercise = ({ lastExercise }: { lastExercise: string }) => 
                         tex={String.raw`${data?.contentByCode?.json?.eqc}`}
                         display={false}
                       />
+                    ) : data?.contentByCode?.json.initialExpression ? (
+                      <MathComponent
+                        tex={String.raw`${data?.contentByCode?.json.initialExpression}`}
+                        display={false}
+                      />
                     ) : (
                       <MathComponent
-                        tex={String.raw`${data?.contentByCode?.json?.steps[0].expression}`}
+                        tex={String.raw`${data?.contentByCode?.json.steps[0].expression}`}
                         display={false}
                       />
                     )}
