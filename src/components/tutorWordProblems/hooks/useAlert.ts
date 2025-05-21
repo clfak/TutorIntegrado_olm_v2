@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
 import { AlertStatus } from "../types.d";
 
-export const useAlert = (
-  initialTitle: string,
-  initialStatus: AlertStatus = AlertStatus.success,
-  msg: string,
-  initialAlertHidden: boolean = false,
-  timerDuration: number,
-) => {
-  const [alertTitle, setTitle] = useState(initialTitle);
-  const [alertStatus, setStatus] = useState(initialStatus);
-  const [alertMsg, setMsg] = useState(msg);
-  const [alertHidden, setAlertHidden] = useState(initialAlertHidden);
+export const useAlert = (timerDuration: number) => {
+  const [alertTitle, setTitle] = useState("");
+  const [alertStatus, setStatus] = useState(AlertStatus.success);
+  const [alertMsg, setMsg] = useState("");
+  const [alertHidden, setAlertHidden] = useState(true);
   const [alertTimer, setAlertTimer] = useState(timerDuration);
   useEffect(() => {
     if (alertTimer) {
@@ -40,10 +34,10 @@ export const useAlert = (
     newTimer !== undefined && setAlertTimer(newTimer);
   };
   const resetAlert = () => {
-    setTitle(initialTitle);
-    setStatus(initialStatus);
-    setMsg(msg);
-    setAlertHidden(initialAlertHidden);
+    setTitle("");
+    setStatus(AlertStatus.success);
+    setMsg("");
+    setAlertHidden(true);
     setAlertTimer(timerDuration);
   };
   return { alertTitle, alertStatus, alertMsg, alertHidden, showAlert, resetAlert };

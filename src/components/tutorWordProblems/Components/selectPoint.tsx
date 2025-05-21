@@ -20,13 +20,7 @@ export const SelectPoint = ({ meta, hints }: Props) => {
   const [isScreenLarge] = useMediaQuery("(min-width: 768px)");
   const { correctPoint, data } = meta;
   const [userAnswer, setUserAnswer] = useState([]);
-  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert } = useAlert(
-    "",
-    AlertStatus.info,
-    "",
-    false,
-    3000,
-  );
+  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert } = useAlert(3000);
   const { boardId, boardRef, bgBoardColor, disableBoard, createLine } = useBoard(
     "jxgbox",
     meta.graphSettings,

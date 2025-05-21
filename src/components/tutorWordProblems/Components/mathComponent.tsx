@@ -54,13 +54,7 @@ const MathComponent = ({ meta, hints, correctMsg }: Props) => {
     return !idCorrectAnswers.some(correctId => correctId === answ.id);
   });
 
-  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert, resetAlert } = useAlert(
-    "Titulo",
-    AlertStatus.info,
-    "mensaje de la alerta",
-    false,
-    3000,
-  );
+  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert, resetAlert } = useAlert(3000);
 
   const {
     unlockedHints,

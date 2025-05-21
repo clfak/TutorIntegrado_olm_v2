@@ -35,13 +35,7 @@ export const LinearFit = ({ meta, hints }: Props) => {
     "linearFitBoard",
     meta.graphSettings,
   );
-  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert } = useAlert(
-    "",
-    AlertStatus.info,
-    "",
-    false,
-    3000,
-  );
+  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert } = useAlert(3000);
 
   const {
     unlockedHints,

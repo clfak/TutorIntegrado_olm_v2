@@ -33,13 +33,7 @@ const SelectionComponent = ({ meta, hints, correctMsg }: Props) => {
   } = useStore();
   const reportAction = useAction();
 
-  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert, resetAlert } = useAlert(
-    "",
-    AlertStatus.info,
-    "",
-    true,
-    3000,
-  );
+  const { alertTitle, alertStatus, alertMsg, alertHidden, showAlert, resetAlert } = useAlert(3000);
 
   const {
     unlockedHints,
