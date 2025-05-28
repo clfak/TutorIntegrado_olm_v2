@@ -20,7 +20,7 @@ export function Navigation() {
         </SidebarLink>
         {user && !user.tags.includes("wp-test-user") && (
           <>
-            <SidebarLink icon= {<FaChartLine/>}href="tutorial">
+            <SidebarLink icon= {<FaChartLine/>} href="/olmDashboard">
               Mi progreso
             </SidebarLink>
           </>
@@ -28,7 +28,7 @@ export function Navigation() {
         {user && admin && (
           <>
             <Text fontWeight="black">Selección por Código</Text>
-            <SidebarLink icon={<FaSearch /> as React.ReactNode} href={"selectByCode"}>
+            <SidebarLink icon={<FaSearch />} href="/selectByCode">
               Search by Code
             </SidebarLink>
           </>
