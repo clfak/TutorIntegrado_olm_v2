@@ -1,4 +1,7 @@
 import { Stack, Heading, Text } from "@chakra-ui/react";
+import OlmProgressBar from "../components/olm/OlmProgressBar";
+
+
 import TopicTable from "../components/olm/TopicTable";
 
 
@@ -19,8 +22,8 @@ export default function olmDashboard() {
                 </Text>
                 <TopicTable/>
             </Stack>
-
-
+                <OlmProgressBar percent={75} />
+            
         </>
     );
 }

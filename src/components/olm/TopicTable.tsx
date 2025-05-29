@@ -36,9 +36,15 @@ export default function TopicTable() {
         return <div>Error al cargar tópicos: {error.message}</div>;
     }
     return (
-        <TableContainer>
+        <TableContainer
+        sx={{
+            "thead tr th": {
+                color: "white",
+            },
+        }}
+        >
             <Table variant="striped" size="md">
-                <Thead bg="blue.700" color="gray.100" >
+                <Thead bg="blue.700" >
                     <Tr>
                         <Th>Tópicos</Th>
                         <Th>Progreso</Th>
