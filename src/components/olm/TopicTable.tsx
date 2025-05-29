@@ -15,19 +15,6 @@ const GET_INFO_TOPIC = gql(/* GraphQL */ `
     }
 `);
 
-const items = [
-    { id: 1, topic: "Productos Notables", progress: "barprogress", eyeicon: "eye", exercises: "8 ejercicios realizados", icon: "arrow" },
-    { id: 2, topic: "Factorización", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 3, topic: "Potencias", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 4, topic: "Raíces", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 5, topic: "Fracciones", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 6, topic: "Ecuaciones", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 7, topic: "Álgebra de Polinomios", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 8, topic: "Logica y Teoría de Conjuntos", progress: "barprogress", exercises: "8 ejercicios realizados" },
-
-
-];
-
 export default function TopicTable() {
     const { isLoading: authLoading } = useAuth();
 
@@ -51,7 +38,7 @@ export default function TopicTable() {
     return (
         <TableContainer>
             <Table variant="striped" size="md">
-                <Thead>
+                <Thead bg="blue.700" color="gray.100" >
                     <Tr>
                         <Th>Tópicos</Th>
                         <Th>Progreso</Th>
