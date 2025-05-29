@@ -8,6 +8,9 @@ dependencies:
   '@auth0/auth0-react':
     specifier: ^1.9.0
     version: 1.12.1(react-dom@17.0.2)(react@17.0.2)
+  '@chakra-ui/progress':
+    specifier: ^2.2.0
+    version: 2.2.0(@chakra-ui/system@1.12.1)(react@17.0.2)
   '@chakra-ui/react':
     specifier: ^1.7.4
     version: 1.8.9(@emotion/react@11.14.0)(@emotion/styled@11.14.0)(@types/react@17.0.85)(framer-motion@6.5.1)(react-dom@17.0.2)(react@17.0.2)
@@ -1257,6 +1260,17 @@ packages:
       react: 17.0.2
     dev: false
 
+  /@chakra-ui/progress@2.2.0(@chakra-ui/system@1.12.1)(react@17.0.2):
+    resolution: {integrity: sha512-qUXuKbuhN60EzDD9mHR7B67D7p/ZqNS2Aze4Pbl1qGGZfulPW0PY8Rof32qDtttDQBkzQIzFGE8d9QpAemToIQ==}
+    peerDependencies:
+      '@chakra-ui/system': '>=2.0.0'
+      react: '>=18'
+    dependencies:
+      '@chakra-ui/react-context': 2.1.0(react@17.0.2)
+      '@chakra-ui/system': 1.12.1(@emotion/react@11.14.0)(@emotion/styled@11.14.0)(react@17.0.2)
+      react: 17.0.2
+    dev: false
+
   /@chakra-ui/provider@1.7.14(@emotion/react@11.14.0)(@emotion/styled@11.14.0)(react-dom@17.0.2)(react@17.0.2):
     resolution: {integrity: sha512-FCA33CZy/jFzExglKMioeri8sr9NtDTcNVPnx95ZJiA7WpfFo0xuZ6/fMC4DwIQPkJKbSIZBXYLZ3U10Ntylrw==}
     peerDependencies:
@@ -1289,6 +1303,14 @@ packages:
       '@chakra-ui/system': 1.12.1(@emotion/react@11.14.0)(@emotion/styled@11.14.0)(react@17.0.2)
       '@chakra-ui/utils': 1.10.4
       '@chakra-ui/visually-hidden': 1.1.6(@chakra-ui/system@1.12.1)(react@17.0.2)
+      react: 17.0.2
+    dev: false
+
+  /@chakra-ui/react-context@2.1.0(react@17.0.2):
+    resolution: {integrity: sha512-iahyStvzQ4AOwKwdPReLGfDesGG+vWJfEsn0X/NoGph/SkN+HXtv2sCfYFFR9k7bb+Kvc6YfpLlSuLvKMHi2+w==}
+    peerDependencies:
+      react: '>=18'
+    dependencies:
       react: 17.0.2
     dev: false
 

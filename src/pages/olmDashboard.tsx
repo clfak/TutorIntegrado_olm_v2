@@ -1,5 +1,6 @@
 import { Stack, Heading, Text } from "@chakra-ui/react";
-import OlmProgressBar from "../components/olm/OlmProgressBar";
+
+
 
 
 import TopicTable from "../components/olm/TopicTable";
@@ -21,8 +22,9 @@ export default function olmDashboard() {
                     Aquí podrás ver porcentaje de tu progreso en todos los tópicos de matemáticas que has trabajado en Mateo. A medida que avances en los tópicos, el porcentaje irá variando. Recuerda que el objetivo es llegar al 100% en todos los tópicos.
                 </Text>
                 <TopicTable/>
+                {/* <OlmProgressBar percent={75} /> */}
+
             </Stack>
-                <OlmProgressBar percent={75} />
             
         </>
     );

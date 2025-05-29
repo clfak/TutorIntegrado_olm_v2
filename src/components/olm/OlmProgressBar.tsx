@@ -1,18 +1,29 @@
-import { HStack, Progress, ProgressLabel } from "@chakra-ui/react";
+import React from "react";
+import { Text, HStack, Progress, ProgressLabel } from "@chakra-ui/react";
 
-const OlmProgressBar: React.FC<{ percent: number }> = ({ percent }) => (
-    <HStack maxW="sm" w="100%">
-        <Progress
-            value={percent}
-            size="md"
-            rounded="lg"                   
-            colorScheme="blue"
-        >
-            <ProgressLabel color="black">
+interface OlmProgressBarProps { percent: number }
+
+export default function OlmProgressBar({ percent }: OlmProgressBarProps) {
+    return (
+        <HStack maxW="sm" w="full" spacing={2} align="center">
+            <Progress
+                value={percent}
+                size="md"
+                borderRadius="md"
+                bg="gray.300"
+                flex="1"
+                h="4"
+                sx={{
+                    "& > div": {  
+                        bg: "#56AB2F", 
+                        borderRadius: "inherit" 
+                    },
+                }}
+                aria-label={`Progreso ${percent}%`}
+            />
+            <Text fontSize="sm" fontWeight="bold" whiteSpace="nowrap">
                 {percent}%
-            </ProgressLabel>
-        </Progress>
-    </HStack>
-);
-
-export default OlmProgressBar;
+            </Text>
+        </HStack>
+    );
+}
