@@ -8,9 +8,6 @@ import { useGQLQuery } from "rq-gql";
 import { gql } from "../../graphql";
 import OlmProgressBar from "./OlmProgressBar";
 
-
-
-
 const GetTopicsAndModel = gql(/* GraphQL */ `
     query GetTopicsAndModel {
         currentUser {
@@ -44,24 +41,9 @@ export default function TopicTable() {
         { refetchOnWindowFocus: false, refetchOnReconnect: false }
     );
 
-    // useEffect(() => {
-    //     if (!authLoading && !topicsLoading && data) {
-    //         console.log("Tópicos obtenidos:", data.topics);
-
-    //     }
-    // }, [authLoading, topicsLoading, data]);
     useEffect(() => {
         if (!authLoading && !topicsLoading && data) {
             console.log("Tópicos obtenidos:", data.topics);
-
-            // data.topics.forEach((topic) => {
-            //     topic.childrens.forEach((child) => {
-            //         console.log(
-            //             `Tópico "${topic.label}" - Subtópico "${child.label}" (id=${child.id})`
-            //         );
-            //     });
-            //}
-       // );
         }
     }, [authLoading, topicsLoading, data]);
 
@@ -101,7 +83,9 @@ export default function TopicTable() {
                 <Tbody>
                     {data.topics.map((topic) => {
                         // promedio para este topico
-                        const subtopicAverages = topic.childrens.map((sub) => {
+                        const subtopicAverages = topic.childrens
+                        .filter(sub => sub.content?.length>0) 
+                        .map((sub) => {
                             const kcs: string[] = sub.content.flatMap((c) =>
                                 c.kcs?.map((kc) => kc.code) ?? []
                             );
