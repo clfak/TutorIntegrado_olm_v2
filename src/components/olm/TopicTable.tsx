@@ -1,37 +1,45 @@
 import React, { useEffect } from "react";
 import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
+import { FaChevronDown, FaChevronRight, FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
 
 import { useAuth } from "../Auth";
 import { useGQLQuery } from "rq-gql";
 import { gql } from "../../graphql";
+import OlmProgressBar from "./OlmProgressBar";
 
-//query para obtener los topicos
-const GET_INFO_TOPIC = gql(/* GraphQL */ `
-    query GetInfoTopic {
-        topics(ids: [44,4,19,68,31,24,52,37]){
+const GetTopicsAndModel = gql(/* GraphQL */ `
+    query GetTopicsAndModel {
+        currentUser {
+            modelStates(input: { pagination: { first: 1 } }) {
+                nodes {
+                    json
+                }
+            }
+        }
+        topics(ids: [44,4,19,68,31,24,52,37]) {
             id
             label
+            childrens {
+                id
+                label
+                content {
+                    kcs {
+                        code
+                    }
+                }
+            }
         }
     }
 `);
 
-const items = [
-    { id: 1, topic: "Productos Notables", progress: "barprogress", eyeicon: "eye", exercises: "8 ejercicios realizados", icon: "arrow" },
-    { id: 2, topic: "Factorización", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 3, topic: "Potencias", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 4, topic: "Raíces", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 5, topic: "Fracciones", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 6, topic: "Ecuaciones", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 7, topic: "Álgebra de Polinomios", progress: "barprogress", exercises: "8 ejercicios realizados" },
-    { id: 8, topic: "Logica y Teoría de Conjuntos", progress: "barprogress", exercises: "8 ejercicios realizados" },
-
-
-];
-
 export default function TopicTable() {
     const { isLoading: authLoading } = useAuth();
-
-    const { data, isLoading: topicsLoading, error } = useGQLQuery(GET_INFO_TOPIC,);
+    const { data, isLoading: topicsLoading, error } = useGQLQuery(
+        GetTopicsAndModel,
+        undefined,
+        { refetchOnWindowFocus: false, refetchOnReconnect: false }
+    );
 
     useEffect(() => {
         if (!authLoading && !topicsLoading && data) {
@@ -39,38 +47,79 @@ export default function TopicTable() {
         }
     }, [authLoading, topicsLoading, data]);
 
-    // 4. Si cualquiera sigue cargando, mostramos indicador
+
     if (authLoading || topicsLoading) {
         return <div>Cargando información…</div>;
     }
-
-    // 5. En caso de error
     if (error) {
         return <div>Error al cargar tópicos: {error.message}</div>;
     }
+    if (!data) {
+        return <div>No hay datos</div>;
+    }
+
+
+    const modelJson = data.currentUser.modelStates.nodes[0].json;
+
     return (
-        <TableContainer>
+        <TableContainer
+            sx={{
+                "thead tr th": {
+                    color: "white",
+                },
+            }}
+            w="100%"
+        >
             <Table variant="striped" size="md">
-                <Thead>
-                    <Tr>
+                <Thead bg="blue.700">
+                    <Tr >
                         <Th>Tópicos</Th>
                         <Th>Progreso</Th>
                         <Th></Th>
                         <Th textAlign="end">Ejercicios Realizados</Th>
                         <Th></Th>
-
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {data.topics.map((topic) => (
-                        <Tr key={topic.id}>
-                            <Td>{topic.label}</Td>
-                            {/* <Td>{item.progress}</Td>
-                            <Td>{item.eyeicon}</Td>
-                            <Td textAlign="end">{item.exercises}</Td>
-                            <Td>{item.icon}</Td> */}
-                        </Tr>
-                    ))}
+                    {data.topics.map((topic) => {
+                        // promedio para este topico
+                        const subtopicAverages = topic.childrens
+                        .filter(sub => sub.content?.length>0) 
+                        .map((sub) => {
+                            const kcs: string[] = sub.content.flatMap((c) =>
+                                c.kcs?.map((kc) => kc.code) ?? []
+                            );
+                            const levels = kcs.map(
+                                (code) => modelJson[code as keyof typeof modelJson]?.level ?? 0
+                            );
+                            return levels.length > 0
+                                ? levels.reduce((sum, lvl) => sum + lvl, 0) / levels.length
+                                : 0;
+                        });
+                        const topicAvg =
+                            subtopicAverages.length > 0
+                                ? subtopicAverages.reduce((sum, avg) => sum + avg, 0) /
+                                subtopicAverages.length
+                                : 0;
+                        const percent = Math.round(topicAvg * 100);
+
+                        return (
+                            <Tr key={topic.id} fontSize="md">
+                                <Td fontWeight="semibold">{topic.label}</Td>
+                                <Td>
+                                    <OlmProgressBar percent={percent} />
+
+                                </Td>
+                                <Td textAlign="center">
+                                    <FaRegEyeSlash size={18} cursor="pointer" />
+                                </Td>
+                                <Td textAlign="end"># Ejercicios Realizados</Td>
+                                <Td textAlign="center">
+                                    <FaChevronRight size={18} cursor="pointer" />
+                                </Td>
+                            </Tr>
+                        );
+                    })}
                 </Tbody>
             </Table>
         </TableContainer>

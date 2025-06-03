@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.9.0",
+    "@chakra-ui/progress": "^2.2.0",
     "@chakra-ui/react": "^1.7.4",
     "@chakra-ui/system": "^1.9.1",
     "@cortex-js/compute-engine": "^0.12.3",

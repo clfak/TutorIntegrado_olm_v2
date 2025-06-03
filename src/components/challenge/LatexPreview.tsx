@@ -72,4 +72,5 @@ const LatexPreview = ({ content }) => {
   );
 };
 
-export default LatexPreview;
+export default LatexPreview; 
+
